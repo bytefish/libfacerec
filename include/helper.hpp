@@ -162,6 +162,34 @@ inline vector<int> argsort(const Mat& src, bool sortAscending=true) {
 	}
 }
 
+// Reads a FileNode::SEQ with given type _Tp into a result vector.
+template<typename _Tp>
+inline void readFileNodeList(const FileNode& fn, vector<_Tp>& result) {
+    if(fn.type() == FileNode::SEQ) {
+        for(FileNodeIterator it = fn.begin(); it != fn.end(); ++it) {
+            _Tp item;
+            it >> item;
+            result.push_back(item);
+        }
+    }
+}
+
+// Writes the a list of given items
+template<typename _Tp>
+inline void writeFileNodeList(
+        FileStorage& fs,
+        const string& name,
+        const vector<_Tp>& items) {
+    // typedefs
+    typedef typename vector<_Tp>::const_iterator constVecIterator;
+    // write the elements in item to fs
+    fs << "[";
+    for(constVecIterator it = items.begin(); it != items.end(); ++it) {
+        fs << *it;
+    }
+    fs << "]";
+}
+
 /**
  * Note: create is called on dst.
  *

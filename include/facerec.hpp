@@ -19,6 +19,7 @@
 #define __FACEREC_HPP__
 
 #include "opencv2/opencv.hpp"
+#include "helper.hpp"
 
 using namespace std;
 
@@ -27,28 +28,23 @@ namespace cv {
 class FaceRecognizer {
 public:
 
+	//! virtual destructor
 	virtual ~FaceRecognizer() {};
 
-	/**
-	 *
-	 */
+	// Trains a FaceRecognizer.
 	virtual void train(const vector<Mat>& src, const vector<int>& labels) = 0;
 
-	/**
-	 *
-	 */
+	// Gets a prediction from a FaceRecognizer.
 	virtual int predict(const Mat& src) = 0;
 };
 
 
 class Serializable {
 public:
+	//! virtual destructor
 	virtual ~Serializable() {};
 
-	/**
-	 * Save the current objects
-	 * @param filename filename the current object is , e.g. "".
-	 */
+	// Serializes this object to a given filename.
 	virtual void save(const string& filename) const {
 		FileStorage fs(filename, FileStorage::WRITE);
 		if(!fs.isOpened())
@@ -57,9 +53,7 @@ public:
 		fs.release();
 	}
 
-	/**
-	 *
-	 */
+	// Deserializes this object from a given filename.
 	virtual void load(const string& filename) {
 		FileStorage fs(filename, FileStorage::READ);
 		if(!fs.isOpened())
@@ -68,15 +62,18 @@ public:
 		fs.release();
 	}
 
+	//
 	virtual void save(FileStorage& fs) const = 0;
+
+	//
 	virtual void load(const FileStorage& node) = 0;
 
 };
 
+//
 class Eigenfaces : public FaceRecognizer, public Serializable {
 
 private:
-	bool _dataAsRow;
 	int _num_components;
 	vector<Mat> _projections;
 	vector<int> _labels;
@@ -85,58 +82,57 @@ private:
 	Mat _mean;
 
 public:
+	using Serializable::save;
+	using Serializable::load;
 
-	//!
+	//
 	Eigenfaces(int num_components = 0) :
 		_num_components(num_components) {};
-	//!
+
+	//
 	Eigenfaces(const vector<Mat>& src,
 			const vector<int>& labels,
 			int num_components=0) : _num_components(num_components) {
 		train(src, labels);
 	}
 
-	/**
-	 * \param
-	 * \param
-	 */
+	//
 	void train(const vector<Mat>& src, const vector<int>& labels);
 
-	/**
-	 * \param
-	 * \param
-	 */
+	//
 	int predict(const Mat& src);
 
 	void load(const FileStorage& fs) {
+	    //read matrices
 		fs["num_components"] >> _num_components;
 		fs["mean"] >> _mean;
 		fs["eigenvalues"] >> _eigenvalues;
 		fs["eigenvectors"] >> _eigenvectors;
+		// read sequences
+		readFileNodeList(fs["projections"], _projections);
+		readFileNodeList(fs["labels"], _labels);
 	}
 
 	void save(FileStorage& fs) const {
+	    // write matrices
 		fs << "num_components" << _num_components;
 		fs << "mean" << _mean;
 		fs << "eigenvalues" << _eigenvalues;
 		fs << "eigenvectors" << _eigenvectors;
+		// write sequences
+		writeFileNodeList(fs, "projections", _projections);
+		writeFileNodeList(fs, "labels", _labels);
 	}
 
-	//! returns the eigenvectors of this PCA
+	// returns the eigenvectors of this PCA
 	Mat eigenvectors() const { return _eigenvectors; }
-	//! returns the eigenvalues of this PCA
+	// returns the eigenvalues of this PCA
 	Mat eigenvalues() const { return _eigenvalues; }
-	//! returns the mean of this PCA
+	// returns the mean of this PCA
 	Mat mean() const { return _mean; }
 };
 
 
-/**
- * P. Belhumeur, J. Hespanha, and D. Kriegman,
- * "Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection",
- * IEEE Transactions on Pattern Analysis and Machine Intelligence,
- * 19(7):711--720, 1997.
- */
 class Fisherfaces : public FaceRecognizer, public Serializable {
 
 private:
@@ -151,8 +147,8 @@ public:
 	using Serializable::save;
 	using Serializable::load;
 
-	Fisherfaces() :
-		_num_components(0) {};
+	Fisherfaces(int num_components=0) :
+		_num_components(num_components) {};
 
 	Fisherfaces(const vector<Mat>& src,
 			const vector<int>& labels,
@@ -163,30 +159,34 @@ public:
 
 	~Fisherfaces() {}
 
-	//! compute the discriminants for data in src and labels
 	void train(const vector<Mat>& src, const vector<int>& labels);
-	//! returns the nearest neighbor to a query
+
 	int predict(const Mat& src);
 
-	void load(const FileStorage& fs) {
-		fs["num_components"] >> _num_components;
-		fs["mean"] >> _mean;
-		fs["eigenvalues"] >> _eigenvalues;
-		fs["eigenvectors"] >> _eigenvectors;
-	}
+    void load(const FileStorage& fs) {
+        //read matrices
+        fs["num_components"] >> _num_components;
+        fs["mean"] >> _mean;
+        fs["eigenvalues"] >> _eigenvalues;
+        fs["eigenvectors"] >> _eigenvectors;
+        // read sequences
+        readFileNodeList(fs["projections"], _projections);
+        readFileNodeList(fs["labels"], _labels);
+    }
 
-	void save(FileStorage& fs) const {
-		fs << "num_components" << _num_components;
-		fs << "mean" << _mean;
-		fs << "eigenvalues" << _eigenvalues;
-		fs << "eigenvectors" << _eigenvectors;
-	}
+    void save(FileStorage& fs) const {
+        // write matrices
+        fs << "num_components" << _num_components;
+        fs << "mean" << _mean;
+        fs << "eigenvalues" << _eigenvalues;
+        fs << "eigenvectors" << _eigenvectors;
+        // write sequences
+        writeFileNodeList(fs, "projections", _projections);
+        writeFileNodeList(fs, "labels", _labels);
+    }
 
-	//! returns the eigenvectors
 	Mat eigenvectors() const { return _eigenvectors; };
-	//! returns the eigenvalues
 	Mat eigenvalues() const { return _eigenvalues; }
-	//! returns the sample mean
 	Mat mean() const { return _eigenvalues; }
 };
 

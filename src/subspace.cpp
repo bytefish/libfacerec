@@ -164,7 +164,7 @@ void subspace::LinearDiscriminantAnalysis::compute(const Mat& src, const vector<
 }
 
 void subspace::LinearDiscriminantAnalysis::compute(const vector<Mat>& src, const vector<int>& labels) {
-	compute(_dataAsRow? asRowMatrix(src) : asColumnMatrix(src), labels);
+	compute(_dataAsRow ? asRowMatrix(src) : asColumnMatrix(src), labels);
 }
 
 Mat subspace::LinearDiscriminantAnalysis::project(const Mat& src) {

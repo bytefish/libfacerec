@@ -23,7 +23,7 @@ void Eigenfaces::train(const vector<Mat>& src, const vector<int>& labels) {
 			CV_PCA_DATA_AS_ROW,
 			_num_components);
 	// set the data
-	_mean = _dataAsRow ? pca.mean.reshape(1,1) : pca.mean.reshape(1, pca.mean.total()); // store the mean vector
+	_mean = pca.mean.reshape(1,1); // store the mean vector
 	_eigenvalues = pca.eigenvalues.clone(); // store the eigenvectors
 	_eigenvectors = transpose(pca.eigenvectors); // OpenCV stores the Eigenvectors by row (??)
 	_labels = vector<int>(labels); // store labels for projections

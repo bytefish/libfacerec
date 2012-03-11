@@ -15,8 +15,7 @@ find_package(OpenCV REQUIRED) # http://opencv.willowgarage.com
 # includes & sources
 #---------------------------------
 
-include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
-					"${CMAKE_CURRENT_SOURCE_DIR}/src")
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include")
 
 file(GLOB lib_hdrs "include/*.hpp")
 file(GLOB lib_srcs "src/*.cpp")
