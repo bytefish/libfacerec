@@ -37,61 +37,60 @@ Mat reconstruct(const Mat& W, const Mat& mean, const Mat& src);
 class LinearDiscriminantAnalysis {
 
 private:
-	bool _dataAsRow;
-	int _num_components;
-	Mat _eigenvectors;
-	Mat _eigenvalues;
+    bool _dataAsRow;
+    Mat _eigenvectors;
+    Mat _eigenvalues;
 
 public:
 
-	//! initialize with 0 components and data given in rows
-	LinearDiscriminantAnalysis() :
-		_num_components(0),
-		_dataAsRow(true) {};
+    //! initialize with 0 components and data given in rows
+    LinearDiscriminantAnalysis() :
+        _num_components(0),
+        _dataAsRow(true) {};
 
-	//! initialize with num_components and specify how observations are given
-	LinearDiscriminantAnalysis(int num_components, bool dataAsRow = true) :
-		_num_components(num_components),
-		_dataAsRow(dataAsRow) {};
+    //! initialize with num_components and specify how observations are given
+    LinearDiscriminantAnalysis(int num_components, bool dataAsRow = true) :
+        _num_components(num_components),
+        _dataAsRow(dataAsRow) {};
 
-	//! initialize and perform a discriminant analysis with given data in src and labels
-	LinearDiscriminantAnalysis(const Mat& src,
-			const vector<int>& labels,
-			int num_components = 0,
-			bool dataAsRow = true) :
-				_num_components(num_components),
-				_dataAsRow(dataAsRow)
-	{
-		this->compute(src, labels); //! compute eigenvectors and eigenvalues
-	}
+    //! initialize and perform a discriminant analysis with given data in src and labels
+    LinearDiscriminantAnalysis(const Mat& src,
+            const vector<int>& labels,
+            int num_components = 0,
+            bool dataAsRow = true) :
+                _num_components(num_components),
+                _dataAsRow(dataAsRow)
+    {
+        this->compute(src, labels); //! compute eigenvectors and eigenvalues
+    }
 
-	//! initialize and perform a discriminant analysis with given data in src and labels
-	LinearDiscriminantAnalysis(const vector<Mat>& src,
-			const vector<int>& labels,
-			int num_components = 0,
-			bool dataAsRow = true) :
-				_num_components(num_components),
-				_dataAsRow(dataAsRow)
-	{
-		this->compute(src, labels); //! compute eigenvectors and eigenvalues
-	}
-	//! destructor
-	~LinearDiscriminantAnalysis() {}
+    //! initialize and perform a discriminant analysis with given data in src and labels
+    LinearDiscriminantAnalysis(const vector<Mat>& src,
+            const vector<int>& labels,
+            int num_components = 0,
+            bool dataAsRow = true) :
+                _num_components(num_components),
+                _dataAsRow(dataAsRow)
+    {
+        this->compute(src, labels); //! compute eigenvectors and eigenvalues
+    }
+    //! destructor
+    ~LinearDiscriminantAnalysis() {}
 
-	//! compute the discriminants for data in src and labels
-	void compute(const Mat& src, const vector<int>& labels);
-	//! compute the discriminants for data in src and labels
-	void compute(const vector<Mat>& src, const vector<int>& labels);
+    //! compute the discriminants for data in src and labels
+    void compute(const Mat& src, const vector<int>& labels);
+    //! compute the discriminants for data in src and labels
+    void compute(const vector<Mat>& src, const vector<int>& labels);
 
-	//! project
-	Mat project(const Mat& src);
+    //! project
+    Mat project(const Mat& src);
 
-	//! reconstruct
-	Mat reconstruct(const Mat& src);
-	//! returns the eigenvectors of this LDA
-	Mat eigenvectors() const { return _eigenvectors; };
-	//! returns the eigenvalues of this LDA
-	Mat eigenvalues() const { return _eigenvalues; }
+    //! reconstruct
+    Mat reconstruct(const Mat& src);
+    //! returns the eigenvectors of this LDA
+    Mat eigenvectors() const { return _eigenvectors; };
+    //! returns the eigenvalues of this LDA
+    Mat eigenvalues() const { return _eigenvalues; }
 };
 
 } // namespace
