@@ -5,9 +5,7 @@
 
 using namespace cv;
 
-// TODO Quantization of Variance-based LBP.
-// TODO Add Literature References.
-// TODO Add Tests.
+// TODO Test & Quantization of Variance-based LBP.
 
 namespace cv {
 namespace impl {
@@ -110,6 +108,12 @@ inline void varlbp(const Mat& src, Mat& dst, int radius, int neighbors) {
 } // namespace impl
 
 // Calculates the Original Local Binary Patterns.
+//
+// Reference:
+//
+//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
+//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//
 inline void olbp(const Mat& src, Mat& dst) {
     switch (src.type()) {
     case CV_8SC1:   impl::olbp<char>(src,dst); break;
@@ -124,6 +128,12 @@ inline void olbp(const Mat& src, Mat& dst) {
 }
 
 // Calculates the Extended Local Binary Patterns.
+//
+// Reference:
+//
+//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
+//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//
 inline void elbp(const Mat& src, Mat& dst, int radius=1, int neighbors=8) {
     switch (src.type()) {
     case CV_8SC1:   impl::elbp<char>(src,dst, radius, neighbors); break;
@@ -138,6 +148,12 @@ inline void elbp(const Mat& src, Mat& dst, int radius=1, int neighbors=8) {
 }
 
 // Calculates the Variance-based Local Binary Patterns (without Quantization).
+//
+// Reference:
+//
+//  Pietikäinen, M., Hadid, A., Zhao, G. and Ahonen, T. (2011), "Computer
+//  Vision Using Local Binary Patterns", Springer.
+//
 inline void varlbp(const Mat& src, Mat& dst, int radius=1, int neighbors=8) {
     switch (src.type()) {
     case CV_8SC1:   impl::varlbp<char>(src,dst, radius, neighbors); break;
