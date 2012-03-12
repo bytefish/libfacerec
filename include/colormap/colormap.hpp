@@ -56,8 +56,10 @@ namespace cv {
                     }
                 }
                 // linear interpolation
-                yi.at<_Tp>(i,0) += Y.at<_Tp>(low,0) + (XI.at<_Tp>(i,0) - X.at<_Tp>(low,0)) *
-                        (Y.at<_Tp>(high,0) - Y.at<_Tp>(low,0)) / (X.at<_Tp>(high,0) - X.at<_Tp>(low,0));
+                yi.at<_Tp>(i,0) += Y.at<_Tp>(low,0)
+                        + (XI.at<_Tp>(i,0) - X.at<_Tp>(low,0))
+                        * (Y.at<_Tp>(high,0) - Y.at<_Tp>(low,0))
+                            / (X.at<_Tp>(high,0) - X.at<_Tp>(low,0));
             }
             return yi;
         }
@@ -82,21 +84,21 @@ namespace cv {
     // Equivalent to GNU Octave/MATLAB function "interp1".
     inline Mat interp1(InputArray x, InputArray Y, InputArray xi) {
         // get matrices
-        Mat xMat = x.getMat();
-        Mat YMat = Y.getMat();
-        Mat xiMat = xi.getMat();
+        Mat _x = x.getMat();
+        Mat _Y = Y.getMat();
+        Mat _xi = xi.getMat();
         // check types & alignment
-        assert((xMat.type() == YMat.type()) && (YMat.type() == xiMat.type()));
-        assert((xMat.cols == 1) && (xMat.rows == YMat.rows) && (xMat.cols == YMat.cols));
+        assert((_x.type() == _Y.type()) && (_Y.type() == _xi.type()));
+        assert((_x.cols == 1) && (_x.rows == _Y.rows) && (_x.cols == _Y.cols));
         // call templated interp1
         switch(x.type()) {
-            case CV_8SC1: return impl::interp1<char>(xMat,YMat,xiMat); break;
-            case CV_8UC1: return impl::interp1<unsigned char>(xMat,YMat,xiMat); break;
-            case CV_16SC1: return impl::interp1<short>(xMat,YMat,xiMat); break;
-            case CV_16UC1: return impl::interp1<unsigned short>(xMat,YMat,xiMat); break;
-            case CV_32SC1: return impl::interp1<int>(xMat,YMat,xiMat); break;
-            case CV_32FC1: return impl::interp1<float>(xMat,YMat,xiMat); break;
-            case CV_64FC1: return impl::interp1<double>(xMat,YMat,xiMat); break;
+            case CV_8SC1: return impl::interp1<char>(_x,_Y,_xi); break;
+            case CV_8UC1: return impl::interp1<unsigned char>(_x,_Y,_xi); break;
+            case CV_16SC1: return impl::interp1<short>(_x,_Y,_xi); break;
+            case CV_16UC1: return impl::interp1<unsigned short>(_x,_Y,_xi); break;
+            case CV_32SC1: return impl::interp1<int>(_x,_Y,_xi); break;
+            case CV_32FC1: return impl::interp1<float>(_x,_Y,_xi); break;
+            case CV_64FC1: return impl::interp1<double>(_x,_Y,_xi); break;
         }
     }
 
@@ -107,8 +109,10 @@ namespace cv {
         protected:
             Mat _lut;
 
-        public:
+        protected:
             ColorMap() {}
+
+        public:
 
             // Applies the colormap on a given image.
             //

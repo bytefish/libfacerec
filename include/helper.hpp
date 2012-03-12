@@ -28,15 +28,11 @@
 
 using namespace std;
 
-//! namespace util provides non-opencv related helper functions
-namespace util {
-
+// Removes duplicate elements in a given vector.
 template<typename _Tp>
 inline vector<_Tp> remove_dups(const vector<_Tp>& src) {
-
     typedef typename set<_Tp>::const_iterator constSetIterator;
     typedef typename vector<_Tp>::const_iterator constVecIterator;
-
     set<_Tp> set_elems;
     for (constVecIterator it = src.begin(); it != src.end(); ++it)
         set_elems.insert(*it);
@@ -45,19 +41,24 @@ inline vector<_Tp> remove_dups(const vector<_Tp>& src) {
         elems.push_back(*it);
     return elems;
 }
-}
 
-//! namespace cv provides opencv related helper functions
+// The namespace cv provides opencv related helper functions.
 namespace cv {
-//! includes the implementations
+
+// The namespace impl provides opencv related helper functions.
+// This interface is not guaranteed to be stable, the convention
+// is to not program against namespace impl functions!
 namespace impl {
 
 template<typename _Tp>
-inline bool isSymmetric(const Mat& src) {
-    for (int i = 0; i < src.rows; i++) {
-        for (int j = 0; j < src.cols; j++) {
-            _Tp a = src.at<_Tp> (i, j);
-            _Tp b = src.at<_Tp> (j, i);
+inline bool isSymmetric(InputArray src) {
+    Mat _src = src.getMat();
+    if(_src.cols != _src.rows)
+        return false;
+    for (int i = 0; i < _src.rows; i++) {
+        for (int j = 0; j < _src.cols; j++) {
+            _Tp a = _src.at<_Tp> (i, j);
+            _Tp b = _src.at<_Tp> (j, i);
             if (a != b) {
                 return false;
             }
@@ -67,18 +68,22 @@ inline bool isSymmetric(const Mat& src) {
 }
 
 template<typename _Tp>
-inline bool isSymmetric(const Mat& src, double eps) {
-    for (int i = 0; i < src.rows; i++) {
-        for (int j = 0; j < src.cols; j++) {
-            _Tp a = src.at<_Tp> (i, j);
-            _Tp b = src.at<_Tp> (j, i);
-            if ((a - b) > eps) {
+inline bool isSymmetric(InputArray src, double eps) {
+    Mat _src = src.getMat();
+    if(_src.cols != _src.rows)
+        return false;
+    for (int i = 0; i < _src.rows; i++) {
+        for (int j = 0; j < _src.cols; j++) {
+            _Tp a = _src.at<_Tp> (i, j);
+            _Tp b = _src.at<_Tp> (j, i);
+            if (std::abs(a - b) > eps) {
                 return false;
             }
         }
     }
     return true;
 }
+
 
 //! ascending sort operator
 template<typename _Tp>
@@ -107,17 +112,14 @@ vector<int> argsort_(const Mat& src, bool asc) {
     vector<pair<_Tp, int> > val_indices;
     for (int i = 0; i < src.rows; i++) {
         for (int j = 0; j < src.cols; j++) {
-            val_indices.push_back(
-                    make_pair(src.at<_Tp> (i, j), val_indices.size()));
+            val_indices.push_back(make_pair(src.at<_Tp> (i, j), val_indices.size()));
         }
     }
 
     if (asc) {
-        std::sort(val_indices.begin(), val_indices.end(),
-                SortByFirstAscending_<_Tp> ());
+        std::sort(val_indices.begin(), val_indices.end(), SortByFirstAscending_<_Tp> ());
     } else {
-        std::sort(val_indices.begin(), val_indices.end(),
-                SortByFirstDescending_<_Tp> ());
+        std::sort(val_indices.begin(), val_indices.end(), SortByFirstDescending_<_Tp> ());
     }
 
     vector<int> indices;
@@ -125,19 +127,14 @@ vector<int> argsort_(const Mat& src, bool asc) {
         indices.push_back(val_indices[i].second);
     return indices;
 }
+
 }
 
-/**
- * Checks if a given matrix is symmetric.
- *
- * @param src matrix
- * @param eps epsilon for floating-point arithmetic (default 1e-16)
- */
+// Checks if a given matrix is symmetric.
 inline bool isSymmetric(InputArray src, double eps = 1E-16) {
     Mat m = src.getMat();
     switch (m.type()) {
-    case CV_8SC1:
-        return impl::isSymmetric<char>(m);
+    case CV_8SC1: return impl::isSymmetric<char>(m);
         break;
     case CV_8UC1:
         return impl::isSymmetric<unsigned char>(m);
@@ -163,12 +160,7 @@ inline bool isSymmetric(InputArray src, double eps = 1E-16) {
     return false;
 }
 
-/**
- * Sorts a 1D Matrix and returns the indices for a given a sort order.
- *
- * @param src
- * @param sortAscending
- */
+// Sorts a 1D Matrix by given sort order and returns the sorted indices.
 inline vector<int> argsort(const Mat& src, bool sortAscending = true) {
     switch (src.type()) {
     case CV_8SC1:
@@ -195,11 +187,11 @@ inline vector<int> argsort(const Mat& src, bool sortAscending = true) {
     }
 }
 
-// Reads a FileNode::SEQ with given type _Tp into a result vector.
+// Reads a sequence from a FileNode::SEQ with type _Tp into a result vector.
 template<typename _Tp>
 inline void readFileNodeList(const FileNode& fn, vector<_Tp>& result) {
     if (fn.type() == FileNode::SEQ) {
-        for (FileNodeIterator it = fn.begin(); it != fn.end(); ++it) {
+        for (FileNodeIterator it = fn.begin(); it != fn.end();) {
             _Tp item;
             it >> item;
             result.push_back(item);
@@ -207,89 +199,125 @@ inline void readFileNodeList(const FileNode& fn, vector<_Tp>& result) {
     }
 }
 
-// Writes the a list of given items
+// Writes the a list of given items to a cv::FileStorage.
 template<typename _Tp>
 inline void writeFileNodeList(FileStorage& fs, const string& name,
         const vector<_Tp>& items) {
     // typedefs
     typedef typename vector<_Tp>::const_iterator constVecIterator;
     // write the elements in item to fs
-    fs << "[";
+    fs << name << "[";
     for (constVecIterator it = items.begin(); it != items.end(); ++it) {
+        cout << "wrote:" << *it << endl;
         fs << *it;
     }
     fs << "]";
 }
 
-/**
- * Note: create is called on dst.
- *
- * @param src
- * @param dst
- * @param indices
- */
-void sortMatrixByColumn(const Mat& src, Mat& dst, vector<int> indices);
 
-/**
- * Sorts a given matrix by its indices.
- *
- * @param src original matrix
- * @param indices sort order
- * @return
- */
-Mat sortMatrixByColumn(const Mat& src, vector<int> indices);
+// Sorts a given matrix src by column for given indices.
+//
+// Note: create is called on dst.
+inline void sortMatrixByColumn(const Mat& src, Mat& dst, vector<int> indices) {
+    dst.create(src.rows, src.cols, src.type());
+    for(int idx = 0; idx < indices.size(); idx++) {
+        Mat originalCol = src.col(indices[idx]);
+        Mat sortedCol = dst.col(idx);
+        originalCol.copyTo(sortedCol);
+    }
+}
 
-/**
- *
- * Sorts a given matrix src by row for given indices. Note: create is called on dst.
- *
- * @param src original matrix
- * @param dst sort order
- * @param indices indices to sort by
- */
-void sortMatrixByRow(const Mat& src, Mat& dst, vector<int> indices);
 
-/**
- * @param src original matrix
- * @param indices sort order
- * @return sorted matrix
- */
-Mat sortMatrixByRow(const Mat& src, vector<int> indices);
+// Sorts a given matrix src by row for given indices.
+inline Mat sortMatrixByColumn(const Mat& src, vector<int> indices) {
+    Mat dst;
+    sortMatrixByColumn(src, dst, indices);
+    return dst;
+}
 
-/* Turns a vector of matrices into a row matrix.
- *
- * @param src vector of samples
- * @return matrix with samples in row
- */
-Mat asRowMatrix(const vector<Mat>& src, int dtype = CV_32FC1);
+// Sorts a given matrix src by row for given indices.
+//
+// Note: create is called on dst.
+inline void sortMatrixByRow(const Mat& src, Mat& dst, vector<int> indices) {
+    dst.create(src.rows, src.cols, src.type());
+    for(int idx = 0; idx < indices.size(); idx++) {
+        Mat originalRow = src.row(indices[idx]);
+        Mat sortedRow = dst.row(idx);
+        originalRow.copyTo(sortedRow);
+    }
+}
 
-/* Turns a vector of matrices into a column matrix.
- *
- * @param src vector of samples
- * @return matrix with samples in columns
- */
-Mat asColumnMatrix(const vector<Mat>& src, int dtype = CV_32FC1);
+// Sorts a given matrix src by row for given indices.
+inline Mat sortMatrixByRow(const Mat& src, vector<int> indices) {
+    Mat dst;
+    sortMatrixByRow(src, dst, indices);
+    return dst;
+}
 
-/* Turns a matrix into a grayscale representation.
- *
- * @param src original matrix
- * @return grayscale representation
- */
-Mat toGrayscale(InputArray src, int dtype = CV_8UC1);
+// Turns a vector of matrices into a row matrix.
+inline Mat asRowMatrix(const vector<Mat>& src, int rtype, double alpha=1, double beta=0) {
+    // number of samples
+    int n = src.size();
+    // return empty matrix if no data given
+    if(n == 0)
+        return Mat();
+    // dimensionality of samples
+    int d = src[0].total();
+    // create data matrix
+    Mat data(n, d, rtype);
+    // copy data
+    for(int i = 0; i < src.size(); i++) {
+        Mat xi = data.row(i);
+        src[i].reshape(1, 1).convertTo(xi, rtype);
+    }
+    return data;
+}
 
-/* Transposes a matrix.
- *
- * @param src original matrix
- * @return transposed matrix
- */
-Mat transpose(const Mat& src);
+// Turns a vector of matrices into a column matrix.
+inline Mat asColumnMatrix(const vector<Mat>& src, int rtype, double alpha=1, double beta=0) {
+    int n = src.size();
+    // return empty matrix if no data given
+    if(n == 0)
+        return Mat();
+    // dimensionality of samples
+    int d = src[0].total();
+    // create data matrix
+    Mat data(d, n, rtype);
+    // copy data
+    for(int i = 0; i < src.size(); i++) {
+        Mat yi = data.col(i);
+        src[i].reshape(1, d).convertTo(yi, rtype);
+    }
+    return data;
+}
 
-/* matlab equivalent num2str
- *
- * @param num number to convert to string
- * @return num as string
- */
-string num2str(int num);
+// Turns a given matrix into its grayscale representation.
+inline Mat toGrayscale(InputArray src, int dtype = CV_8UC1) {
+    Mat _src = src.getMat();
+    // only allow one channel
+    if(_src.channels() != 1)
+        CV_Error(CV_StsBadArg, "Only Matrices with one channel are supported");
+    // create and return normalized image
+    Mat dst;
+    cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+    return dst;
+}
+
+// Transposes a matrix.
+inline Mat transpose(const Mat& src) {
+    Mat dst;
+    transpose(src, dst);
+    return dst;
+}
+
+// Converts an integer number to a string.
+//
+// Equivalent to GNU Octave/MATLAB function "num2str".
+inline string num2str(int num) {
+    stringstream ss;
+    ss << num;
+    return ss.str();
+}
 
 #ifdef HAVE_EIGEN
 template<typename _Tp, int _rows, int _cols, int _options, int _maxRows, int _maxCols>
