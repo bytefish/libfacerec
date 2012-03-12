@@ -84,6 +84,8 @@ int main(int argc, const char *argv[]) {
     Mat x = _data.row(0);
     cout << "Projection of " << x << ": " << endl;
     cout << lda.project(x) << endl;
+
+    cout << lda.reconstruct(lda.project(x)) << endl;
     // example for reading a face database from a CSV file
     //
     // CSV -- https://github.com/bytefish/opencv/blob/master/lda/at.txt

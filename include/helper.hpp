@@ -208,7 +208,6 @@ inline void writeFileNodeList(FileStorage& fs, const string& name,
     // write the elements in item to fs
     fs << name << "[";
     for (constVecIterator it = items.begin(); it != items.end(); ++it) {
-        cout << "wrote:" << *it << endl;
         fs << *it;
     }
     fs << "]";

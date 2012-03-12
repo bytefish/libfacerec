@@ -192,8 +192,6 @@ TEST(HelperTest, checkReadWriteIntegerList) {
     cv::readFileNodeList(fs["MatList"], MatList1);
     fs.release();
 
-    for(int i = 0; i < IntList1.size(); i++)
-        cout << IntList1[i] << endl;
     // assert size
     ASSERT_EQ(IntList0.size(), IntList1.size());
     ASSERT_EQ(MatList0.size(), MatList1.size());
