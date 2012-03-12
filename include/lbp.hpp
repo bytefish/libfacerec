@@ -19,14 +19,14 @@ inline void olbp(const Mat& src, Mat& dst) {
         for(int j=1;j<src.cols-1;j++) {
             _Tp center = src.at<_Tp>(i,j);
             unsigned char code = 0;
-            code |= (src.at<_Tp>(i-1,j-1) > center) << 7;
-            code |= (src.at<_Tp>(i-1,j) > center) << 6;
-            code |= (src.at<_Tp>(i-1,j+1) > center) << 5;
-            code |= (src.at<_Tp>(i,j+1) > center) << 4;
-            code |= (src.at<_Tp>(i+1,j+1) > center) << 3;
-            code |= (src.at<_Tp>(i+1,j) > center) << 2;
-            code |= (src.at<_Tp>(i+1,j-1) > center) << 1;
-            code |= (src.at<_Tp>(i,j-1) > center) << 0;
+            code |= (src.at<_Tp>(i-1,j-1) >= center) << 7;
+            code |= (src.at<_Tp>(i-1,j) >= center) << 6;
+            code |= (src.at<_Tp>(i-1,j+1) >= center) << 5;
+            code |= (src.at<_Tp>(i,j+1) >= center) << 4;
+            code |= (src.at<_Tp>(i+1,j+1) >= center) << 3;
+            code |= (src.at<_Tp>(i+1,j) >= center) << 2;
+            code |= (src.at<_Tp>(i+1,j-1) >= center) << 1;
+            code |= (src.at<_Tp>(i,j-1) >= center) << 0;
             dst.at<unsigned char>(i-1,j-1) = code;
         }
     }
@@ -37,8 +37,8 @@ inline void elbp(const Mat& src, Mat& dst, int radius, int neighbors) {
     dst = Mat::zeros(src.rows-2*radius, src.cols-2*radius, CV_32SC1);
     for(int n=0; n<neighbors; n++) {
         // sample points
-        float x = static_cast<float>(radius) * cos(2.0*CV_PI*n/static_cast<float>(neighbors));
-        float y = static_cast<float>(radius) * -sin(2.0*CV_PI*n/static_cast<float>(neighbors));
+        float x = static_cast<float>(-radius) * sin(2.0*CV_PI*n/static_cast<float>(neighbors));
+        float y = static_cast<float>(radius) * cos(2.0*CV_PI*n/static_cast<float>(neighbors));
         // relative indices
         int fx = static_cast<int>(floor(x));
         int fy = static_cast<int>(floor(y));
@@ -55,9 +55,10 @@ inline void elbp(const Mat& src, Mat& dst, int radius, int neighbors) {
         // iterate through your data
         for(int i=radius; i < src.rows-radius;i++) {
             for(int j=radius;j < src.cols-radius;j++) {
+                // calculate interpolated value
                 float t = w1*src.at<_Tp>(i+fy,j+fx) + w2*src.at<_Tp>(i+fy,j+cx) + w3*src.at<_Tp>(i+cy,j+fx) + w4*src.at<_Tp>(i+cy,j+cx);
-                // we are dealing with floating point precision, so add some little tolerance
-                dst.at<unsigned int>(i-radius,j-radius) += ((t > src.at<_Tp>(i,j)) && (std::abs(t-src.at<_Tp>(i,j)) > std::numeric_limits<float>::epsilon())) << n;
+                // floating point precision, so check some machine-dependent epsilon
+                dst.at<int>(i-radius,j-radius) += ((t > src.at<_Tp>(i,j)) || (std::abs(t-src.at<_Tp>(i,j)) < std::numeric_limits<float>::epsilon())) << n;
             }
         }
     }
