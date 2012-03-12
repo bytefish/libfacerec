@@ -19,7 +19,7 @@
 #include "opencv2/opencv.hpp"
 #include "opencv2/highgui/highgui.hpp"
 
-#include "colormap/colormap.hpp"
+#include "colormap.hpp"
 
 #include <iostream>
 #include <fstream>
