@@ -215,14 +215,16 @@ class Core_HelperTest : public cvtest::BaseTest
 public:
     Core_HelperTest() {}
     ~Core_HelperTest() {}
+
 protected:
     void run(int a){
-    	float d[2][2] = {{1.1,2.1}, {2.1,1.1}};
-    	Mat _data = Mat(2, 2, CV_32FC1, d).clone();
-    	ASSERT_EQ(true, isSymmetric(_data));
+
     }
 
+    int checkSymmetry() {
+
+    }
 };
 
-TEST(Core_PCA, blah) { Core_PCATest test; test.safe_run(); }
+TEST(Core_PCA, regression) { Core_PCATest test; test.safe_run(); }
 TEST(Core_Helper, regression) { Core_HelperTest test; test.safe_run(); }

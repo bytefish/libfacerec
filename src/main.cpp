@@ -57,7 +57,7 @@ int main(int argc, const char *argv[]) {
     Mat _data = Mat(11, 2, CV_64FC1, d).clone();
     vector<int> _classes(c, c + sizeof(c) / sizeof(int));
     // perform the lda
-    subspace::LinearDiscriminantAnalysis lda(_data, _classes);
+    subspace::LDA lda(_data, _classes);
     // GNU Octave finds the following Eigenvalue:
     //octave> d
     //d =
@@ -125,8 +125,11 @@ int main(int argc, const char *argv[]) {
     Mat W = model.eigenvectors();
     // show first 10 fisherfaces
     for (int i = 0; i < min(10, W.cols); i++) {
+        // get eigenvector #i
         Mat ev = W.col(i).clone();
+        // reshape to original site
         Mat grayscale = toGrayscale(ev.reshape(1, height));
+        // show image (with Jet colormap)
         imshow(num2str(i), grayscale, colormap::Jet());
     }
     waitKey(0);
