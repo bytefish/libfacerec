@@ -19,8 +19,11 @@
 #define __FACEREC_HPP__
 
 #include "opencv2/opencv.hpp"
+
+#include "colormap.hpp"
 #include "subspace.hpp"
 #include "helper.hpp"
+#include "lbp.hpp"
 
 using namespace std;
 
@@ -70,7 +73,8 @@ public:
 
 };
 
-//
+// Turk, M., and Pentland, A. "Eigenfaces for recognition.". Journal of
+// Cognitive Neuroscience 3 (1991), 71–86.
 class Eigenfaces: public FaceRecognizer, public Serializable {
 
 private:
@@ -176,6 +180,10 @@ public:
     Mat mean() const { return _mean; }
 };
 
+// Belhumeur, P. N., Hespanha, J., and Kriegman, D. "Eigenfaces vs. Fisher-
+// faces: Recognition using class specific linear projection.". IEEE
+// Transactions on Pattern Analysis and Machine Intelligence 19, 7 (1997),
+// 711–720.
 class Fisherfaces: public FaceRecognizer, public Serializable {
 
 private:

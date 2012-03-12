@@ -119,9 +119,9 @@ public:
         if(src.channels() != 1)
             CV_Error(CV_StsBadArg, "Only single channel matrices allowed.");
         Mat data = _dataAsRow ? src.clone() : transpose(src);
-        // since we are dealing with very small numbers, use double values
+        // ensures internal data is double
         data.convertTo(data, CV_64FC1);
-        // maps the labels, so they have an ascending identifier from 0:C
+        // maps the labels, so they're ascending: [0,1,...,C]
         vector<int> mapped_labels(labels.size());
         vector<int> num2label = remove_dups(labels);
         map<int,int> label2num;
@@ -132,9 +132,9 @@ public:
         // get sample size, dimension
         int N = data.rows;
         int D = data.cols;
-        // get number of classes (number of unique labels)
+        // number of unique labels
         int C = num2label.size();
-        // assert, that: len(src) = len(labels)
+        // throw error if less labels, than samples
         if(labels.size() != N)
             CV_Error(CV_StsBadArg, "Error: The number of samples must equal the number of labels.");
         // warn if within-classes scatter matrix becomes singular

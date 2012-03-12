@@ -68,7 +68,7 @@ TEST_F(LDATest, CheckEigenvectors) {
     Mat expected;
 #ifdef HAVE_EIGEN
     // Eigenvectors found by Eigen3
-    expected = (Mat_<double>(2,1) << 0.7116932742510111 <<  -0.702490343980524);
+    expected = (Mat_<double>(2,1) << 0.7116932742510111 ,  -0.702490343980524);
 #else
     // Eigenvectors found by JAMA
     expected = (Mat_<double>(2,1) << 0.8254890051644113 , -0.8148145783734921);
