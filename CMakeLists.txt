@@ -29,6 +29,7 @@ target_link_libraries(${the_target} ${OpenCV_LIBS})
 #---------------------------------
 # add tests
 #---------------------------------
+
 if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test)
 	file(GLOB test_srcs "test/*.cpp")
 	file(GLOB test_hdrs "test/*.h*")
