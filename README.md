@@ -2,7 +2,7 @@
 
 [libfacerec](http://www.github.com/bytefish/libfacerec) is a header-only library for face recognition in OpenCV. Using it as simple as adding it to your include path, there are no additional dependencies. The Eigenfaces method and Fisherfaces method are implemented, face recognition with Local Binary Patterns (LBP) is planned (& almost completed). 
 
-Please see [src/main.cpp](https://github.com/bytefish/libfacerec/blob/master/src/main.cpp) or the [tests](https://github.com/bytefish/libfacerec/tree/master/test) to get a feeling for the API. If you want to run [the example]([src/main.cpp](https://github.com/bytefish/libfacerec/blob/master/src/main.cpp)), you'll need a CSV file with lines composed of a _filename_ followed by a _;_ followed by the _label_ (as **integer number**), making up a line like this: `/path/to/image.ext;0` ([read my notes on this here](http://www.bytefish.de/blog/fisherfaces_in_opencv)). 
+Please see [src/main.cpp](https://github.com/bytefish/libfacerec/blob/master/src/main.cpp) or the [tests](https://github.com/bytefish/libfacerec/tree/master/test) to get a feeling for the API. If you want to run [the example]([src/main.cpp](https://github.com/bytefish/libfacerec/blob/master/src/main.cpp), you'll need a CSV file with lines composed of a _filename_ followed by a _;_ followed by the _label_ (as **integer number**), making up a line like this: `/path/to/image.ext;0` ([read my notes on this here](http://www.bytefish.de/blog/fisherfaces_in_opencv)). 
 
 # Literature
 
