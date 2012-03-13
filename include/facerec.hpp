@@ -178,6 +178,9 @@ public:
 
     // Returns the sample mean of this PCA.
     Mat mean() const { return _mean; }
+
+    // Returns the number of components used in this PCA.
+    int num_components() const { return _num_components; }
 };
 
 // Belhumeur, P. N., Hespanha, J., and Kriegman, D. "Eigenfaces vs. Fisher-
@@ -294,6 +297,128 @@ public:
 
     // Returns the sample mean of this Fisherfaces model.
     Mat mean() const { return _eigenvalues; }
+
+    // Returns the number of components used in this Fisherfaces model.
+    int num_components() const { return _num_components; }
+};
+
+// Face Recognition based on Local Binary Patterns.
+//
+// TODO Optimize, Optimize, Optimize!
+//
+//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
+//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//
+class LBPH : public FaceRecognizer, public Serializable {
+
+private:
+    int _grid_x;
+    int _grid_y;
+    int _radius;
+    int _neighbors;
+    vector<Mat> _histograms;
+    vector<int> _labels;
+
+public:
+    using Serializable::save;
+    using Serializable::load;
+
+    // Initializes an empty Fisherfaces model.
+    LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8) :
+        _grid_x(grid_x),
+        _grid_y(grid_y),
+        _radius(radius),
+        _neighbors(neighbors) {}
+
+    // Initializes and computes a Fisherfaces model with images in src and
+    // corresponding labels in labels. num_components will be kept for
+    // classification.
+    LBPH(const vector<Mat>& src,
+            const vector<int>& labels,
+            int radius=1, int neighbors=8,
+            int grid_x=8, int grid_y=8) :
+                _grid_x(grid_x),
+                _grid_y(grid_y),
+                _radius(radius),
+                _neighbors(neighbors) {
+        train(src, labels);
+    }
+
+    ~LBPH() { }
+
+    // Computes a LBPH model with images in src and corresponding labels
+    // in labels.
+    void train(const vector<Mat>& src, const vector<int>& labels) {
+        assert(src.size() == labels.size());
+        // store given labels
+        _labels = labels;
+        // store the spatial histograms of the original data
+        for(int sampleIdx = 0; sampleIdx < src.size(); sampleIdx++) {
+            // calculate lbp image
+            Mat lbp_image = elbp(src[sampleIdx], _radius, _neighbors);
+            // get spatial histogram from this lbp image
+            Mat p = spatial_histogram(
+                    lbp_image,
+                    std::pow(2, _neighbors),
+                    _grid_x,
+                    _grid_y,
+                    true);
+            // add to templates
+            _histograms.push_back(p);
+        }
+    }
+
+    // Predicts the label of a query image in src.
+    int predict(const Mat& src) {
+        // get the spatial histogram from input image
+        Mat query = spatial_histogram(
+                elbp(src, _radius, _neighbors), /* lbp_image */
+                std::pow(2, _neighbors), /* number of possible patterns */
+                _grid_x, /* grid size x */
+                _grid_y, /* grid size y */
+                true /* normed histograms */
+                );
+        // find 1-nearest neighbor
+        double minDist = numeric_limits<double>::max();
+        int minClass = -1;
+        for(int sampleIdx = 0; sampleIdx < _histograms.size(); sampleIdx++) {
+            double dist = compareHist(_histograms[sampleIdx], query, CV_COMP_CHISQR);
+            if(dist < minDist) {
+                minDist = dist;
+                minClass = _labels[sampleIdx];
+            }
+        }
+        return minClass;
+    }
+
+    // See cv::FaceRecognizer::load.
+    void load(const FileStorage& fs) {
+        fs["radius"] >> _radius;
+        fs["neighbors"] >> _neighbors;
+        fs["grid_x"] >> _grid_x;
+        fs["grid_y"] >> _grid_y;
+        //read matrices
+        readFileNodeList(fs["histograms"], _histograms);
+        readFileNodeList(fs["labels"], _labels);
+    }
+
+    // See cv::FaceRecognizer::save.
+    void save(FileStorage& fs) const {
+        fs << "radius" << _radius;
+        fs << "neighbors" << _neighbors;
+        fs << "grid_x" << _grid_x;
+        fs << "grid_y" << _grid_y;
+        // write matrices
+        writeFileNodeList(fs, "histograms", _histograms);
+        writeFileNodeList(fs, "labels", _labels);
+    }
+
+    // Getter functions.
+    int neighbors() { return _neighbors; }
+    int radius() { return _radius; }
+    int grid_x() { return _grid_x; }
+    int grid_y() { return _grid_y; }
+
 };
 
 }

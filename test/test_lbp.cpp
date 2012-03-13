@@ -89,12 +89,12 @@ TEST_F(LBPTest, checkExtendedLBPAllZero) {
 
 TEST_F(LBPTest, checkExtendedLBPAllOneCenterZero) {
     // Calculate Original LBP codes.
-    Mat actual = Mat::zeros(1,1, CV_8UC1);
+    Mat actual = elbp(mAllOneCenterZero_);
     // 1x1 Matrix expected.
     ASSERT_EQ(1, actual.rows);
     ASSERT_EQ(1, actual.cols);
     // Check LBP Code.
-    ASSERT_EQ(0, actual.at<int>(0,0));
+    ASSERT_EQ(255, actual.at<int>(0,0));
 }
 
 TEST_F(LBPTest, checkExtendedLBPMixed) {
@@ -132,4 +132,33 @@ TEST_F(LBPTest, checkExtendedLBPMixed) {
     ASSERT_EQ(1, actual.cols);
     // Check LBP Code.
     ASSERT_EQ(195, actual.at<int>(0,0));
+}
+
+TEST_F(LBPTest, checkSpatialHist) {
+    // |0,1|2,3|
+    // |0,1|2,3|
+    // |-------|
+    // |4,5|6,7|
+    // |0,1|2,3|
+    Mat X = (Mat_<int>(4,4) << 0,1,2,3,0,1,2,3,4,5,6,7,0,1,2,3);
+    // divide into 4 patches
+    int grid_x = 2;
+    int grid_y = 2;
+    // len(unique(X)) == 8
+    int numPatterns = 8;
+    // The (normed) cell histograms are:
+    //
+    // [0.5, 0.5, 0, 0, 0, 0, 0, 0]
+    // [0, 0, 0.5, 0.5, 0, 0, 0, 0]
+    // [0.25, 0.25, 0, 0, 0.25, 0.25, 0, 0]
+    // [0, 0, 0.25, 0.25, 0, 0, 0.25, 0.25]
+    //
+    // So the result histogram has 4 * 8 = 32 bins.
+    Mat expected = (Mat_<float> (1,32) << 0.5, 0.5, 0, 0, 0, 0, 0, 0,
+            0, 0, 0.5, 0.5, 0, 0, 0, 0,
+            0.25, 0.25, 0, 0, 0.25, 0.25, 0, 0,
+            0, 0, 0.25, 0.25, 0, 0, 0.25, 0.25);
+    Mat actual = spatial_histogram(X, numPatterns, grid_x, grid_y, true);
+    ASSERT_EQ(32, actual.total());
+    ASSERT_TRUE(isEqual(expected, actual));
 }

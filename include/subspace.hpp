@@ -187,20 +187,9 @@ public:
         // M = inv(Sw)*Sb
         Mat M;
         gemm(Swi, Sb, 1.0, Mat(), 0.0, M);
-    #ifdef HAVE_EIGEN
-        // now switch to eigen (cv2eigen defined in helper.hpp)
-        MatrixXd Me;
-        cv2eigen(M, Me);
-        // solve eigenvalue problem for the general matrix $M = Sw^{-1} Sb$
-        Eigen::EigenSolver<MatrixXd> es(Me);
-        // copy real values over to opencv
-        eigen2cv(MatrixXd(es.eigenvectors().real()), _eigenvectors);
-        eigen2cv(MatrixXd(es.eigenvalues().real()), _eigenvalues);
-    #else
         EigenvalueDecomposition es(M);
         _eigenvalues = es.eigenvalues();
         _eigenvectors = es.eigenvectors();
-    #endif
         // reshape eigenvalues, so they are stored by column
         _eigenvalues = _eigenvalues.reshape(1,1);
         // get sorted indices descending by their eigenvalue

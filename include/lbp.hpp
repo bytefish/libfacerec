@@ -2,9 +2,11 @@
 #define __LBP_HPP__
 
 #include "opencv2/opencv.hpp"
+#include "helper.hpp"
 
 using namespace cv;
 
+// TODO Add Uniform Patterns (or other histogram dimensionality reduction)
 // TODO Test & Quantization of Variance-based LBP.
 
 namespace cv {
@@ -159,6 +161,44 @@ inline void varlbp(const Mat& src, Mat& dst, int radius=1, int neighbors=8) {
     case CV_64FC1:  impl::varlbp<double>(src,dst, radius, neighbors); break;
     default: break;
     }
+}
+
+// Calculates the Spatial Histogram for a given LBP image.
+//
+// TODO Test, Test, Test!
+// TODO Optimize, Optimize, Optimize!
+//
+//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
+//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//
+inline Mat spatial_histogram(const Mat& src, int numPatterns, int grid_x=8, int grid_y=8, bool normed=true) {
+    // calculate LBP patch size
+    int width = (int) floor(src.cols/grid_x);
+    int height = (int) floor(src.rows/grid_y);
+    // allocate memory for the spatial histogram
+    Mat result = Mat::zeros(grid_x * grid_y, numPatterns, CV_32FC1);
+    // return matrix with zeros if no data was given
+    if(src.empty())
+        return result.reshape(1,1);
+    // initial result_row
+    int c = 0;
+    // iterate through grid
+    for(int i = 0; i < grid_y; i++) {
+        for(int j = 0; j < grid_x; j++) {
+            // get the matrix for current cell
+            Mat src_cell = Mat(src, Range(i*height, (i+1)*height), Range(j*width,(j+1)*width));
+            // calculate the cell histogramm
+            Mat cell_hist;
+            histc(src_cell, cell_hist,0, (numPatterns-1), true);
+            // copy to the result matrix
+            Mat result_row = result.row(c);
+            cell_hist.reshape(1,1).convertTo(result_row, CV_32FC1);
+            // increase row count in result matrix
+            c++;
+        }
+    }
+    // return result as reshaped feature vector
+    return result.reshape(1,1);
 }
 
 // Wrapper functions for convenience.

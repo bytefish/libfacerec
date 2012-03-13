@@ -64,15 +64,8 @@ TEST_F(LDATest, CheckEigenvectors) {
     ASSERT_EQ(1, lda1_.eigenvectors().cols);
     // 2-dim data
     ASSERT_EQ(2, lda1_.eigenvectors().rows);
-    // the eigenvector depends on the normalization applied by the solver
-    Mat expected;
-#ifdef HAVE_EIGEN
-    // Eigenvectors found by Eigen3
-    expected = (Mat_<double>(2,1) << 0.7116932742510111 ,  -0.702490343980524);
-#else
     // Eigenvectors found by JAMA
-    expected = (Mat_<double>(2,1) << 0.8254890051644113 , -0.8148145783734921);
-#endif
+    Mat expected = (Mat_<double>(2,1) << 0.8254890051644113 , -0.8148145783734921);
     // Compare with a floating point precision of 1e-10.
     ASSERT_TRUE(isEqual(expected, lda1_.eigenvectors(), 1e-10));
 }
@@ -80,27 +73,15 @@ TEST_F(LDATest, CheckEigenvectors) {
 TEST_F(LDATest, CheckProjection) {
     Mat sample0 = X_.row(0).clone();
     Mat actual = lda1_.project(sample0);
-    Mat expected;
-#ifdef HAVE_EIGEN
-    // Projection found by Eigen3.
-    expected = (Mat_<double>(1,1) << -0.8494583516334565);
-#else
     // Projection found by JAMA.
-    expected = (Mat_<double>(1,1) << -0.7934657247916539);
-#endif
+    Mat expected = (Mat_<double>(1,1) << -0.7934657247916539);
     ASSERT_TRUE(isEqual(expected, actual, 1e-10));
 }
 
 TEST_F(LDATest, CheckReconstruction) {
     Mat sample0 = X_.row(0).clone();
     Mat actual = lda1_.reconstruct(lda1_.project(sample0));
-    Mat expected;
-#ifdef HAVE_EIGEN
-    // Projection found by Eigen3.
-    expected = (Mat_<double>(1,2) << -0.6045537956138816, 0.5967362896361156);
-#else
-    // Projection found by JAMA.
-    expected = (Mat_<double>(1,2) << -0.6549972317903209, 0.6465274399999288);
-#endif
+    // Reconstruction found by JAMA.
+    Mat expected = (Mat_<double>(1,2) << -0.6549972317903209, 0.6465274399999288);
     ASSERT_TRUE(isEqual(expected, actual, 1e-10));
 }
