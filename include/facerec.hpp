@@ -362,7 +362,7 @@ public:
             // get spatial histogram from this lbp image
             Mat p = spatial_histogram(
                     lbp_image, /* lbp_image */
-                    std::pow(2, _neighbors), /* number of possible patterns */
+                    static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors))), /* number of possible patterns */
                     _grid_x, /* grid size x */
                     _grid_y, /* grid size y */
                     true);
@@ -377,7 +377,7 @@ public:
         Mat lbp_image = elbp(src, _radius, _neighbors);
         Mat query = spatial_histogram(
                 lbp_image, /* lbp_image */
-                std::pow(2, _neighbors), /* number of possible patterns */
+                static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors))), /* number of possible patterns */
                 _grid_x, /* grid size x */
                 _grid_y, /* grid size y */
                 true /* normed histograms */);
