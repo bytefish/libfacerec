@@ -40,12 +40,6 @@ public:
 
     // Gets a prediction from a FaceRecognizer.
     virtual int predict(const Mat& src) = 0;
-};
-
-class Serializable {
-public:
-    //! virtual destructor
-    virtual ~Serializable() {}
 
     // Serializes this object to a given filename.
     virtual void save(const string& filename) const {
@@ -70,12 +64,11 @@ public:
 
     // Deserializes this object from a given cv::FileStorage.
     virtual void load(const FileStorage& node) = 0;
-
 };
 
 // Turk, M., and Pentland, A. "Eigenfaces for recognition.". Journal of
 // Cognitive Neuroscience 3 (1991), 71–86.
-class Eigenfaces: public FaceRecognizer, public Serializable {
+class Eigenfaces: public FaceRecognizer {
 
 private:
     int _num_components;
@@ -86,8 +79,8 @@ private:
     Mat _mean;
 
 public:
-    using Serializable::save;
-    using Serializable::load;
+    using FaceRecognizer::save;
+    using FaceRecognizer::load;
 
     // Initializes an empty Eigenfaces model.
     Eigenfaces(int num_components = 0) :
@@ -187,7 +180,7 @@ public:
 // faces: Recognition using class specific linear projection.". IEEE
 // Transactions on Pattern Analysis and Machine Intelligence 19, 7 (1997),
 // 711–720.
-class Fisherfaces: public FaceRecognizer, public Serializable {
+class Fisherfaces: public FaceRecognizer {
 
 private:
     int _num_components;
@@ -198,8 +191,8 @@ private:
     vector<int> _labels;
 
 public:
-    using Serializable::save;
-    using Serializable::load;
+    using FaceRecognizer::save;
+    using FaceRecognizer::load;
 
     // Initializes an empty Fisherfaces model.
     Fisherfaces(int num_components = 0) :
@@ -312,7 +305,7 @@ public:
 //  patterns: Application to face recognition." IEEE Transactions on Pattern
 //  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
-class LBPH : public FaceRecognizer, public Serializable {
+class LBPH : public FaceRecognizer {
 
 private:
     int _grid_x;
@@ -324,8 +317,8 @@ private:
     vector<int> _labels;
 
 public:
-    using Serializable::save;
-    using Serializable::load;
+    using FaceRecognizer::save;
+    using FaceRecognizer::load;
 
     // Initializes this LBPH Model. The current implementation is rather fixed
     // as it uses the Extended Local Binary Patterns per default.
