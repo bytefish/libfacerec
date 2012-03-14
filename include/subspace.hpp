@@ -87,8 +87,7 @@ public:
     // Optimization Criterion on given data in src and corresponding labels
     // in labels. If 0 (or less) number of components are given, they are
     // automatically determined for given data in computation.
-    LDA(const Mat& src,
-            const vector<int>& labels,
+    LDA(const Mat& src, const vector<int>& labels,
             int num_components = 0,
             bool dataAsRow = true) :
                 _num_components(num_components),

@@ -68,17 +68,34 @@ TEST(HelperTest, checkArgsortThrow) {
 //------------------------------------------------------------------------------
 // cv::isSymmetric
 //------------------------------------------------------------------------------
-TEST(HelperTest, checkSymmetry) {
+TEST(HelperTest, checkSymmetryEmpty) {
     Mat mEmptyMat = (Mat_<double>(0,0));
+    ASSERT_TRUE(isSymmetric(mEmptyMat));
+}
+
+TEST(HelperTest, checkSymmetryOneElement) {
     Mat mOneElement = (Mat_<double>(1,1) << 1);
-    Mat mSymmetric = (Mat_<double>(2,2) << 1, 2, 2, 1);
-    Mat mNonSymmetric = (Mat_<double>(2,2) << 1, 2, 3, 4);
+    ASSERT_TRUE(isSymmetric(mOneElement));
+}
+
+TEST(HelperTest, checkSymmetryIntegral) {
+    Mat mSymmetric = (Mat_<int>(2,2) << 1, 2, 2, 1);
+    Mat mNonSymmetric = (Mat_<int>(2,2) << 1, 2, 3, 4);
 
     // Check isSymmetric for a floating point matrices.
-    ASSERT_TRUE(isSymmetric(mEmptyMat));
-    ASSERT_TRUE(isSymmetric(mOneElement));
     ASSERT_TRUE(isSymmetric(mSymmetric));
     ASSERT_FALSE(isSymmetric(mNonSymmetric));
+}
+
+TEST(HelperTest, checkSymmetryInexact) {
+    Mat mAlmostSymmetric = (Mat_<double>(2,2) << 1.0, 2.0, 2.000001, 1.0);
+    ASSERT_TRUE(isSymmetric(mAlmostSymmetric, 1e-3));
+    ASSERT_FALSE(isSymmetric(mAlmostSymmetric, 1e-15));
+}
+
+TEST(HelperTest, checkSymmetryAllTypes) {
+    Mat mSymmetric = (Mat_<double>(2,2) << 1, 2, 2, 1);
+    Mat mNonSymmetric = (Mat_<double>(2,2) << 1, 2, 3, 4);
 
     // Check isSymmetric for all possible OpenCV types.
     ASSERT_TRUE(isSymmetric(getMatrixAsType<char>(mSymmetric)));
@@ -89,10 +106,13 @@ TEST(HelperTest, checkSymmetry) {
     ASSERT_TRUE(isSymmetric(getMatrixAsType<float>(mSymmetric)));
     ASSERT_TRUE(isSymmetric(getMatrixAsType<double>(mSymmetric)));
 
-    // Check if isSymmetric with inexact comparism works.
-    Mat mAlmostSymmetric = (Mat_<double>(2,2) << 1.0, 2.0, 2.000001, 1.0);
-    ASSERT_TRUE(isSymmetric(mAlmostSymmetric, 1e-3));
-    ASSERT_FALSE(isSymmetric(mAlmostSymmetric, 1e-15));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<char>(mNonSymmetric)));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<unsigned char>(mNonSymmetric)));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<short>(mNonSymmetric)));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<unsigned short>(mNonSymmetric)));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<int>(mNonSymmetric)));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<float>(mNonSymmetric)));
+    ASSERT_FALSE(isSymmetric(getMatrixAsType<double>(mNonSymmetric)));
 }
 
 //------------------------------------------------------------------------------
@@ -102,17 +122,18 @@ TEST(HelperTest, checkSortByColumn) {
     // {{1.0, 2.0},
     //  {3.0, 4.0}};
     Mat mUnsorted = (Mat_<double>(2,2) << 1.0, 2.0, 3.0, 4.0);
-    // {{2.0, 1.0},
-    //  {4.0, 3.0}};
-    Mat mExpected = (Mat_<double>(2,2) << 2.0, 1.0, 4.0, 3.0);
-    // indices: 1,0
+    // [1,0]
     vector<int> indices;
     indices.push_back(1);
     indices.push_back(0);
-    // get sorted matrix
-    Mat mActual = cv::sortMatrixByColumn(mUnsorted, indices);
-    // check if both are equal
-    ASSERT_TRUE(isEqual(mExpected, mActual));
+    // Sorting columns by indices:
+    // {{2.0, 1.0},
+    //  {4.0, 3.0}};
+    Mat expected = (Mat_<double>(2,2) << 2.0, 1.0, 4.0, 3.0);
+
+    Mat actual = cv::sortMatrixByColumn(mUnsorted, indices);
+
+    ASSERT_TRUE(isEqual(expected, actual));
 }
 
 //------------------------------------------------------------------------------
@@ -122,17 +143,17 @@ TEST(HelperTest, checkSortByRow) {
     // {{1.0, 2.0},
     //  {3.0, 4.0}};
     Mat mUnsorted = (Mat_<double>(2,2) << 1.0, 2.0, 3.0, 4.0);
-    // {{3.0, 4.0},
-    //  {1.0, 2.0}};
-    Mat mExpected = (Mat_<double>(2,2) << 3.0, 4.0, 1.0, 2.0);
-    // indices: 1,0
+    // [1,0]
     vector<int> indices;
     indices.push_back(1);
     indices.push_back(0);
-    // get sorted matrix
-    Mat mActual = cv::sortMatrixByRow(mUnsorted, indices);
-    // check if both are equal
-    ASSERT_TRUE(isEqual(mExpected, mActual));
+    // {{3.0, 4.0},
+    //  {1.0, 2.0}};
+    Mat expected = (Mat_<double>(2,2) << 3.0, 4.0, 1.0, 2.0);
+
+    Mat actual = cv::sortMatrixByRow(mUnsorted, indices);
+
+    ASSERT_TRUE(isEqual(expected, actual));
 }
 
 //------------------------------------------------------------------------------

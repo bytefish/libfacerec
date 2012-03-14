@@ -308,8 +308,9 @@ public:
 // TODO Allow to change LBP computation (Extended LBP used right now).
 // TODO Optimize, Optimize, Optimize!
 //
-//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
-//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
+//  patterns: Application to face recognition." IEEE Transactions on Pattern
+//  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
 class LBPH : public FaceRecognizer, public Serializable {
 

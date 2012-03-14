@@ -111,8 +111,9 @@ inline void varlbp(const Mat& src, Mat& dst, int radius, int neighbors) {
 
 // Calculates the Original Local Binary Patterns.
 //
-//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
-//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
+//  patterns: Application to face recognition." IEEE Transactions on Pattern
+//  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
 inline void olbp(const Mat& src, Mat& dst) {
     switch (src.type()) {
@@ -129,8 +130,9 @@ inline void olbp(const Mat& src, Mat& dst) {
 
 // Calculates the Extended Local Binary Patterns.
 //
-//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
-//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
+//  patterns: Application to face recognition." IEEE Transactions on Pattern
+//  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
 inline void elbp(const Mat& src, Mat& dst, int radius=1, int neighbors=8) {
     switch (src.type()) {
@@ -168,8 +170,9 @@ inline void varlbp(const Mat& src, Mat& dst, int radius=1, int neighbors=8) {
 // TODO Test, Test, Test!
 // TODO Optimize, Optimize, Optimize!
 //
-//  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
-//  Local Binary Patterns. Computer Vision - ECCV 2004 (2004), 469–481.
+//  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
+//  patterns: Application to face recognition." IEEE Transactions on Pattern
+//  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
 inline Mat spatial_histogram(const Mat& src, int numPatterns, int grid_x=8, int grid_y=8, bool normed=true) {
     // calculate LBP patch size
@@ -181,19 +184,17 @@ inline Mat spatial_histogram(const Mat& src, int numPatterns, int grid_x=8, int 
     if(src.empty())
         return result.reshape(1,1);
     // initial result_row
-    int c = 0;
+    int resultRowIdx = 0;
     // iterate through grid
     for(int i = 0; i < grid_y; i++) {
         for(int j = 0; j < grid_x; j++) {
-            // get the matrix for current cell
-            Mat src_cell = Mat(src, Range(i*height, (i+1)*height), Range(j*width,(j+1)*width));
-            // calculate the cell histogramm
+            Mat src_cell = Mat(src, Range(i*height,(i+1)*height), Range(j*width,(j+1)*width));
             Mat cell_hist = histc(src_cell, 0, (numPatterns-1), true);
             // copy to the result matrix
-            Mat result_row = result.row(c);
+            Mat result_row = result.row(resultRowIdx);
             cell_hist.reshape(1,1).convertTo(result_row, CV_32FC1);
             // increase row count in result matrix
-            c++;
+            resultRowIdx++;
         }
     }
     // return result as reshaped feature vector
