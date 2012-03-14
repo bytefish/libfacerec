@@ -27,6 +27,8 @@ TEST(HelperTest, checkArgsort) {
     expected_ascending.push_back(0);
     expected_ascending.push_back(2);
 
+    Mat x = cv::argsort(mNotSorted, true);
+
     vector<int> actual_ascending = cv::argsort(mNotSorted, true);
     vector<int> actual_descending = cv::argsort(mNotSorted, false);
 
@@ -205,5 +207,56 @@ TEST(HelperTest, checkReadWriteIntegerList) {
         ASSERT_EQ(IntList0[i], IntList1[i]);
     for(int i=0;i < MatList0.size(); i++)
         ASSERT_TRUE(isEqual(MatList0[i], MatList1[i]));
+}
 
+
+//------------------------------------------------------------------------------
+// cv::histc
+//------------------------------------------------------------------------------
+TEST(HelperTest, checkHistogramEmpty) {
+    Mat mEmpty = Mat_<int>();
+
+    Mat expected = (Mat_<float>(1,4) << 0, 0, 0, 0);
+    Mat actual = histc(mEmpty, 0, 3, false);
+
+    cout << actual << endl;
+    ASSERT_TRUE(isEqual(expected, actual));
+}
+
+TEST(HelperTest, checkHistogramIntMat) {
+    Mat mData = (Mat_<int>(2,2) << 1, 1, 2, 3);
+
+    Mat expected = (Mat_<float>(1,4) << 0, 2, 1, 1);
+    Mat actual = histc(mData, 0, 3, false);
+
+    ASSERT_TRUE(isEqual(expected, actual));
+}
+
+TEST(HelperTest, checkHistogramNegativeValues) {
+    Mat mData = (Mat_<int>(2,2) << -1, -1, 0, 1);
+
+    Mat expected = (Mat_<float>(1,4) << 2, 1, 1, 0);
+    Mat actual = histc(mData, -1, 2, false);
+
+    ASSERT_TRUE(isEqual(expected, actual));
+
+}
+
+TEST(HelperTest, checkHistogramTypes) {
+    Mat mData = (Mat_<unsigned char>(2,2) << 1, 1, 2, 3);
+
+    Mat expected = (Mat_<float>(1,4) << 0, 2, 1, 1);
+
+    ASSERT_TRUE(isEqual(expected, histc(Mat_<char>(mData), 0, 3, false)));
+    ASSERT_TRUE(isEqual(expected, histc(Mat_<uchar>(mData), 0, 3, false)));
+    ASSERT_TRUE(isEqual(expected, histc(Mat_<short>(mData), 0, 3, false)));
+    ASSERT_TRUE(isEqual(expected, histc(Mat_<ushort>(mData), 0, 3, false)));
+    ASSERT_TRUE(isEqual(expected, histc(Mat_<int>(mData), 0, 3, false)));
+    ASSERT_TRUE(isEqual(expected, histc(Mat_<float>(mData), 0, 3, false)));
+}
+
+TEST(HelperTest, checkHistogramDoubleMat) {
+    Mat mData = (Mat_<double>(2,2) << 1, 1, 2, 3);
+
+    ASSERT_ANY_THROW(histc(mData, 0, 3, false));
 }

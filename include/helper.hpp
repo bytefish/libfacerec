@@ -48,19 +48,20 @@ namespace cv {
 namespace impl {
 
 // TODO Tests for histc.
-template <typename _Tp>
-void histc(const Mat& src, Mat& hist, int minVal=0, int maxVal=255, bool normed=false) {
+inline Mat histc(const Mat& src, int minVal=0, int maxVal=255, bool normed=false) {
+    Mat result;
     // Establish the number of bins.
     int histSize = maxVal-minVal+1;
     // Set the ranges.
     float range[] = { minVal, maxVal } ;
     const float* histRange = { range };
     // calc histogram
-    calcHist(&src, 1, 0, Mat(), hist, 1, &histSize, &histRange, true, false);
+    calcHist(&src, 1, 0, Mat(), result, 1, &histSize, &histRange, true, false);
     // normalize
     if(normed) {
-        hist /= src.total();
+        result /= src.total();
     }
+    return result.reshape(1,1);
 }
 
 template<typename _Tp>
@@ -97,53 +98,16 @@ inline bool isSymmetric(InputArray src, double eps) {
     return true;
 }
 
-
-//! ascending sort operator
-template<typename _Tp>
-class SortByFirstAscending_ {
-public:
-    bool operator()(const std::pair<_Tp, int>& left,
-            const std::pair<_Tp, int>& right) {
-        return left.first < right.first;
-    }
-};
-
-//! descending sort operator
-template<typename _Tp>
-class SortByFirstDescending_ {
-public:
-    bool operator()(const std::pair<_Tp, int>& left,
-            const std::pair<_Tp, int>& right) {
-        return left.first > right.first;
-    }
-};
-
-template<typename _Tp>
-vector<int> argsort_(const Mat& src, bool asc) {
-    if (src.rows != 1 && src.cols != 1)
-        CV_Error(CV_StsBadArg, "Argsort only sorts 1D Vectors");
-    vector<pair<_Tp, int> > val_indices;
-    for (int i = 0; i < src.rows; i++) {
-        for (int j = 0; j < src.cols; j++) {
-            val_indices.push_back(make_pair(src.at<_Tp> (i, j), val_indices.size()));
-        }
-    }
-
-    if (asc) {
-        std::sort(val_indices.begin(), val_indices.end(), SortByFirstAscending_<_Tp> ());
-    } else {
-        std::sort(val_indices.begin(), val_indices.end(), SortByFirstDescending_<_Tp> ());
-    }
-
-    vector<int> indices;
-    for (int i = 0; i < val_indices.size(); i++)
-        indices.push_back(val_indices[i].second);
-    return indices;
 }
 
-}
-
-// Checks if a given matrix is symmetric.
+// Checks if a given matrix is symmetric, with an epsilon for floating point
+// matrices (1E-16 by default).
+//
+//      Mat mSymmetric = (Mat_<double>(2,2) << 1, 2, 2, 1);
+//      Mat mNonSymmetric = (Mat_<double>(2,2) << 1, 2, 3, 4);
+//      bool symmetric = isSymmetric(mSymmetric); // true
+//      bool not_symmetric = isSymmetric(mNonSymmetric); // false
+//
 inline bool isSymmetric(InputArray src, double eps = 1E-16) {
     Mat m = src.getMat();
     switch (m.type()) {
@@ -174,51 +138,48 @@ inline bool isSymmetric(InputArray src, double eps = 1E-16) {
 }
 
 // Sorts a 1D Matrix by given sort order and returns the sorted indices.
-inline vector<int> argsort(const Mat& src, bool sortAscending = true) {
-    switch (src.type()) {
-    case CV_8SC1:
-        return impl::argsort_<char>(src, sortAscending);
-        break;
-    case CV_8UC1:
-        return impl::argsort_<unsigned char>(src, sortAscending);
-        break;
-    case CV_16SC1:
-        return impl::argsort_<short>(src, sortAscending);
-        break;
-    case CV_16UC1:
-        return impl::argsort_<unsigned short>(src, sortAscending);
-        break;
-    case CV_32SC1:
-        return impl::argsort_<int>(src, sortAscending);
-        break;
-    case CV_32FC1:
-        return impl::argsort_<float>(src, sortAscending);
-        break;
-    case CV_64FC1:
-        return impl::argsort_<double>(src, sortAscending);
-        break;
-    }
+// This is just a wrapper to simplify cv::sortIdx:
+//
+//      Mat mNotSorted = (Mat_<double>(1,4) << 1.0, 0.0, 3.0, -1.0);
+//      // to sort the vector use
+//      Mat sorted_indices = cv::argsort(mNotSorted, true);
+//      // make a conversion to vector<int>
+//      vector<int> sorted_indices = cv::argsort(mNotSorted, true);
+//
+inline Mat argsort(const Mat& src, bool ascending = true) {
+    if (src.rows != 1 && src.cols != 1)
+        CV_Error(CV_StsBadArg, "cv::argsort only sorts 1D matrices.");
+    int flags = CV_SORT_EVERY_ROW+(ascending ? CV_SORT_ASCENDING : CV_SORT_DESCENDING);
+    Mat sorted_indices;
+    cv::sortIdx(src.reshape(1,1),sorted_indices,flags);
+    return sorted_indices;
 }
 
 // Calculates a histogram for a given integral matrix. The minimum inclusive
 // value (minVal) and maximum inclusive value can be specified (optionally normed).
-inline void histc(const Mat& src, Mat& hist, int minVal=0, int maxVal=255, bool normed=false) {
+inline Mat histc(const Mat& src, int minVal=0, int maxVal=255, bool normed=false) {
     switch (src.type()) {
     case CV_8SC1:
-        impl::histc<char>(src, hist, minVal, maxVal, normed); break;
+        return impl::histc(Mat_<float>(src), minVal, maxVal, normed);
+        break;
     case CV_8UC1:
-        impl::histc<unsigned char>(src, hist, minVal, maxVal, normed); break;
+        return impl::histc(src, minVal, maxVal, normed);
+        break;
     case CV_16SC1:
-        impl::histc<short>(src, hist, minVal, maxVal, normed); break;
+        return impl::histc(Mat_<float>(src), minVal, maxVal, normed);
+        break;
     case CV_16UC1:
-        impl::histc<unsigned short>(src, hist, minVal, maxVal, normed); break;
+        return impl::histc(src, minVal, maxVal, normed);
+        break;
     case CV_32SC1:
-        // must be done because cv::calcHist doesn't work for int.
-        impl::histc<float>(Mat_<float>(src), hist, minVal, maxVal, normed); break;
+        // must be done because cv::calcHist doesn't work for int (why?)
+        return impl::histc(Mat_<float>(src), minVal, maxVal, normed);
+        break;
     case CV_32FC1:
-        impl::histc<float>(src, hist, minVal, maxVal, normed); break;
+        return impl::histc(src, minVal, maxVal, normed);
+        break;
     default:
-        CV_Error(CV_StsUnmatchedFormats, "Not implemented."); break;
+        CV_Error(CV_StsUnmatchedFormats, "This type is not implemented yet."); break;
     }
 }
 

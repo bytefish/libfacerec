@@ -188,8 +188,7 @@ inline Mat spatial_histogram(const Mat& src, int numPatterns, int grid_x=8, int 
             // get the matrix for current cell
             Mat src_cell = Mat(src, Range(i*height, (i+1)*height), Range(j*width,(j+1)*width));
             // calculate the cell histogramm
-            Mat cell_hist;
-            histc(src_cell, cell_hist,0, (numPatterns-1), true);
+            Mat cell_hist = histc(src_cell, 0, (numPatterns-1), true);
             // copy to the result matrix
             Mat result_row = result.row(c);
             cell_hist.reshape(1,1).convertTo(result_row, CV_32FC1);
