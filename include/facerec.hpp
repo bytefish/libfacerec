@@ -304,6 +304,8 @@ public:
 
 // Face Recognition based on Local Binary Patterns.
 //
+// TODO Allow to change the distance metric.
+// TODO Allow to change LBP computation (Extended LBP used right now).
 // TODO Optimize, Optimize, Optimize!
 //
 //  Ahonen, T., Hadid, A., and Pietikainen, M. "Face Recognition with
@@ -316,6 +318,7 @@ private:
     int _grid_y;
     int _radius;
     int _neighbors;
+
     vector<Mat> _histograms;
     vector<int> _labels;
 
@@ -323,16 +326,22 @@ public:
     using Serializable::save;
     using Serializable::load;
 
-    // Initializes an empty Fisherfaces model.
+    // Initializes this LBPH Model. The current implementation is rather fixed
+    // as it uses the Extended Local Binary Patterns per default.
+    //
+    // radius, neighbors are used in the local binary patterns creation.
+    // grid_x, grid_y control the grid size of the spatial histograms.
     LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8) :
         _grid_x(grid_x),
         _grid_y(grid_y),
         _radius(radius),
         _neighbors(neighbors) {}
 
-    // Initializes and computes a Fisherfaces model with images in src and
-    // corresponding labels in labels. num_components will be kept for
-    // classification.
+    // Initializes and computes this LBPH Model. The current implementation is
+    // rather fixed as it uses the Extended Local Binary Patterns per default.
+    //
+    // (radius=1), (neighbors=8) are used in the local binary patterns creation.
+    // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
     LBPH(const vector<Mat>& src,
             const vector<int>& labels,
             int radius=1, int neighbors=8,
@@ -346,8 +355,8 @@ public:
 
     ~LBPH() { }
 
-    // Computes a LBPH model with images in src and corresponding labels
-    // in labels.
+    // Computes a LBPH model with images in src and
+    // corresponding labels in labels.
     void train(const vector<Mat>& src, const vector<int>& labels) {
         assert(src.size() == labels.size());
         // store given labels
@@ -358,10 +367,10 @@ public:
             Mat lbp_image = elbp(src[sampleIdx], _radius, _neighbors);
             // get spatial histogram from this lbp image
             Mat p = spatial_histogram(
-                    lbp_image,
-                    std::pow(2, _neighbors),
-                    _grid_x,
-                    _grid_y,
+                    lbp_image, /* lbp_image */
+                    std::pow(2, _neighbors), /* number of possible patterns */
+                    _grid_x, /* grid size x */
+                    _grid_y, /* grid size y */
                     true);
             // add to templates
             _histograms.push_back(p);
@@ -371,13 +380,13 @@ public:
     // Predicts the label of a query image in src.
     int predict(const Mat& src) {
         // get the spatial histogram from input image
+        Mat lbp_image = elbp(src, _radius, _neighbors);
         Mat query = spatial_histogram(
-                elbp(src, _radius, _neighbors), /* lbp_image */
+                lbp_image, /* lbp_image */
                 std::pow(2, _neighbors), /* number of possible patterns */
                 _grid_x, /* grid size x */
                 _grid_y, /* grid size y */
-                true /* normed histograms */
-                );
+                true /* normed histograms */);
         // find 1-nearest neighbor
         double minDist = numeric_limits<double>::max();
         int minClass = -1;
