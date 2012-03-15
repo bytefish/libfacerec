@@ -1,6 +1,6 @@
 # Warning
 
-This library is still **Work in Progress**. No bug reports in these early development stages please. Expect major interface changes coming.
+This library is still **Work in Progress**. No bug reports in these early development stages please. Expect major interface changes coming. 
 
 # Description
 
