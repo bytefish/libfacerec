@@ -116,7 +116,7 @@ TEST(HelperTest, checkSymmetryAllTypes) {
 }
 
 //------------------------------------------------------------------------------
-// cv::sortByColumn
+// cv::sortMatrixColumnsByIndices
 //------------------------------------------------------------------------------
 TEST(HelperTest, checkSortByColumn) {
     // {{1.0, 2.0},
@@ -131,13 +131,13 @@ TEST(HelperTest, checkSortByColumn) {
     //  {4.0, 3.0}};
     Mat expected = (Mat_<double>(2,2) << 2.0, 1.0, 4.0, 3.0);
 
-    Mat actual = cv::sortMatrixByColumn(mUnsorted, indices);
+    Mat actual = cv::sortMatrixColumnsByIndices(mUnsorted, indices);
 
     ASSERT_TRUE(isEqual(expected, actual));
 }
 
 //------------------------------------------------------------------------------
-// cv::sortByColumn
+// cv::sortMatrixRowsByIndices
 //------------------------------------------------------------------------------
 TEST(HelperTest, checkSortByRow) {
     // {{1.0, 2.0},
@@ -151,7 +151,7 @@ TEST(HelperTest, checkSortByRow) {
     //  {1.0, 2.0}};
     Mat expected = (Mat_<double>(2,2) << 3.0, 4.0, 1.0, 2.0);
 
-    Mat actual = cv::sortMatrixByRow(mUnsorted, indices);
+    Mat actual = cv::sortMatrixRowsByIndices(mUnsorted, indices);
 
     ASSERT_TRUE(isEqual(expected, actual));
 }

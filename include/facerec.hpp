@@ -63,12 +63,12 @@ public:
     virtual void save(FileStorage& fs) const = 0;
 
     // Deserializes this object from a given cv::FileStorage.
-    virtual void load(const FileStorage& node) = 0;
+    virtual void load(const FileStorage& fs) = 0;
 };
 
 // Turk, M., and Pentland, A. "Eigenfaces for recognition.". Journal of
 // Cognitive Neuroscience 3 (1991), 71–86.
-class Eigenfaces: public FaceRecognizer {
+class Eigenfaces : public FaceRecognizer {
 
 private:
     int _num_components;

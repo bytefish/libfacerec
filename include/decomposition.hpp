@@ -19,7 +19,6 @@
 #define __DECOMPOSITION_HPP__
 
 #include "opencv2/opencv.hpp"
-#include "helper.hpp"
 
 using namespace cv;
 using namespace std;
@@ -695,32 +694,7 @@ public:
     // given in src. This function is a port of the EigenvalueSolver in JAMA,
     // which has been released to public domain by The MathWorks and the
     // National Institute of Standards and Technology (NIST).
-    void compute(InputArray src) {
-        if(isSymmetric(src)) {
-            // Fall back to OpenCV for a symmetric matrix!
-            cv::eigen(src, _eigenvalues, _eigenvectors);
-        } else {
-            Mat tmp;
-            // Convert the given input matrix to double. Is there any way to
-            // prevent allocating the temporary memory? Only used for copying
-            // into working memory and deallocated after.
-            src.getMat().convertTo(tmp, CV_64FC1);
-            // Get dimension of the matrix.
-            this->n = tmp.cols;
-            // Allocate the matrix data to work on.
-            this->H = alloc_2d<double> (n, n);
-            // Now safely copy the data.
-            for (int i = 0; i < tmp.rows; i++) {
-                for (int j = 0; j < tmp.cols; j++) {
-                    this->H[i][j] = tmp.at<double>(i, j);
-                }
-            }
-            // Deallocates the temporary matrix before computing.
-            tmp.release();
-            // Performs the eigenvalue decomposition of H.
-            compute();
-        }
-    }
+    void compute(InputArray src);
 
     ~EigenvalueDecomposition() {}
 
