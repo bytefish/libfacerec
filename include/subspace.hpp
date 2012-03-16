@@ -44,23 +44,22 @@ private:
     Mat _eigenvectors;
     Mat _eigenvalues;
 
+    void lda(InputArray src, InputArray labels);
+
 public:
 
     // Initializes a LDA with num_components (default 0) and specifies how
     // samples are aligned (default dataAsRow=true).
-    LDA(int num_components = 0, bool dataAsRow = true) :
-        _num_components(num_components),
-        _dataAsRow(dataAsRow) {};
+    LDA(int num_components = 0) :
+        _num_components(num_components) {};
 
     // Initializes and performs a Discriminant Analysis with Fisher's
     // Optimization Criterion on given data in src and corresponding labels
     // in labels. If 0 (or less) number of components are given, they are
     // automatically determined for given data in computation.
     LDA(const Mat& src, vector<int> labels,
-            int num_components = 0,
-            bool dataAsRow = true) :
-                _num_components(num_components),
-                _dataAsRow(dataAsRow)
+            int num_components = 0) :
+                _num_components(num_components)
     {
         this->compute(src, labels); //! compute eigenvectors and eigenvalues
     }
@@ -69,11 +68,9 @@ public:
     // Optimization Criterion on given data in src and corresponding labels
     // in labels. If 0 (or less) number of components are given, they are
     // automatically determined for given data in computation.
-    LDA(const vector<Mat>& src, vector<int> labels,
-            int num_components = 0,
-            bool dataAsRow = true) :
-                _num_components(num_components),
-                _dataAsRow(dataAsRow)
+    LDA(InputArray src, InputArray labels,
+            int num_components = 0) :
+                _num_components(num_components)
     {
         this->compute(src, labels); //! compute eigenvectors and eigenvalues
     }
@@ -93,17 +90,14 @@ public:
     // Destructor.
     ~LDA() {}
 
-    //! compute the discriminants for data in src and labels
-    void compute(const Mat& src, vector<int> labels);
-
-    // Computes the discriminants for data in src and corresponding labels in labels.
-    void compute(const vector<Mat>& src, const vector<int>& labels);
+    //! Compute the discriminants for data in src and labels.
+    void compute(InputArray src, InputArray labels);
 
     // Projects samples into the LDA subspace.
-    Mat project(const Mat& src);
+    Mat project(InputArray src);
 
     // Reconstructs projections from the LDA subspace.
-    Mat reconstruct(const Mat& src);
+    Mat reconstruct(InputArray src);
 
     // Returns the eigenvectors of this LDA.
     Mat eigenvectors() const { return _eigenvectors; };

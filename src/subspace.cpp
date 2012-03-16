@@ -51,6 +51,7 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
     return X;
 }
 
+
 //------------------------------------------------------------------------------
 // Linear Discriminant Analysis implementation
 //------------------------------------------------------------------------------
@@ -87,14 +88,14 @@ void cv::subspace::LDA::load(const FileStorage& fs) {
     fs["eigenvectors"] >> _eigenvectors;
 }
 
-//! compute the discriminants for data in src and labels
-void cv::subspace::LDA::compute(const Mat& src, vector<int> labels) {
-    if (src.channels() != 1)
-        CV_Error(CV_StsBadArg, "Only single channel matrices allowed.");
+void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
+    // get data
+    Mat src = _src.getMat();
+    vector<int> labels = _lbls.getMat();
     // turn into row sampled matrix
-    Mat data = _dataAsRow ? src.clone() : transpose(src);
-    // ensures internal data is double
-    data.convertTo(data, CV_64FC1);
+    Mat data;
+    // ensure working matrix is double precision
+    src.convertTo(data, CV_64FC1);
     // maps the labels, so they're ascending: [0,1,...,C]
     vector<int> mapped_labels(labels.size());
     vector<int> num2label = remove_dups(labels);
@@ -113,9 +114,9 @@ void cv::subspace::LDA::compute(const Mat& src, vector<int> labels) {
         CV_Error(CV_StsBadArg, "Error: The number of samples must equal the number of labels.");
     // warn if within-classes scatter matrix becomes singular
     if (N < D)
-        cout
-                << "Warning: Less observations than feature dimension given! Computation will probably fail."
-                << endl;
+        cout << "Warning: Less observations than feature dimension given!"
+        << "Computation will probably fail."
+        << endl;
     // clip number of components to be a valid number
     if ((_num_components <= 0) || (_num_components > (C - 1)))
         _num_components = (C - 1);
@@ -180,17 +181,26 @@ void cv::subspace::LDA::compute(const Mat& src, vector<int> labels) {
     _eigenvectors = Mat(_eigenvectors, Range::all(), Range(0, _num_components));
 }
 
-// Computes the discriminants for data in src and corresponding labels in labels.
-void cv::subspace::LDA::compute(const vector<Mat>& src, const vector<int>& labels) {
-   compute(_dataAsRow ? asRowMatrix(src, CV_64FC1) : asColumnMatrix(src, CV_64FC1), labels);
+void cv::subspace::LDA::compute(InputArray _src, InputArray _lbls) {
+    switch(_src.kind()) {
+    case _InputArray::STD_VECTOR_MAT:
+        lda(asRowMatrix(_src, CV_64FC1), _lbls);
+        break;
+    case _InputArray::MAT:
+        lda(_src.getMat(), _lbls);
+        break;
+    default:
+        CV_Error(CV_StsNotImplemented, "This data type is not supported by cv::subspace::LDA::compute.");
+        break;
+    }
 }
 
 // Projects samples into the LDA subspace.
-Mat cv::subspace::LDA::project(const Mat& src) {
+Mat cv::subspace::LDA::project(InputArray src) {
    return cv::subspace::project(_eigenvectors, Mat(), _dataAsRow ? src : transpose(src));
 }
 
 // Reconstructs projections from the LDA subspace.
-Mat cv::subspace::LDA::reconstruct(const Mat& src) {
+Mat cv::subspace::LDA::reconstruct(InputArray src) {
    return cv::subspace::reconstruct(_eigenvectors, Mat(), _dataAsRow ? src : transpose(src));
 }

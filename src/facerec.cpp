@@ -43,6 +43,7 @@ void cv::FaceRecognizer::load(const string& filename) {
 // cv::Eigenfaces
 //------------------------------------------------------------------------------
 void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
+    // assert type
     if(_lbls.getMat().type() != CV_32SC1)
         CV_Error(CV_StsUnsupportedFormat, "Labels must be given as integer (CV_32SC1).");
     // get labels
@@ -219,15 +220,15 @@ void cv::LBPH::save(FileStorage& fs) const {
 
 
 void cv::LBPH::train(InputArray _src, InputArray _lbls) {
-    if(_lbls.getMat().type() != CV_32SC1)
+    if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR)
         CV_Error(CV_StsUnsupportedFormat, "cv::LBPH::train expects InputArray::STD_VECTOR_MAT or _InputArray::STD_VECTOR_VECTOR.");
     // get the vector of matrices
     vector<Mat> src;
     _src.getMatVector(src);
     // turn the label matrix into a vector
     vector<int> labels = _lbls.getMat();
-
-    assert(src.size() == labels.size());
+    if(labels.size() != src.size())
+        CV_Error(CV_StsUnsupportedFormat, "The number of labels must equal the number of samples.");
     // store given labels
     _labels = labels;
     // store the spatial histograms of the original data

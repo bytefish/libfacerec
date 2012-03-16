@@ -47,15 +47,15 @@ namespace cv {
             virtual void init(int n) = 0;
 
             // Interpolates from a base colormap.
-            static Mat linear_colormap(const Mat& X,
-                    const Mat& r, const Mat& g, const Mat& b,
+            static Mat linear_colormap(InputArray X,
+                    InputArray r, InputArray g, InputArray b,
                     int n) {
                 return linear_colormap(X,r,g,b,linspace(0,1,n));
             }
 
             // Interpolates from a base colormap.
-            static Mat linear_colormap(const Mat& X,
-                    const Mat& r, const Mat& g, const Mat& b,
+            static Mat linear_colormap(InputArray X,
+                    InputArray r, InputArray g, InputArray b,
                     float begin, float end, float n) {
                 return linear_colormap(X,r,g,b,linspace(begin,end,n));
             }
@@ -428,27 +428,17 @@ namespace cv {
     //
     //     cv::imwrite("image.png", img, cv::colormap::Jet());
     //
-    inline void imwrite(const string& filename, InputArray img,
+    void imwrite(const string& filename, InputArray img,
             const colormap::ColorMap& cm,
-            const vector<int>& params = vector<int>()) {
-        Mat tmp = img.getMat().clone();
-        tmp = cm(tmp);
-        tmp.convertTo(tmp, CV_8UC3, 255.);
-        imwrite(filename, tmp, params);
-    }
+            const vector<int>& params = vector<int>());
 
     // Provides a cv::imshow wrapper for convenient use with a colormap,
     // so you can write
     //
     //     cv::imwshow("image", img, cv::colormap::Jet());
     //
-    inline void imshow(const string& winname, InputArray img,
-            const colormap::ColorMap& cm) {
-        Mat tmp = img.getMat().clone();
-        tmp = cm(tmp);
-        tmp.convertTo(tmp, CV_8UC3, 255.);
-        imshow(winname, tmp);
-    }
+    void imshow(const string& winname, InputArray img,
+            const colormap::ColorMap& cm);
 
 }
 

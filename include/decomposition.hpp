@@ -40,6 +40,8 @@ using namespace std;
  *
  */
 
+namespace cv {
+
 class EigenvalueDecomposition {
 private:
 
@@ -97,7 +99,7 @@ private:
 
     void cdiv(double xr, double xi, double yr, double yi) {
         double r, d;
-        if (abs(yr) > abs(yi)) {
+        if (std::abs(yr) > std::abs(yi)) {
             r = yi / yr;
             d = yr + r * yi;
             cdivr = (xr + r * xi) / d;
@@ -137,7 +139,7 @@ private:
                 e[i] = 0.0;
             }
             for (int j = max(i - 1, 0); j < nn; j++) {
-                norm = norm + abs(H[i][j]);
+                norm = norm + std::abs(H[i][j]);
             }
         }
 
@@ -148,11 +150,11 @@ private:
             // Look for single small sub-diagonal element
             int l = n;
             while (l > low) {
-                s = abs(H[l - 1][l - 1]) + abs(H[l][l]);
+                s = std::abs(H[l - 1][l - 1]) + std::abs(H[l][l]);
                 if (s == 0.0) {
                     s = norm;
                 }
-                if (abs(H[l][l - 1]) < eps * s) {
+                if (std::abs(H[l][l - 1]) < eps * s) {
                     break;
                 }
                 l--;
@@ -174,7 +176,7 @@ private:
                 w = H[n][n - 1] * H[n - 1][n];
                 p = (H[n - 1][n - 1] - H[n][n]) / 2.0;
                 q = p * p + w;
-                z = sqrt(abs(q));
+                z = sqrt(std::abs(q));
                 H[n][n] = H[n][n] + exshift;
                 H[n - 1][n - 1] = H[n - 1][n - 1] + exshift;
                 x = H[n][n];
@@ -195,7 +197,7 @@ private:
                     e[n - 1] = 0.0;
                     e[n] = 0.0;
                     x = H[n][n - 1];
-                    s = abs(x) + abs(z);
+                    s = std::abs(x) + std::abs(z);
                     p = x / s;
                     q = z / s;
                     r = sqrt(p * p + q * q);
@@ -258,7 +260,7 @@ private:
                     for (int i = low; i <= n; i++) {
                         H[i][i] -= x;
                     }
-                    s = abs(H[n][n - 1]) + abs(H[n - 1][n - 2]);
+                    s = std::abs(H[n][n - 1]) + std::abs(H[n - 1][n - 2]);
                     x = y = 0.75 * s;
                     w = -0.4375 * s * s;
                 }
@@ -293,15 +295,15 @@ private:
                     p = (r * s - w) / H[m + 1][m] + H[m][m + 1];
                     q = H[m + 1][m + 1] - z - r - s;
                     r = H[m + 2][m + 1];
-                    s = abs(p) + abs(q) + abs(r);
+                    s = std::abs(p) + std::abs(q) + std::abs(r);
                     p = p / s;
                     q = q / s;
                     r = r / s;
                     if (m == l) {
                         break;
                     }
-                    if (abs(H[m][m - 1]) * (abs(q) + abs(r)) < eps * (abs(p)
-                            * (abs(H[m - 1][m - 1]) + abs(z) + abs(
+                    if (std::abs(H[m][m - 1]) * (std::abs(q) + std::abs(r)) < eps * (std::abs(p)
+                            * (std::abs(H[m - 1][m - 1]) + std::abs(z) + std::abs(
                                     H[m + 1][m + 1])))) {
                         break;
                     }
@@ -323,7 +325,7 @@ private:
                         p = H[k][k - 1];
                         q = H[k + 1][k - 1];
                         r = (notlast ? H[k + 2][k - 1] : 0.0);
-                        x = abs(p) + abs(q) + abs(r);
+                        x = std::abs(p) + std::abs(q) + std::abs(r);
                         if (x != 0.0) {
                             p = p / x;
                             q = q / x;
@@ -431,7 +433,7 @@ private:
                             q = (d[i] - p) * (d[i] - p) + e[i] * e[i];
                             t = (x * s - z * r) / q;
                             H[i][n] = t;
-                            if (abs(x) > abs(z)) {
+                            if (std::abs(x) > std::abs(z)) {
                                 H[i + 1][n] = (-r - w * t) / x;
                             } else {
                                 H[i + 1][n] = (-s - y * t) / z;
@@ -440,7 +442,7 @@ private:
 
                         // Overflow control
 
-                        t = abs(H[i][n]);
+                        t = std::abs(H[i][n]);
                         if ((eps * t) * t > 1) {
                             for (int j = i; j <= n; j++) {
                                 H[j][n] = H[j][n] / t;
@@ -456,7 +458,7 @@ private:
 
                 // Last vector component imaginary so matrix is triangular
 
-                if (abs(H[n][n - 1]) > abs(H[n - 1][n])) {
+                if (std::abs(H[n][n - 1]) > std::abs(H[n - 1][n])) {
                     H[n - 1][n - 1] = q / H[n][n - 1];
                     H[n - 1][n] = -(H[n][n] - p) / H[n][n - 1];
                 } else {
@@ -495,14 +497,14 @@ private:
                             vr = (d[i] - p) * (d[i] - p) + e[i] * e[i] - q * q;
                             vi = (d[i] - p) * 2.0 * q;
                             if (vr == 0.0 & vi == 0.0) {
-                                vr = eps * norm * (abs(w) + abs(q) + abs(x)
-                                        + abs(y) + abs(z));
+                                vr = eps * norm * (std::abs(w) + std::abs(q) + std::abs(x)
+                                        + std::abs(y) + std::abs(z));
                             }
                             cdiv(x * r - z * ra + q * sa,
                                     x * s - z * sa - q * ra, vr, vi);
                             H[i][n - 1] = cdivr;
                             H[i][n] = cdivi;
-                            if (abs(x) > (abs(z) + abs(q))) {
+                            if (std::abs(x) > (std::abs(z) + std::abs(q))) {
                                 H[i + 1][n - 1] = (-ra - w * H[i][n - 1] + q
                                         * H[i][n]) / x;
                                 H[i + 1][n] = (-sa - w * H[i][n] - q * H[i][n
@@ -517,7 +519,7 @@ private:
 
                         // Overflow control
 
-                        t = max(abs(H[i][n - 1]), abs(H[i][n]));
+                        t = max(std::abs(H[i][n - 1]), std::abs(H[i][n]));
                         if ((eps * t) * t > 1) {
                             for (int j = i; j <= n; j++) {
                                 H[j][n - 1] = H[j][n - 1] / t;
@@ -567,7 +569,7 @@ private:
 
             double scale = 0.0;
             for (int i = m; i <= high; i++) {
-                scale = scale + abs(H[i][m - 1]);
+                scale = scale + std::abs(H[i][m - 1]);
             }
             if (scale != 0.0) {
 
@@ -704,4 +706,5 @@ public:
     Mat eigenvectors() { return _eigenvectors; }
 };
 
+} // namespace
 #endif

@@ -24,7 +24,7 @@ Mat cv::colormap::ColorMap::operator()(InputArray _src) const {
     return src;
 }
 
-// Interpolates from a base colormap.
+
 Mat cv::colormap::ColorMap:: linear_colormap(InputArray X,
         InputArray r, InputArray g, InputArray b,
         InputArray xi) {
@@ -37,3 +37,25 @@ Mat cv::colormap::ColorMap:: linear_colormap(InputArray X,
     return lut;
 }
 
+//------------------------------------------------------------------------------
+// cv::imwrite
+//------------------------------------------------------------------------------
+void cv::imwrite(const string& filename, InputArray img,
+        const colormap::ColorMap& cm,
+        const vector<int>& params) {
+    Mat tmp = img.getMat().clone();
+    tmp = cm(tmp);
+    tmp.convertTo(tmp, CV_8UC3, 255.);
+    imwrite(filename, tmp, params);
+}
+
+//------------------------------------------------------------------------------
+// cv::imshow
+//------------------------------------------------------------------------------
+void cv::imshow(const string& winname, InputArray img,
+        const colormap::ColorMap& cm) {
+    Mat tmp = img.getMat().clone();
+    tmp = cm(tmp);
+    tmp.convertTo(tmp, CV_8UC3, 255.);
+    imshow(winname, tmp);
+}
