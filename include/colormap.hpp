@@ -31,9 +31,6 @@ namespace cv {
         protected:
             Mat _lut;
 
-        protected:
-            ColorMap() {}
-
         public:
 
             // Applies the colormap on a given image.
@@ -44,18 +41,7 @@ namespace cv {
             //
             // Throws an error for wrong-aligned lookup table, which must be
             // of size 256 in the latest OpenCV release (2.3.1).
-            Mat operator()(Mat src) const {
-                if(_lut.total() != 256)
-                    CV_Error(CV_StsAssert, "cv::LUT only supports tables of size 256.");
-                if(src.type() != CV_8UC1 && src.type() != CV_8UC3)
-                    return src;
-                // turn into grayscale
-                if(src.type() == CV_8UC3)
-                    cvtColor(src.clone(), src, CV_BGR2GRAY);
-                cvtColor(src.clone(), src, CV_GRAY2BGR);
-                LUT(src.clone(), _lut, src);
-                return src;
-            }
+            Mat operator()(InputArray src) const;
 
             // Setup base map to interpolate from.
             virtual void init(int n) = 0;
@@ -75,17 +61,9 @@ namespace cv {
             }
 
             // Interpolates from a base colormap.
-            static Mat linear_colormap(const Mat& X,
-                    const Mat& r, const Mat& g, const Mat& b,
-                    const Mat& xi) {
-                Mat lut;
-                Mat planes[] = {
-                        interp1(X, b, xi),
-                        interp1(X, g, xi),
-                        interp1(X, r, xi)};
-                merge(planes, 3, lut);
-                return lut;
-            }
+            static Mat linear_colormap(InputArray X,
+                    InputArray r, InputArray g, InputArray b,
+                    InputArray xi);
         };
 
         // Equals the GNU Octave colormap "autumn".

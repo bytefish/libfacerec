@@ -122,34 +122,16 @@ Mat asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha=1, double bet
 // Equivalent to GNU Octave/MATLAB function "interp1".
 Mat interp1(InputArray x, InputArray Y, InputArray xi);
 
-
 // Turns a given matrix into its grayscale representation.
-inline Mat toGrayscale(InputArray src, int dtype = CV_8UC1) {
-    Mat _src = src.getMat();
-    // only allow one channel
-    if(_src.channels() != 1)
-        CV_Error(CV_StsBadArg, "Only Matrices with one channel are supported");
-    // create and return normalized image
-    Mat dst;
-    cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
-    return dst;
-}
+Mat toGrayscale(InputArray src, int dtype = CV_8UC1);
 
 // Transposes a matrix.
-inline Mat transpose(const Mat& src) {
-    Mat dst;
-    transpose(src, dst);
-    return dst;
-}
+Mat transpose(InputArray src);
 
 // Converts an integer number to a string.
 //
 // Equivalent to GNU Octave/MATLAB function "num2str".
-inline string num2str(int num) {
-    stringstream ss;
-    ss << num;
-    return ss.str();
-}
+string num2str(int num);
 
 // Performs a linear interpolation of n equally-spaced sample between x0
 // (interpolation start) and x1 (interpolation end).

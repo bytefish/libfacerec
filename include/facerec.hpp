@@ -36,28 +36,16 @@ public:
     virtual ~FaceRecognizer() {}
 
     // Trains a FaceRecognizer.
-    virtual void train(const vector<Mat>& src, const vector<int>& labels) = 0;
+    virtual void train(InputArray src, InputArray labels) = 0;
 
     // Gets a prediction from a FaceRecognizer.
-    virtual int predict(const Mat& src) = 0;
+    virtual int predict(InputArray src) = 0;
 
     // Serializes this object to a given filename.
-    virtual void save(const string& filename) const {
-        FileStorage fs(filename, FileStorage::WRITE);
-        if (!fs.isOpened())
-            CV_Error(CV_StsError, "File can't be opened for writing!");
-        this->save(fs);
-        fs.release();
-    }
+    virtual void save(const string& filename) const;
 
     // Deserializes this object from a given filename.
-    virtual void load(const string& filename) {
-        FileStorage fs(filename, FileStorage::READ);
-        if (!fs.isOpened())
-            CV_Error(CV_StsError, "File can't be opened for writing!");
-        this->load(fs);
-        fs.release();
-    }
+    virtual void load(const string& filename);
 
     // Serializes this object to a given cv::FileStorage.
     virtual void save(FileStorage& fs) const = 0;
@@ -89,7 +77,7 @@ public:
     // Initializes and computes an Eigenfaces model with images in src and
     // corresponding labels in labels. num_components will be kept for
     // classification.
-    Eigenfaces(const vector<Mat>& src, const vector<int>& labels,
+    Eigenfaces(InputArray src, InputArray labels,
             int num_components = 0) :
         _num_components(num_components) {
         train(src, labels);
@@ -97,71 +85,16 @@ public:
 
     // Computes an Eigenfaces model with images in src and corresponding labels
     // in labels.
-    void train(const vector<Mat>& src, const vector<int>& labels) {
-        // observations in row
-        Mat data = asRowMatrix(src, CV_64FC1);
-        // number of samples
-        int n = data.rows;
-        // dimensionality of data
-        int d = data.cols;
-        // assert there are as much samples as labels
-        if(n != labels.size())
-            CV_Error(CV_StsBadArg, "The number of samples must equal the number of labels!");
-        // clip number of components to be valid
-        if((_num_components <= 0) || (_num_components > n))
-            _num_components = n;
-        // perform the PCA
-        PCA pca(data, Mat(), CV_PCA_DATA_AS_ROW, _num_components);
-        // copy the PCA results
-        _mean = pca.mean.reshape(1,1); // store the mean vector
-        _eigenvalues = pca.eigenvalues.clone(); // store the eigenvectors
-        _eigenvectors = transpose(pca.eigenvectors); // OpenCV stores the Eigenvectors by row (??)
-        _labels = vector<int>(labels); // store labels for projections
-        // save projections
-        for(int sampleIdx = 0; sampleIdx < data.rows; sampleIdx++) {
-            Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx));
-            this->_projections.push_back(p);
-        }
-    }
+    void train(InputArray src, InputArray labels);
 
     // Predicts the label of a query image in src.
-    int predict(const Mat& src) {
-        Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
-        double minDist = numeric_limits<double>::max();
-        int minClass = -1;
-        for(int sampleIdx = 0; sampleIdx < _projections.size(); sampleIdx++) {
-            double dist = norm(_projections[sampleIdx], q, NORM_L2);
-            if(dist < minDist) {
-                minDist = dist;
-                minClass = _labels[sampleIdx];
-            }
-        }
-        return minClass;
-    }
+    int predict(const InputArray src);
 
     // See cv::FaceRecognizer::load.
-    void load(const FileStorage& fs) {
-        //read matrices
-        fs["num_components"] >> _num_components;
-        fs["mean"] >> _mean;
-        fs["eigenvalues"] >> _eigenvalues;
-        fs["eigenvectors"] >> _eigenvectors;
-        // read sequences
-        readFileNodeList(fs["projections"], _projections);
-        readFileNodeList(fs["labels"], _labels);
-    }
+    void load(const FileStorage& fs);
 
     // See cv::FaceRecognizer::save.
-    void save(FileStorage& fs) const {
-        // write matrices
-        fs << "num_components" << _num_components;
-        fs << "mean" << _mean;
-        fs << "eigenvalues" << _eigenvalues;
-        fs << "eigenvectors" << _eigenvectors;
-        // write sequences
-        writeFileNodeList(fs, "projections", _projections);
-        writeFileNodeList(fs, "labels", _labels);
-    }
+    void save(FileStorage& fs) const;
 
     // Returns the eigenvectors of this PCA.
     Mat eigenvectors() const { return _eigenvectors; }
@@ -212,75 +145,16 @@ public:
 
     // Computes a Fisherfaces model with images in src and corresponding labels
     // in labels.
-    void train(const vector<Mat>& src, const vector<int>& labels) {
-        assert(src.size() == labels.size());
-        Mat data = asRowMatrix(src, CV_64FC1);
-        int N = data.rows; // number of samples
-        int D = data.cols; // dimension of samples
-        // compute the Fisherfaces
-        int C = remove_dups(labels).size(); // number of unique classes
-        // clip number of components to be a valid number
-        if((_num_components <= 0) || (_num_components > (C-1)))
-            _num_components = (C-1);
-        // perform a PCA and keep (N-C) components
-        PCA pca(data, Mat(), CV_PCA_DATA_AS_ROW, (N-C));
-        // project the data and perform a LDA on it
-        subspace::LDA lda(pca.project(data),labels, _num_components);
-        // store the total mean vector
-        _mean = pca.mean.reshape(1,1);
-        // store labels
-        _labels = labels;
-        // store the eigenvalues of the discriminants
-        lda.eigenvalues().convertTo(_eigenvalues, CV_64FC1);
-        // Now calculate the projection matrix as pca.eigenvectors * lda.eigenvectors.
-        // Note: OpenCV stores the eigenvectors by row, so we need to transpose it!
-        gemm(pca.eigenvectors, lda.eigenvectors(), 1.0, Mat(), 0.0, _eigenvectors, CV_GEMM_A_T);
-        // store the projections of the original data
-        for(int sampleIdx = 0; sampleIdx < data.rows; sampleIdx++) {
-            Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx));
-            _projections.push_back(p);
-        }
-    }
+    void train(InputArray src, InputArray labels);
 
     // Predicts the label of a query image in src.
-    int predict(const Mat& src) {
-        Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
-        // find 1-nearest neighbor
-        double minDist = numeric_limits<double>::max();
-        int minClass = -1;
-        for(int sampleIdx = 0; sampleIdx < _projections.size(); sampleIdx++) {
-            double dist = norm(_projections[sampleIdx], q, NORM_L2);
-            if(dist < minDist) {
-                minDist = dist;
-                minClass = _labels[sampleIdx];
-            }
-        }
-        return minClass;
-    }
+    int predict(InputArray src);
 
     // See cv::FaceRecognizer::load.
-    void load(const FileStorage& fs) {
-        //read matrices
-        fs["num_components"] >> _num_components;
-        fs["mean"] >> _mean;
-        fs["eigenvalues"] >> _eigenvalues;
-        fs["eigenvectors"] >> _eigenvectors;
-        // read sequences
-        readFileNodeList(fs["projections"], _projections);
-        readFileNodeList(fs["labels"], _labels);
-    }
+    virtual void load(const FileStorage& fs);
 
     // See cv::FaceRecognizer::save.
-    void save(FileStorage& fs) const {
-        // write matrices
-        fs << "num_components" << _num_components;
-        fs << "mean" << _mean;
-        fs << "eigenvalues" << _eigenvalues;
-        fs << "eigenvectors" << _eigenvectors;
-        // write sequences
-        writeFileNodeList(fs, "projections", _projections);
-        writeFileNodeList(fs, "labels", _labels);
-    }
+    virtual void save(FileStorage& fs) const;
 
     // Returns the eigenvectors of this Fisherfaces model.
     Mat eigenvectors() const { return _eigenvectors; }
@@ -351,70 +225,16 @@ public:
 
     // Computes a LBPH model with images in src and
     // corresponding labels in labels.
-    void train(const vector<Mat>& src, const vector<int>& labels) {
-        assert(src.size() == labels.size());
-        // store given labels
-        _labels = labels;
-        // store the spatial histograms of the original data
-        for(int sampleIdx = 0; sampleIdx < src.size(); sampleIdx++) {
-            // calculate lbp image
-            Mat lbp_image = elbp(src[sampleIdx], _radius, _neighbors);
-            // get spatial histogram from this lbp image
-            Mat p = spatial_histogram(
-                    lbp_image, /* lbp_image */
-                    static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors))), /* number of possible patterns */
-                    _grid_x, /* grid size x */
-                    _grid_y, /* grid size y */
-                    true);
-            // add to templates
-            _histograms.push_back(p);
-        }
-    }
+    void train(InputArray src, InputArray _lbls);
 
     // Predicts the label of a query image in src.
-    int predict(const Mat& src) {
-        // get the spatial histogram from input image
-        Mat lbp_image = elbp(src, _radius, _neighbors);
-        Mat query = spatial_histogram(
-                lbp_image, /* lbp_image */
-                static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors))), /* number of possible patterns */
-                _grid_x, /* grid size x */
-                _grid_y, /* grid size y */
-                true /* normed histograms */);
-        // find 1-nearest neighbor
-        double minDist = numeric_limits<double>::max();
-        int minClass = -1;
-        for(int sampleIdx = 0; sampleIdx < _histograms.size(); sampleIdx++) {
-            double dist = compareHist(_histograms[sampleIdx], query, CV_COMP_CHISQR);
-            if(dist < minDist) {
-                minDist = dist;
-                minClass = _labels[sampleIdx];
-            }
-        }
-        return minClass;
-    }
+    int predict(InputArray src);
 
     // See cv::FaceRecognizer::load.
-    void load(const FileStorage& fs) {
-        fs["radius"] >> _radius;
-        fs["neighbors"] >> _neighbors;
-        fs["grid_x"] >> _grid_x;
-        fs["grid_y"] >> _grid_y;
-        //read matrices
-        readFileNodeList(fs["histograms"], _histograms);
-        readFileNodeList(fs["labels"], _labels);
-    }
+    void load(const FileStorage& fs);
 
     // See cv::FaceRecognizer::save.
-    void save(FileStorage& fs) const {
-        fs << "radius" << _radius;
-        fs << "neighbors" << _neighbors;
-        fs << "grid_x" << _grid_x;
-        fs << "grid_y" << _grid_y;
-        // write matrices
-        writeFileNodeList(fs, "histograms", _histograms);
-        writeFileNodeList(fs, "labels", _labels);
-    }
+    void save(FileStorage& fs) const;
 
     // Getter functions.
     int neighbors() { return _neighbors; }

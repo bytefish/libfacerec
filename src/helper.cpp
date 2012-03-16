@@ -307,3 +307,36 @@ Mat cv::linspace(float x0, float x1, int n) {
         pts.at<float>(i,0) = x0+i*step;
     return pts;
 }
+
+//------------------------------------------------------------------------------
+// cv::toGrayscale
+//------------------------------------------------------------------------------
+Mat cv::toGrayscale(InputArray _src, int dtype) {
+    Mat src = _src.getMat();
+    // only allow one channel
+    if(src.channels() != 1)
+        CV_Error(CV_StsBadArg, "Only Matrices with one channel are supported");
+    // create and return normalized image
+    Mat dst;
+    cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+    return dst;
+}
+
+//------------------------------------------------------------------------------
+// cv::transpose
+//------------------------------------------------------------------------------
+Mat cv::transpose(InputArray _src) {
+    Mat src = _src.getMat();
+    Mat dst;
+    transpose(src, dst);
+    return dst;
+}
+
+//------------------------------------------------------------------------------
+// cv::num2str
+//------------------------------------------------------------------------------
+string cv::num2str(int num) {
+    stringstream ss;
+    ss << num;
+    return ss.str();
+}
