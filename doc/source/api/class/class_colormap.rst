@@ -1,3 +1,6 @@
+Working with ColorMaps
+======================
+
 .. highlight:: cpp
 
 imwrite
@@ -32,7 +35,7 @@ This makes applying a :ocv:class:`colormap::ColorMap` and storing the result as 
 See :ocv:func:`imshow` for the list of supported formats and flags description.
 
 ColorMap
-========
+--------
 
 .. ocv:class:: colormap::ColorMap
 

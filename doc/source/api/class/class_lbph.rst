@@ -1,5 +1,5 @@
 LBPH
-====
+----
 
 .. ocv:class:: LBPH
 

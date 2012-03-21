@@ -1,5 +1,5 @@
 Fisherfaces
-===========
+-----------
 
 .. highlight:: cpp
 
