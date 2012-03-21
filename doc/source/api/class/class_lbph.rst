@@ -1,6 +1,8 @@
 Local Binary Patterns Histograms (LBPH)
 =======================================
 
+.. highlight:: cpp
+
 LBPH
 ----
 

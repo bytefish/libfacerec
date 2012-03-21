@@ -1,10 +1,10 @@
 FaceRecognizer (Abstract Base Class)
 ====================================
 
+.. highlight:: cpp
+
 FaceRecognizer
 --------------
-
-.. highlight:: cpp
 
 .. ocv:class:: FaceRecognizer
 
@@ -130,7 +130,6 @@ model.
 The suffix ``const`` means that prediction does not affect the internal model 
 state, so the method can be safely called from within different threads.
 
-
 FaceRecognizer::load
 --------------------
 
@@ -141,7 +140,6 @@ Loads a :ocv:class:`FaceRecognizer` and its model state.
 
 Loads a persisted model and state from a given XML or YAML file . Every 
 :ocv:class:`FaceRecognizer` has to overwrite ``FaceRecognizer::load(FileStorage& fs)`` 
-to load the model state. ``FaceRecognizer::load(FileStorage& fs)`` in turn gets 
-called by ``FaceRecognizer::load(const string& filename)``, to ease saving a 
-model.
-
+to enable loading the model state. ``FaceRecognizer::load(FileStorage& fs)`` in 
+turn gets called by ``FaceRecognizer::load(const string& filename)``, to ease 
+saving a model.

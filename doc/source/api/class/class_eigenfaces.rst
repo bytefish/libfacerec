@@ -1,6 +1,8 @@
 Eigenfaces Method
 =================
 
+.. highlight:: cpp
+
 Eigenfaces
 ----------
 

@@ -1,10 +1,10 @@
 Fisherfaces Method
 ==================
 
+.. highlight:: cpp
+
 Fisherfaces
 -----------
-
-.. highlight:: cpp
 
 .. ocv:class:: Fisherfaces
 
@@ -47,7 +47,7 @@ model-specific API is explained. ::
       virtual void save(FileStorage& fs) const;
 
       // Returns the eigenvectors of this Fisherfaces model.
-      Mat eigenvectors() const;
+      Mat eigenvectors() const; 
 
       // Returns the eigenvalues of this Fisherfaces model.
       Mat eigenvalues() const;
