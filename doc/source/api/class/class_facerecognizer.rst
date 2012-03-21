@@ -1,5 +1,7 @@
 FaceRecognizer
---------------
+==============
+
+.. highlight:: cpp
 
 .. ocv:class:: FaceRecognizer
 
@@ -36,7 +38,7 @@ recongition algorithms. ::
 
 
 FaceRecognizer::~FaceRecognizer
-*******************************
+-------------------------------
 
 .. ocv:function:: FaceRecognizer::~FaceRecognizer()
 
@@ -54,7 +56,7 @@ write the following code:
     delete model;
   
 FaceRecognizer::train
-*********************
+---------------------
 
 Trains a FaceRecognizer with given data and associated labels.
 
@@ -92,7 +94,7 @@ The following example shows how to learn a Fisherfaces model with libfacerec:
   ///model.train(images,labels);
 
 FaceRecognizer::predict
-***********************
+-----------------------
 
 .. ocv:function:: int FaceRecognizer::predict(InputArray src) const
 
@@ -109,7 +111,7 @@ The following example shows how to get a prediction from a trained model:
   int predicted = model.predict(mQuery);
 
 FaceRecognizer::save
-********************
+--------------------
 
 Saves a :ocv:class:`FaceRecognizer` and its model state.
 
@@ -127,7 +129,7 @@ state, so the method can be safely called from within different threads.
 
 
 FaceRecognizer::load
-********************
+--------------------
 
 Loads a :ocv:class:`FaceRecognizer` and its model state.
 

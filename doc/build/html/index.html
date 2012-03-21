@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="top" title="libfacerec 0.01 documentation" href="#" />
-    <link rel="next" title="Tutorials" href="tutorial.html" /> 
+    <link rel="next" title="API" href="api/api.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,7 +36,7 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="tutorial.html" title="Tutorials"
+          <a href="api/api.html" title="API"
              accesskey="N">next</a> |</li>
         <li><a href="#">libfacerec 0.01 documentation</a> &raquo;</li> 
       </ul>
@@ -49,19 +49,79 @@
             
   <div class="section" id="libfacerec-documentation">
 <h1>libfacerec documentation<a class="headerlink" href="#libfacerec-documentation" title="Permalink to this headline">¶</a></h1>
-<p><a class="reference external" href="http://www.github.com/bytefish/libfacerec">libfacerec</a>  is a face
-recognition library for the <a class="reference external" href="http://www.opencv.org">OpenCV2</a> C++ API.
-It provides implementations of the Eigenfaces <a class="reference internal" href="literature.html#tp91">[TP91]</a>, Fisherfaces
-<a class="reference internal" href="literature.html#belhumeur97">[Belhumeur97]</a> and Local Binary Patterns Histograms <a class="reference internal" href="literature.html#ahonen04">[Ahonen04]</a>.</p>
-<p>This document describes the API and comes with an extensive
-<a class="reference internal" href="tutorial.html"><em>tutorial page</em></a>.</p>
+<p><a class="reference external" href="http://www.github.com/bytefish/libfacerec">libfacerec</a>  is a face recognition library for the <a class="reference external" href="http://www.opencv.org">OpenCV2</a> C++ API.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Tutorials</a></li>
-<li class="toctree-l1"><a class="reference internal" href="eigenfaces.html">Eigenfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="fisherfaces.html">Fisherfaces</a></li>
-<li class="toctree-l1"><a class="reference internal" href="lbp.html">Local Binary Patterns Histograms</a></li>
-<li class="toctree-l1"><a class="reference internal" href="literature.html">Literature</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html">API</a><ul>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html#facerecognizer">FaceRecognizer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#facerecognizer-facerecognizer">FaceRecognizer::~FaceRecognizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#facerecognizer-train">FaceRecognizer::train</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#facerecognizer-predict">FaceRecognizer::predict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#facerecognizer-save">FaceRecognizer::save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#facerecognizer-load">FaceRecognizer::load</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html#eigenfaces">Eigenfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-eigenfaces-int-num-components-0">Eigenfaces::Eigenfaces(int num_components = 0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0">Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-save">Eigenfaces::save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-load">Eigenfaces::load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-train">Eigenfaces::train</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-predict">Eigenfaces::predict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-eigenvalues">Eigenfaces::eigenvalues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-eigenvectors">Eigenfaces::eigenvectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-mean">Eigenfaces::mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#eigenfaces-num-components">Eigenfaces::num_components</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html#fisherfaces">Fisherfaces</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-fisherfaces-int-num-components-0">Fisherfaces::Fisherfaces(int num_components = 0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-fisherfaces-inputarray-src-inputarray-labels-int-num-components-0">Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-save">Fisherfaces::save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-load">Fisherfaces::load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-train">Fisherfaces::train</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-predict">Fisherfaces::predict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-eigenvalues">Fisherfaces::eigenvalues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-eigenvectors">Fisherfaces::eigenvectors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-mean">Fisherfaces::mean</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#fisherfaces-num-components">Fisherfaces::num_components</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html#lbph">LBPH</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-lbph-inputarray-src-inputarray-labels-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">LBPH::LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-save">LBPH::save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-load">LBPH::load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-train">LBPH::train</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-predict">LBPH::predict</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-neighbors">LBPH::neighbors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-radius">LBPH::radius</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-grid-x">LBPH::grid_x</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#lbph-grid-y">LBPH::grid_y</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#imwrite">imwrite</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#imshow">imshow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/api.html#colormap">ColorMap</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#colormap-colormap-init">colormap::ColorMap::init</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#colormap-colormap-operator">colormap::ColorMap::operator()</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,float,float,float)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api/api.html#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,InputArray)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorial/tutorial.html">Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorial/tutorial.html#introduction">Introduction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="changelog/changelog.html">Changelog</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="changelog/changelog.html#release-0-02a">Release 0.02a</a></li>
+<li class="toctree-l2"><a class="reference internal" href="changelog/changelog.html#release-0-01">Release 0.01</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bib/literature.html">Literature</a></li>
 </ul>
 </div>
 <div class="section" id="indices-and-tables">
@@ -89,8 +149,8 @@ It provides implementations of the Eigenfaces <a class="reference internal" href
 </ul>
 
   <h4>Next topic</h4>
-  <p class="topless"><a href="tutorial.html"
-                        title="next chapter">Tutorials</a></p>
+  <p class="topless"><a href="api/api.html"
+                        title="next chapter">API</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/index.txt"
@@ -120,7 +180,7 @@ It provides implementations of the Eigenfaces <a class="reference internal" href
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="tutorial.html" title="Tutorials"
+          <a href="api/api.html" title="API"
              >next</a> |</li>
         <li><a href="#">libfacerec 0.01 documentation</a> &raquo;</li> 
       </ul>

@@ -1,5 +1,7 @@
 Fisherfaces
------------
+===========
+
+.. highlight:: cpp
 
 .. ocv:class:: Fisherfaces
 
@@ -67,7 +69,7 @@ model-specific API is explained. ::
   };  
 
 Fisherfaces::Fisherfaces(int num_components = 0)
-************************************************
+------------------------------------------------
 
 Initializes a Fisherfaces model with a given number of components.
 
@@ -83,7 +85,7 @@ If (and only if) ``num_components`` <= 0, then ``num_components`` is set to
 classes in ``labels``.
 
 Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)
-***********************************************************************************
+-----------------------------------------------------------------------------------
 
 Initializes and trains a Fisherfaces model with a given number of components 
 for given input data and associated labels.
@@ -100,55 +102,56 @@ If (and only if) ``num_components`` <= 0, then ``num_components`` is set to
 ``labels``.
 
 Fisherfaces::save
-*****************
+-----------------
+
 .. ocv:function::  void Fisherfaces::save(FileStorage& fs) const
 
 See :ocv:func:`FaceRecognizer::save`.
 
 Fisherfaces::load
-*****************
+-----------------
 
 .. ocv:function:: void Fisherfaces::load(const FileStorage& fs)
 
 See :ocv:func:`FaceRecognizer::load`.
 
 Fisherfaces::train
-******************
+------------------
 
 .. ocv:function:: void Fisherfaces::train(InputArray src, InputArray labels)
 
 See :ocv:func:`FaceRecognizer::train`.
 
 Fisherfaces::predict
-********************
+--------------------
 
 .. ocv:function:: int Fisherfaces::predict(InputArray src) const
 
 See :ocv:func:`FaceRecognizer::predict`.
 
 Fisherfaces::eigenvalues
-************************
+------------------------
 
 .. ocv:function:: Mat Fisherfaces::eigenvalues() const
 
 See :ocv:func:`Eigenfaces::eigenvalues`.
 
 Fisherfaces::eigenvectors
-*************************
+-------------------------
 
 .. ocv:function:: Mat Fisherfaces::eigenvectors() const
 
 See :ocv:func:`Eigenfaces::eigenvectors`.
 
 Fisherfaces::mean
-*****************
+-----------------
 
 .. ocv:function:: Mat Fisherfaces::mean() const
 
 See :ocv:func:`Eigenfaces::mean`.
 
 Fisherfaces::num_components
-***************************
+---------------------------
 
 .. ocv:function:: int Fisherfaces::num_components() const
 

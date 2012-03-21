@@ -1,5 +1,5 @@
 Eigenfaces
-----------
+==========
 
 .. ocv:class:: Eigenfaces
 
@@ -60,7 +60,7 @@ API is explained. ::
   };
   
 Eigenfaces::Eigenfaces(int num_components = 0)
-**********************************************
+----------------------------------------------
 
 Initializes an Eigenfaces model with a given number of components.
 
@@ -76,7 +76,7 @@ If (and only if) ``num_components`` <= 0, then ``num_components`` is set to
 samples in ``src``.
 
 Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0) 
-*********************************************************************************
+---------------------------------------------------------------------------------
 
 Initializes and trains an Eigenfaces model with a given number of components 
 for given input data and associated labels.
@@ -93,34 +93,35 @@ If (and only if) ``num_components`` <= 0, then ``num_components`` is set to
 samples in ``src``.
 
 Eigenfaces::save
-*****************
+----------------
+
 .. ocv:function::  void Eigenfaces::save(FileStorage& fs) const
 
 See :ocv:func:`FaceRecognizer::save`.
 
 Eigenfaces::load
-*****************
+----------------
 
 .. ocv:function:: void Eigenfaces::load(const FileStorage& fs)
 
 See :ocv:func:`FaceRecognizer::load`.
 
 Eigenfaces::train
-******************
+-----------------
 
 .. ocv:function:: void Eigenfaces::train(InputArray src, InputArray labels)
 
 See :ocv:func:`FaceRecognizer::train`.
 
 Eigenfaces::predict
-********************
+-------------------
 
 .. ocv:function:: int Eigenfaces::predict(InputArray src) const
 
 See :ocv:func:`FaceRecognizer::predict`.
 
 Eigenfaces::eigenvalues
-***********************
+-----------------------
 
 Returns the eigenvalues corresponding to each of the eigenvectors.
 
@@ -131,7 +132,7 @@ They are sorted in a descending order.
 
 
 Eigenfaces::eigenvectors
-************************
+------------------------
 
 Returns the eigenvectors of this model.
 
@@ -142,7 +143,7 @@ of this matrix. The eigenvectors are sorted in a descending order by their
 eigenvalue.
 
 Eigenfaces::mean
-****************
+----------------
 
 Returns the sample mean of this model.
 
@@ -151,7 +152,7 @@ Returns the sample mean of this model.
 The mean is stored as a 1D vector in a row.
 
 Eigenfaces::num_components
-**************************
+--------------------------
 
 Returns the number of components (number of Eigenfaces) used for classification.
 

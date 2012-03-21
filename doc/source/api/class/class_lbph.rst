@@ -1,5 +1,5 @@
 LBPH
-----
+====
 
 .. ocv:class:: LBPH
 
@@ -76,52 +76,52 @@ Only the model-specific API is explained. ::
   };
 
 LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)
-*********************************************************************
+---------------------------------------------------------------------
 
 
 LBPH::LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)
-********************************************************************************************************
+--------------------------------------------------------------------------------------------------------
 
 LBPH::save
-**********
+----------
 
 See :ocv:func:`FaceRecognizer::save`.
 
 LBPH::load
-**********
+----------
 
 See :ocv:func:`FaceRecognizer::load`.
 
 LBPH::train
-***********
+-----------
 
 .. ocv:function:: void train(InputArray src, InputArray labels)
 
 See :ocv:func:`FaceRecognizer::train`.
 
 LBPH::predict
-*************
+-------------
 
 .. ocv:function:: int predict(InputArray src) const
 
 See :ocv:func:`FaceRecognizer::predict`.
 
 LBPH::neighbors
-***************
+---------------
 
 .. ocv:function:: int LBPH::neighbors() const
 
 LBPH::radius
-************
+------------
 
 .. ocv:function:: int LBPH::radius() const
 
 LBPH::grid_x
-************
+------------
 
 .. ocv:function:: int LBPH::grid_x() const
 
 LBPH::grid_y
-************
+------------
 
 .. ocv:function:: int LBPH::grid_y() const
