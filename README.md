@@ -1,16 +1,14 @@
 # Warning
 
-This library is still **Work in Progress**. No bug reports in these early development stages please. Expect major interface changes coming. 
+This library is still **Work in Progress**. No feature requests in these early development stages please. Expect major interface changes coming. 
 
 # Description
 
-[libfacerec](http://www.github.com/bytefish/libfacerec) is a library for face recognition in OpenCV. There are no additional dependencies to build the library, version 0.01 is written as a header-only library. By request this library was rewritten to implement the algorithms in separate source files, so you should see a speedup in compilation times. The Eigenfaces, Fisherfaces method and Local Binary Patterns Histograms (LBPH) are implemented and most parts of the library are covered by unit tests. 
-
-Please see [src/main.cpp](https://github.com/bytefish/libfacerec/blob/master/src/main.cpp) or the [tests](https://github.com/bytefish/libfacerec/tree/master/test) to get a feeling for the API. I am working on documentation & tutorials right now. If you want to run [the example](https://github.com/bytefish/libfacerec/blob/master/src/main.cpp), you'll need a CSV file with lines composed of a _filename_ followed by a _;_ followed by the _label_ (as **integer number**), making up a line like this: `/path/to/image.ext;0` ([read my notes on this here](http://www.bytefish.de/blog/fisherfaces_in_opencv)). 
+[libfacerec](http://www.github.com/bytefish/libfacerec) is a library for face recognition in OpenCV. There are no additional dependencies to build the library. The Eigenfaces, Fisherfaces method and Local Binary Patterns Histograms (LBPH) are implemented and most parts of the library are covered by unit tests. 
 
 # Tutorial
 
-Coming soon!
+The documentation of the library comes with a high-level description of the API and carefully designed tutorials. It is available in the `doc/build` folder coming with this project. If you want to compile the documentation yourself, then switch to the folder `doc` and run `make <target>`. For the html version you would `make html` and for the PDF version `make latexpdf`. You'll need [Sphinx](http://sphinx.pocoo.org) for this. 
 
 # Literature
 

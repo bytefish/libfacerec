@@ -225,7 +225,7 @@ public:
 
     // Computes a LBPH model with images in src and
     // corresponding labels in labels.
-    void train(InputArray src, InputArray _lbls);
+    void train(InputArray src, InputArray labels);
 
     // Predicts the label of a query image in src.
     int predict(InputArray src) const;

@@ -1,5 +1,5 @@
-libfacerec API
-==============
+API
+===
 
 .. highlight:: cpp
 
@@ -11,8 +11,8 @@ FaceRecognizer
 .. ocv:class:: FaceRecognizer
 
 All face recognition models in libfacerec are derived from the abstract base 
-class :ocv:class:`FaceRecognizer`, which provides a unified access to all the 
-libraries implemented face recognition algorithms. ::
+class :ocv:class:`FaceRecognizer`, which provides a unified access to all face 
+recongition algorithms. ::
 
   namespace cv {
 
@@ -118,7 +118,7 @@ The following example shows how to get a prediction from a trained model:
 FaceRecognizer::save
 ********************
 
-Saves a :ocv:class:`FaceRecognizer`` and its model state.
+Saves a :ocv:class:`FaceRecognizer` and its model state.
 
 .. ocv:function:: FaceRecognizer::save(const string& filename) const
 .. ocv:function:: FaceRecognizer::save(FileStorage& fs) const
@@ -142,7 +142,7 @@ Loads a :ocv:class:`FaceRecognizer` and its model state.
 .. ocv:function:: FaceRecognizer::load(FileStorage& fs)
 
 Loads a persisted model and state from a given XML or YAML file . Every 
-``FaceRecognizer`` has to overwrite ``FaceRecognizer::load(FileStorage& fs)`` 
+:ocv:class:`FaceRecognizer` has to overwrite ``FaceRecognizer::load(FileStorage& fs)`` 
 to load the model state. ``FaceRecognizer::load(FileStorage& fs)`` in turn gets 
 called by ``FaceRecognizer::load(const string& filename)``, to ease saving a 
 model.
@@ -208,22 +208,105 @@ API is explained. ::
       int num_components() const { return _num_components; }
   };
   
-Eigenfaces::Eigenfaces
-**********************
+Eigenfaces::Eigenfaces(int num_components = 0)
+**********************************************
 
-.. ocv:function:: FaceRecognizer::save(FileStorage& fs) const
+Initializes an Eigenfaces model with a given number of components.
+
+.. ocv:function:: Eigenfaces::Eigenfaces(int num_components = 0)
+
+Initializes an Eigenfaces model with ``num_components``. ``num_components`` 
+number of components are kept for classification. If no number of components 
+is given (default 0), it is automatically determined from given data in 
+:ocv:func:`Eigenfaces::train`.
+
+If (and only if) ``num_components`` <= 0, then ``num_components`` is set to 
+(N-1) in ocv:func:`Eigenfaces::train`, with *N* being the total number of 
+samples in ``src``.
+
+Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0) 
+*********************************************************************************
+
+Initializes and trains an Eigenfaces model with a given number of components 
+for given input data and associated labels.
+
+.. ocv:function:: Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0) 
+
+Initializes and trains an Eigenfaces model with images in src and 
+corresponding labels in ``labels``. ``num_components`` number of components are 
+kept for classification. If no number of components is given (default 0), it is 
+automatically determined from given data in :ocv:func:`Eigenfaces::train`.
+
+If (and only if) ``num_components`` <= 0, then ``num_components`` is set to 
+(N-1) in ocv:func:`Eigenfaces::train`, with *N* being the total number of 
+samples in ``src``.
+
+Eigenfaces::save
+*****************
+.. ocv:function::  void Eigenfaces::save(FileStorage& fs) const;
+
+See :ocv:func:`FaceRecognizer:save`.
+
+Eigenfaces::load
+*****************
+
+.. ocv:function:: void Eigenfaces::load(const FileStorage& fs)
+
+See :ocv:func:`FaceRecognizer:load`.
+
+Eigenfaces::train
+******************
+
+.. ocv:function:: void Eigenfaces::train(InputArray src, InputArray labels)
+
+See :ocv:func:`FaceRecognizer:train`.
+
+Eigenfaces::predict
+********************
+
+.. ocv:function:: int Eigenfaces::predict(InputArray src) const
+
+See :ocv:func:`FaceRecognizer:predict`.
 
 Eigenfaces::eigenvalues
 ***********************
 
+Returns the eigenvalues corresponding to each of the eigenvectors.
+
+.. ocv:function:: Mat Eigenfaces::eigenvalues() const
+
+Regarding the data alignment, the eigenvalues are stored in a 1D vector as row. 
+They are sorted in a descending order.
+
+
 Eigenfaces::eigenvectors
 ************************
+
+Returns the eigenvectors of this model.
+
+.. ocv:function:: Mat Eigenfaces::eigenvectors() const
+
+Regarding the data alignment, the i-th eigenvectors is stored in the i-th column 
+of this matrix. The eigenvectors are sorted in a descending order by their 
+eigenvalue.
 
 Eigenfaces::mean
 ****************
 
+Returns the sample mean of this model.
+
+.. ocv:function:: Mat Eigenfaces::mean() const
+
+The mean is stored as a 1D vector in a row.
+
 Eigenfaces::num_components
 **************************
+
+Returns the number of components (number of Eigenfaces) used for classification.
+
+.. ocv:function:: int Eigenfaces::num_components() const
+
+This number may be 0 for initialized objects. It may be set during the training.
 
 Fisherfaces
 -----------
@@ -258,8 +341,8 @@ model-specific API is explained. ::
       // Initializes and computes a Fisherfaces model with images in src and
       // corresponding labels in labels. num_components will be kept for
       // classification.
-      Fisherfaces(const vector<Mat>& src,
-              const vector<int>& labels,
+      Fisherfaces(InputArray src,
+              InputArray labels,
               int num_components = 0) :
           _num_components(num_components) {
           train(src, labels);
@@ -296,18 +379,220 @@ model-specific API is explained. ::
 Fisherfaces::Fisherfaces(int num_components = 0)
 ************************************************
 
-.. ocv:function:: FaceRecognizer::save(FileStorage& fs) const
+Initializes a Fisherfaces model with a given number of components.
+
+.. ocv:function:: Fisherfaces::Fisherfaces(int num_components = 0) 
+
+Initializes a Fisherfaces model with ``num_components``. ``num_components`` 
+number of components are  kept for classification. If no number of components 
+is given (default 0), it is automatically determined from given data 
+in :ocv:func:`Fisherfaces::train`.
+
+If (and only if) ``num_components`` <= 0, then ``num_components`` is set to 
+(C-1) in ocv:func:`Fisherfaces::train`, with *C* being the number of unique 
+classes in ``labels``.
+
+Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)
+***********************************************************************************
+
+Initializes and trains a Fisherfaces model with a given number of components 
+for given input data and associated labels.
+
+.. ocv:function:: Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0) 
+
+Initializes and trains a Fisherfaces model with images in src and 
+corresponding labels in ``labels``. ``num_components`` number of components are 
+kept for classification. If no number of components is given (default 0), it
+is automatically determined from given data in :ocv:func:`Fisherfaces::train`.
+
+If (and only if) ``num_components`` <= 0, then ``num_components`` is set to 
+(C-1) in ocv:func:`train`, with *C* being the number of unique classes in 
+``labels``.
+
+Fisherfaces::save
+*****************
+.. ocv:function::  void Fisherfaces::save(FileStorage& fs) const;
+
+See :ocv:func:`FaceRecognizer:save`.
+
+Fisherfaces::load
+*****************
+
+.. ocv:function:: void Fisherfaces::load(const FileStorage& fs)
+
+See :ocv:func:`FaceRecognizer:load`.
+
+Fisherfaces::train
+******************
+
+.. ocv:function:: void Fisherfaces::train(InputArray src, InputArray labels)
+
+See :ocv:func:`FaceRecognizer:train`.
+
+Fisherfaces::predict
+********************
+
+.. ocv:function:: int Fisherfaces::predict(InputArray src) const
+
+See :ocv:func:`FaceRecognizer:predict`.
 
 Fisherfaces::eigenvalues
 ************************
 
+.. ocv:function:: Mat Fisherfaces::eigenvalues() const
+
+See :ocv:func:`Eigenfaces::eigenvalues`.
+
 Fisherfaces::eigenvectors
 *************************
+
+.. ocv:function:: Mat Fisherfaces::eigenvectors() const
+
+See :ocv:func:`Eigenfaces::eigenvectors`.
 
 Fisherfaces::mean
 *****************
 
+.. ocv:function:: Mat Fisherfaces::mean() const
+
+See :ocv:func:`Eigenfaces::mean`.
+
 Fisherfaces::num_components
 ***************************
 
+.. ocv:function:: int Fisherfaces::num_components() const
 
+See :ocv:func:`Eigenfaces::num_components`.
+
+
+Fisherfaces
+-----------
+
+.. ocv:class:: LBPH
+
+Implements the Local Binary Patterns Histograms as described in [Ahonen04]_. 
+Only the model-specific API is explained. ::
+
+  //  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
+  //  patterns: Application to face recognition." IEEE Transactions on Pattern
+  //  Analysis and Machine Intelligence, 28(12):2037-2041.
+  //
+  class LBPH : public FaceRecognizer {
+
+  private:
+      int _grid_x;
+      int _grid_y;
+      int _radius;
+      int _neighbors;
+
+      vector<Mat> _histograms;
+      vector<int> _labels;
+
+  public:
+      using FaceRecognizer::save;
+      using FaceRecognizer::load;
+
+      // Initializes this LBPH Model. The current implementation is rather fixed
+      // as it uses the Extended Local Binary Patterns per default.
+      //
+      // radius, neighbors are used in the local binary patterns creation.
+      // grid_x, grid_y control the grid size of the spatial histograms.
+      LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8) :
+          _grid_x(grid_x),
+          _grid_y(grid_y),
+          _radius(radius),
+          _neighbors(neighbors) {}
+
+      // Initializes and computes this LBPH Model. The current implementation is
+      // rather fixed as it uses the Extended Local Binary Patterns per default.
+      //
+      // (radius=1), (neighbors=8) are used in the local binary patterns creation.
+      // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
+      LBPH(InputArray src,
+              InputArray labels,
+              int radius=1, int neighbors=8,
+              int grid_x=8, int grid_y=8) :
+                  _grid_x(grid_x),
+                  _grid_y(grid_y),
+                  _radius(radius),
+                  _neighbors(neighbors) {
+          train(src, labels);
+      }
+
+      ~LBPH() { }
+
+      // Computes a LBPH model with images in src and
+      // corresponding labels in labels.
+      void train(InputArray src, InputArray labels);
+
+      // Predicts the label of a query image in src.
+      int predict(InputArray src) const;
+
+      // See cv::FaceRecognizer::load.
+      void load(const FileStorage& fs);
+
+      // See cv::FaceRecognizer::save.
+      void save(FileStorage& fs) const;
+
+      // Getter functions.
+      int neighbors() const { return _neighbors; }
+      int radius() const { return _radius; }
+      int grid_x() const { return _grid_x; }
+      int grid_y() const { return _grid_y; }
+
+  };
+
+LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)
+*********************************************************************
+
+
+LBPH::LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)
+********************************************************************************************************
+
+LBPH::save
+**********
+
+.. ocv:function::
+
+See :ocv:func:`FaceRecognizer:save`.
+
+LBPH::load
+**********
+
+.. ocv:function::
+
+See :ocv:func:`FaceRecognizer:load`.
+
+LBPH::train
+***********
+
+.. ocv:function:: void train(InputArray src, InputArray labels)
+
+See :ocv:func:`FaceRecognizer:train`.
+
+LBPH::predict
+*************
+
+.. ocv:function:: int predict(InputArray src) const
+
+See :ocv:func:`FaceRecognizer:predict`.
+
+LBPH::neighbors
+***************
+
+.. ocv:function:: int LBPH::neighbors() const
+
+LBPH::radius
+************
+
+.. ocv:function:: int LBPH::radius() const
+
+LBPH::grid_x
+************
+
+.. ocv:function:: int LBPH::grid_x() const
+
+LBPH::grid_y
+************
+
+.. ocv:function:: int LBPH::grid_y() const
