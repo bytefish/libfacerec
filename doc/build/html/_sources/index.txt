@@ -1,0 +1,30 @@
+########################
+libfacerec documentation
+########################
+
+`libfacerec <http://www.github.com/bytefish/libfacerec>`_  is a face 
+recognition library for the `OpenCV2 <http://www.opencv.org>`_ C++ API. 
+It provides implementations of the Eigenfaces [TP91]_, Fisherfaces 
+[Belhumeur97]_ and Local Binary Patterns Histograms [Ahonen04]_.
+
+This document describes the API and comes with an extensive 
+:doc:`tutorial page </tutorial>`. 
+
+.. toctree::
+   :maxdepth: 2
+   
+   api
+   tutorial
+   eigenfaces
+   fisherfaces
+   lbp
+   literature
+   
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+
