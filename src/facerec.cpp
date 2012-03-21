@@ -74,7 +74,7 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
     }
 }
 
-int cv::Eigenfaces::predict(InputArray _src) {
+int cv::Eigenfaces::predict(InputArray _src) const {
     // get data
     Mat src = _src.getMat();
     // project into PCA subspace
@@ -153,7 +153,7 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     }
 }
 
-int cv::Fisherfaces::predict(InputArray _src) {
+int cv::Fisherfaces::predict(InputArray _src) const {
     Mat src = _src.getMat();
     // project into LDA subspace
     Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
@@ -248,7 +248,7 @@ void cv::LBPH::train(InputArray _src, InputArray _lbls) {
 }
 
 
-int cv::LBPH::predict(InputArray _src) {
+int cv::LBPH::predict(InputArray _src) const {
     Mat src = _src.getMat();
     // get the spatial histogram from input image
     Mat lbp_image = elbp(src, _radius, _neighbors);

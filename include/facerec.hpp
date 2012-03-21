@@ -39,7 +39,7 @@ public:
     virtual void train(InputArray src, InputArray labels) = 0;
 
     // Gets a prediction from a FaceRecognizer.
-    virtual int predict(InputArray src) = 0;
+    virtual int predict(InputArray src) const = 0;
 
     // Serializes this object to a given filename.
     virtual void save(const string& filename) const;
@@ -88,7 +88,7 @@ public:
     void train(InputArray src, InputArray labels);
 
     // Predicts the label of a query image in src.
-    int predict(const InputArray src);
+    int predict(const InputArray src) const;
 
     // See cv::FaceRecognizer::load.
     void load(const FileStorage& fs);
@@ -148,7 +148,7 @@ public:
     void train(InputArray src, InputArray labels);
 
     // Predicts the label of a query image in src.
-    int predict(InputArray src);
+    int predict(InputArray src) const;
 
     // See cv::FaceRecognizer::load.
     virtual void load(const FileStorage& fs);
@@ -228,7 +228,7 @@ public:
     void train(InputArray src, InputArray _lbls);
 
     // Predicts the label of a query image in src.
-    int predict(InputArray src);
+    int predict(InputArray src) const;
 
     // See cv::FaceRecognizer::load.
     void load(const FileStorage& fs);
