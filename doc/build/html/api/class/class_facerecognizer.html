@@ -25,7 +25,10 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" /> 
+    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="up" title="API" href="../api.html" />
+    <link rel="next" title="Eigenfaces" href="class_eigenfaces.html" />
+    <link rel="prev" title="API" href="../api.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +37,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="class_eigenfaces.html" title="Eigenfaces"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../api.html" title="API"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -81,8 +91,9 @@ recongition algorithms.</p>
 <span class="p">};</span>
 </pre></div>
 </div>
+</div>
 <div class="section" id="facerecognizer-facerecognizer">
-<h2>FaceRecognizer::~FaceRecognizer<a class="headerlink" href="#facerecognizer-facerecognizer" title="Permalink to this headline">¶</a></h2>
+<h1>FaceRecognizer::~FaceRecognizer<a class="headerlink" href="#facerecognizer-facerecognizer" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="FaceRecognizer::~FaceRecognizer()">
 <strong>C++:</strong><tt class="descname"> </tt> <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">~FaceRecognizer</tt><big>(</big><big>)</big><a class="headerlink" href="#FaceRecognizer::~FaceRecognizer()" title="Permalink to this definition">¶</a></dt>
@@ -101,7 +112,7 @@ write the following code:</p>
 </div>
 </div>
 <div class="section" id="facerecognizer-train">
-<h2>FaceRecognizer::train<a class="headerlink" href="#facerecognizer-train" title="Permalink to this headline">¶</a></h2>
+<h1>FaceRecognizer::train<a class="headerlink" href="#facerecognizer-train" title="Permalink to this headline">¶</a></h1>
 <p>Trains a FaceRecognizer with given data and associated labels.</p>
 <dl class="function">
 <dt id="void FaceRecognizer::train(InputArray src, InputArray labels)">
@@ -137,7 +148,7 @@ row or a column) of <tt class="docutils literal"><span class="pre">CV_32SC1</spa
 </div>
 </div>
 <div class="section" id="facerecognizer-predict">
-<h2>FaceRecognizer::predict<a class="headerlink" href="#facerecognizer-predict" title="Permalink to this headline">¶</a></h2>
+<h1>FaceRecognizer::predict<a class="headerlink" href="#facerecognizer-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="int FaceRecognizer::predict(InputArray src) const">
 <strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int FaceRecognizer::predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
@@ -153,7 +164,7 @@ state, so the method can be safely called from within different threads.</p>
 </div>
 </div>
 <div class="section" id="facerecognizer-save">
-<h2>FaceRecognizer::save<a class="headerlink" href="#facerecognizer-save" title="Permalink to this headline">¶</a></h2>
+<h1>FaceRecognizer::save<a class="headerlink" href="#facerecognizer-save" title="Permalink to this headline">¶</a></h1>
 <p>Saves a <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> and its model state.</p>
 <dl class="function">
 <dt id="void FaceRecognizer::save(const string&amp; filename) const">
@@ -173,7 +184,7 @@ model.</p>
 state, so the method can be safely called from within different threads.</p>
 </div>
 <div class="section" id="facerecognizer-load">
-<h2>FaceRecognizer::load<a class="headerlink" href="#facerecognizer-load" title="Permalink to this headline">¶</a></h2>
+<h1>FaceRecognizer::load<a class="headerlink" href="#facerecognizer-load" title="Permalink to this headline">¶</a></h1>
 <p>Loads a <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> and its model state.</p>
 <dl class="function">
 <dt id="void FaceRecognizer::load(const string&amp; filename)">
@@ -191,7 +202,6 @@ to load the model state. <tt class="docutils literal"><span class="pre">FaceReco
 called by <tt class="docutils literal"><span class="pre">FaceRecognizer::load(const</span> <span class="pre">string&amp;</span> <span class="pre">filename)</span></tt>, to ease saving a
 model.</p>
 </div>
-</div>
 
 
           </div>
@@ -201,16 +211,20 @@ model.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">FaceRecognizer</a><ul>
+<li><a class="reference internal" href="#">FaceRecognizer</a></li>
 <li><a class="reference internal" href="#facerecognizer-facerecognizer">FaceRecognizer::~FaceRecognizer</a></li>
 <li><a class="reference internal" href="#facerecognizer-train">FaceRecognizer::train</a></li>
 <li><a class="reference internal" href="#facerecognizer-predict">FaceRecognizer::predict</a></li>
 <li><a class="reference internal" href="#facerecognizer-save">FaceRecognizer::save</a></li>
 <li><a class="reference internal" href="#facerecognizer-load">FaceRecognizer::load</a></li>
 </ul>
-</li>
-</ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../api.html"
+                        title="previous chapter">API</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="class_eigenfaces.html"
+                        title="next chapter">Eigenfaces</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/api/class/class_facerecognizer.txt"
@@ -239,7 +253,14 @@ model.</p>
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="class_eigenfaces.html" title="Eigenfaces"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../api.html" title="API"
+             >previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

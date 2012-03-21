@@ -1,5 +1,5 @@
 Eigenfaces
-==========
+----------
 
 .. ocv:class:: Eigenfaces
 

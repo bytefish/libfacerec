@@ -1,5 +1,5 @@
 FaceRecognizer
-==============
+--------------
 
 .. highlight:: cpp
 

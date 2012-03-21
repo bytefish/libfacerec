@@ -56,9 +56,8 @@
 <p>The basic API of libfacerec is very simple. Once a <a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> is trained on a set of images and associated labels, it can be used to generate predictions for query images.</p>
 <div class="toctree-wrapper compound">
 </div>
-</div>
 <div class="section" id="facerecognizer">
-<h1>FaceRecognizer<a class="headerlink" href="#facerecognizer" title="Permalink to this headline">¶</a></h1>
+<h2>FaceRecognizer<a class="headerlink" href="#facerecognizer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="FaceRecognizer">
 <em class="property">class </em><tt class="descname">FaceRecognizer</tt><a class="headerlink" href="#FaceRecognizer" title="Permalink to this definition">¶</a></dt>
@@ -94,6 +93,7 @@ recongition algorithms.</p>
     <span class="k">virtual</span> <span class="kt">void</span> <span class="n">load</span><span class="p">(</span><span class="k">const</span> <span class="n">FileStorage</span><span class="o">&amp;</span> <span class="n">fs</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
+</div>
 </div>
 <div class="section" id="facerecognizer-facerecognizer">
 <h2>FaceRecognizer::~FaceRecognizer<a class="headerlink" href="#facerecognizer-facerecognizer" title="Permalink to this headline">¶</a></h2>
@@ -205,9 +205,8 @@ to load the model state. <tt class="docutils literal"><span class="pre">FaceReco
 called by <tt class="docutils literal"><span class="pre">FaceRecognizer::load(const</span> <span class="pre">string&amp;</span> <span class="pre">filename)</span></tt>, to ease saving a
 model.</p>
 </div>
-</div>
 <div class="section" id="eigenfaces">
-<h1>Eigenfaces<a class="headerlink" href="#eigenfaces" title="Permalink to this headline">¶</a></h1>
+<h2>Eigenfaces<a class="headerlink" href="#eigenfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="Eigenfaces">
 <em class="property">class </em><tt class="descname">Eigenfaces</tt><a class="headerlink" href="#Eigenfaces" title="Permalink to this definition">¶</a></dt>
@@ -268,6 +267,7 @@ API is explained.</p>
     <span class="kt">int</span> <span class="n">num_components</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_num_components</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">};</span>
 </pre></div>
+</div>
 </div>
 <div class="section" id="eigenfaces-eigenfaces-int-num-components-0">
 <h2>Eigenfaces::Eigenfaces(int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-int-num-components-0" title="Permalink to this headline">¶</a></h2>
@@ -381,9 +381,8 @@ eigenvalue.</p>
 
 <p>This number may be 0 for initialized objects. It may be set during the training.</p>
 </div>
-</div>
 <div class="section" id="fisherfaces">
-<h1>Fisherfaces<a class="headerlink" href="#fisherfaces" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces<a class="headerlink" href="#fisherfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="Fisherfaces">
 <em class="property">class </em><tt class="descname">Fisherfaces</tt><a class="headerlink" href="#Fisherfaces" title="Permalink to this definition">¶</a></dt>
@@ -451,6 +450,7 @@ model-specific API is explained.</p>
     <span class="kt">int</span> <span class="n">num_components</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_num_components</span><span class="p">;</span> <span class="p">}</span>
 <span class="p">};</span>
 </pre></div>
+</div>
 </div>
 <div class="section" id="fisherfaces-fisherfaces-int-num-components-0">
 <h2>Fisherfaces::Fisherfaces(int num_components = 0)<a class="headerlink" href="#fisherfaces-fisherfaces-int-num-components-0" title="Permalink to this headline">¶</a></h2>
@@ -557,9 +557,8 @@ is automatically determined from given data in <a class="reference internal" hre
 
 <p>See <a class="reference internal" href="#int Eigenfaces::num_components() const" title="int Eigenfaces::num_components() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::num_components()</span></tt></a>.</p>
 </div>
-</div>
 <div class="section" id="lbph">
-<h1>LBPH<a class="headerlink" href="#lbph" title="Permalink to this headline">¶</a></h1>
+<h2>LBPH<a class="headerlink" href="#lbph" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="LBPH">
 <em class="property">class </em><tt class="descname">LBPH</tt><a class="headerlink" href="#LBPH" title="Permalink to this definition">¶</a></dt>
@@ -637,6 +636,7 @@ Only the model-specific API is explained.</p>
 <span class="p">};</span>
 </pre></div>
 </div>
+</div>
 <div class="section" id="lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">
 <h2>LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)<a class="headerlink" href="#lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -701,6 +701,9 @@ Only the model-specific API is explained.</p>
 <dd></dd></dl>
 
 </div>
+</div>
+<div class="section" id="working-with-colormaps">
+<h1>Working with ColorMaps<a class="headerlink" href="#working-with-colormaps" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="imwrite">
 <h2>imwrite<a class="headerlink" href="#imwrite" title="Permalink to this headline">¶</a></h2>
 <p>Provides a wrapper to <a class="reference internal" href="#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
@@ -729,9 +732,8 @@ Only the model-specific API is explained.</p>
 </div>
 <p>See <a class="reference internal" href="#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for the list of supported formats and flags description.</p>
 </div>
-</div>
 <div class="section" id="colormap">
-<h1>ColorMap<a class="headerlink" href="#colormap" title="Permalink to this headline">¶</a></h1>
+<h2>ColorMap<a class="headerlink" href="#colormap" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="colormap::ColorMap">
 <em class="property">class </em><tt class="descclassname">colormap::</tt><tt class="descname">ColorMap</tt><a class="headerlink" href="#colormap::ColorMap" title="Permalink to this definition">¶</a></dt>
@@ -820,6 +822,7 @@ Only the model-specific API is explained.</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwrite</span><span class="p">(</span><span class="s">&quot;image.png&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
 </pre></div>
 </div>
+</div>
 <div class="section" id="colormap-colormap-init">
 <h2>colormap::ColorMap::init<a class="headerlink" href="#colormap-colormap-init" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -871,17 +874,13 @@ Only the model-specific API is explained.</p>
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">API</a><ul>
-</ul>
-</li>
-<li><a class="reference internal" href="#facerecognizer">FaceRecognizer</a><ul>
+<li><a class="reference internal" href="#facerecognizer">FaceRecognizer</a></li>
 <li><a class="reference internal" href="#facerecognizer-facerecognizer">FaceRecognizer::~FaceRecognizer</a></li>
 <li><a class="reference internal" href="#facerecognizer-train">FaceRecognizer::train</a></li>
 <li><a class="reference internal" href="#facerecognizer-predict">FaceRecognizer::predict</a></li>
 <li><a class="reference internal" href="#facerecognizer-save">FaceRecognizer::save</a></li>
 <li><a class="reference internal" href="#facerecognizer-load">FaceRecognizer::load</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#eigenfaces">Eigenfaces</a><ul>
+<li><a class="reference internal" href="#eigenfaces">Eigenfaces</a></li>
 <li><a class="reference internal" href="#eigenfaces-eigenfaces-int-num-components-0">Eigenfaces::Eigenfaces(int num_components = 0)</a></li>
 <li><a class="reference internal" href="#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0">Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
 <li><a class="reference internal" href="#eigenfaces-save">Eigenfaces::save</a></li>
@@ -892,9 +891,7 @@ Only the model-specific API is explained.</p>
 <li><a class="reference internal" href="#eigenfaces-eigenvectors">Eigenfaces::eigenvectors</a></li>
 <li><a class="reference internal" href="#eigenfaces-mean">Eigenfaces::mean</a></li>
 <li><a class="reference internal" href="#eigenfaces-num-components">Eigenfaces::num_components</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#fisherfaces">Fisherfaces</a><ul>
+<li><a class="reference internal" href="#fisherfaces">Fisherfaces</a></li>
 <li><a class="reference internal" href="#fisherfaces-fisherfaces-int-num-components-0">Fisherfaces::Fisherfaces(int num_components = 0)</a></li>
 <li><a class="reference internal" href="#fisherfaces-fisherfaces-inputarray-src-inputarray-labels-int-num-components-0">Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
 <li><a class="reference internal" href="#fisherfaces-save">Fisherfaces::save</a></li>
@@ -905,9 +902,7 @@ Only the model-specific API is explained.</p>
 <li><a class="reference internal" href="#fisherfaces-eigenvectors">Fisherfaces::eigenvectors</a></li>
 <li><a class="reference internal" href="#fisherfaces-mean">Fisherfaces::mean</a></li>
 <li><a class="reference internal" href="#fisherfaces-num-components">Fisherfaces::num_components</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#lbph">LBPH</a><ul>
+<li><a class="reference internal" href="#lbph">LBPH</a></li>
 <li><a class="reference internal" href="#lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)</a></li>
 <li><a class="reference internal" href="#lbph-lbph-inputarray-src-inputarray-labels-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">LBPH::LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)</a></li>
 <li><a class="reference internal" href="#lbph-save">LBPH::save</a></li>
@@ -918,11 +913,12 @@ Only the model-specific API is explained.</p>
 <li><a class="reference internal" href="#lbph-radius">LBPH::radius</a></li>
 <li><a class="reference internal" href="#lbph-grid-x">LBPH::grid_x</a></li>
 <li><a class="reference internal" href="#lbph-grid-y">LBPH::grid_y</a></li>
-<li><a class="reference internal" href="#imwrite">imwrite</a></li>
-<li><a class="reference internal" href="#imshow">imshow</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#colormap">ColorMap</a><ul>
+<li><a class="reference internal" href="#working-with-colormaps">Working with ColorMaps</a><ul>
+<li><a class="reference internal" href="#imwrite">imwrite</a></li>
+<li><a class="reference internal" href="#imshow">imshow</a></li>
+<li><a class="reference internal" href="#colormap">ColorMap</a></li>
 <li><a class="reference internal" href="#colormap-colormap-init">colormap::ColorMap::init</a></li>
 <li><a class="reference internal" href="#colormap-colormap-operator">colormap::ColorMap::operator()</a></li>
 <li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)</a></li>

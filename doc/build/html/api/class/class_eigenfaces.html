@@ -115,8 +115,9 @@ public:
     int num_components() const { return _num_components; }
 };</pre>
 </div>
+</div>
 <div class="section" id="eigenfaces-eigenfaces-int-num-components-0">
-<h2>Eigenfaces::Eigenfaces(int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-int-num-components-0" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::Eigenfaces(int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-int-num-components-0" title="Permalink to this headline">¶</a></h1>
 <p>Initializes an Eigenfaces model with a given number of components.</p>
 <dl class="function">
 <dt id="Eigenfaces::Eigenfaces(int num_components)">
@@ -132,7 +133,7 @@ is given (default 0), it is automatically determined from given data in
 samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 </div>
 <div class="section" id="eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0">
-<h2>Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0" title="Permalink to this headline">¶</a></h1>
 <p>Initializes and trains an Eigenfaces model with a given number of components
 for given input data and associated labels.</p>
 <dl class="function">
@@ -149,7 +150,7 @@ automatically determined from given data in <a class="reference internal" href="
 samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 </div>
 <div class="section" id="eigenfaces-save">
-<h2>Eigenfaces::save<a class="headerlink" href="#eigenfaces-save" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::save<a class="headerlink" href="#eigenfaces-save" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="void Eigenfaces::save(FileStorage&amp; fs) const">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Eigenfaces::</tt><tt class="descname">save</tt><big>(</big>FileStorage&amp; <strong>fs</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void Eigenfaces::save(FileStorage& fs) const" title="Permalink to this definition">¶</a></dt>
@@ -158,7 +159,7 @@ samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 <p>See <a class="reference internal" href="../api.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a>.</p>
 </div>
 <div class="section" id="eigenfaces-load">
-<h2>Eigenfaces::load<a class="headerlink" href="#eigenfaces-load" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::load<a class="headerlink" href="#eigenfaces-load" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="void Eigenfaces::load(const FileStorage&amp; fs)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Eigenfaces::</tt><tt class="descname">load</tt><big>(</big>const FileStorage&amp; <strong>fs</strong><big>)</big><a class="headerlink" href="#void Eigenfaces::load(const FileStorage& fs)" title="Permalink to this definition">¶</a></dt>
@@ -167,7 +168,7 @@ samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 <p>See <a class="reference internal" href="../api.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a>.</p>
 </div>
 <div class="section" id="eigenfaces-train">
-<h2>Eigenfaces::train<a class="headerlink" href="#eigenfaces-train" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::train<a class="headerlink" href="#eigenfaces-train" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="void Eigenfaces::train(InputArray src, InputArray labels)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Eigenfaces::</tt><tt class="descname">train</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong><big>)</big><a class="headerlink" href="#void Eigenfaces::train(InputArray src, InputArray labels)" title="Permalink to this definition">¶</a></dt>
@@ -176,7 +177,7 @@ samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 <p>See <a class="reference internal" href="../api.html#void FaceRecognizer::train(InputArray src, InputArray labels)" title="void FaceRecognizer::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt></a>.</p>
 </div>
 <div class="section" id="eigenfaces-predict">
-<h2>Eigenfaces::predict<a class="headerlink" href="#eigenfaces-predict" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::predict<a class="headerlink" href="#eigenfaces-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="int Eigenfaces::predict(InputArray src) const">
 <strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">Eigenfaces::</tt><tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int Eigenfaces::predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
@@ -185,7 +186,7 @@ samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 <p>See <a class="reference internal" href="../api.html#int FaceRecognizer::predict(InputArray src) const" title="int FaceRecognizer::predict(InputArray src) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt></a>.</p>
 </div>
 <div class="section" id="eigenfaces-eigenvalues">
-<h2>Eigenfaces::eigenvalues<a class="headerlink" href="#eigenfaces-eigenvalues" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::eigenvalues<a class="headerlink" href="#eigenfaces-eigenvalues" title="Permalink to this headline">¶</a></h1>
 <p>Returns the eigenvalues corresponding to each of the eigenvectors.</p>
 <dl class="function">
 <dt id="Mat Eigenfaces::eigenvalues() const">
@@ -196,7 +197,7 @@ samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
 They are sorted in a descending order.</p>
 </div>
 <div class="section" id="eigenfaces-eigenvectors">
-<h2>Eigenfaces::eigenvectors<a class="headerlink" href="#eigenfaces-eigenvectors" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::eigenvectors<a class="headerlink" href="#eigenfaces-eigenvectors" title="Permalink to this headline">¶</a></h1>
 <p>Returns the eigenvectors of this model.</p>
 <dl class="function">
 <dt id="Mat Eigenfaces::eigenvectors() const">
@@ -208,7 +209,7 @@ of this matrix. The eigenvectors are sorted in a descending order by their
 eigenvalue.</p>
 </div>
 <div class="section" id="eigenfaces-mean">
-<h2>Eigenfaces::mean<a class="headerlink" href="#eigenfaces-mean" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::mean<a class="headerlink" href="#eigenfaces-mean" title="Permalink to this headline">¶</a></h1>
 <p>Returns the sample mean of this model.</p>
 <dl class="function">
 <dt id="Mat Eigenfaces::mean() const">
@@ -218,7 +219,7 @@ eigenvalue.</p>
 <p>The mean is stored as a 1D vector in a row.</p>
 </div>
 <div class="section" id="eigenfaces-num-components">
-<h2>Eigenfaces::num_components<a class="headerlink" href="#eigenfaces-num-components" title="Permalink to this headline">¶</a></h2>
+<h1>Eigenfaces::num_components<a class="headerlink" href="#eigenfaces-num-components" title="Permalink to this headline">¶</a></h1>
 <p>Returns the number of components (number of Eigenfaces) used for classification.</p>
 <dl class="function">
 <dt id="int Eigenfaces::num_components() const">
@@ -226,7 +227,6 @@ eigenvalue.</p>
 <dd></dd></dl>
 
 <p>This number may be 0 for initialized objects. It may be set during the training.</p>
-</div>
 </div>
 
 
@@ -237,7 +237,7 @@ eigenvalue.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Eigenfaces</a><ul>
+<li><a class="reference internal" href="#">Eigenfaces</a></li>
 <li><a class="reference internal" href="#eigenfaces-eigenfaces-int-num-components-0">Eigenfaces::Eigenfaces(int num_components = 0)</a></li>
 <li><a class="reference internal" href="#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0">Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
 <li><a class="reference internal" href="#eigenfaces-save">Eigenfaces::save</a></li>
@@ -248,8 +248,6 @@ eigenvalue.</p>
 <li><a class="reference internal" href="#eigenfaces-eigenvectors">Eigenfaces::eigenvectors</a></li>
 <li><a class="reference internal" href="#eigenfaces-mean">Eigenfaces::mean</a></li>
 <li><a class="reference internal" href="#eigenfaces-num-components">Eigenfaces::num_components</a></li>
-</ul>
-</li>
 </ul>
 
   <h4>Previous topic</h4>
