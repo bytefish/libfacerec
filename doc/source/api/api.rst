@@ -7,7 +7,6 @@ The basic API of libfacerec is very simple. Once a :ocv:class:`FaceRecognizer` i
 
 .. toctree::
    :maxdepth: 2
-   :hidden:
    
    class/class_facerecognizer.rst
    class/class_eigenfaces.rst
@@ -15,8 +14,3 @@ The basic API of libfacerec is very simple. Once a :ocv:class:`FaceRecognizer` i
    class/class_lbph.rst
    class/class_colormap.rst
 
-.. include:: class/class_facerecognizer.rst
-.. include:: class/class_eigenfaces.rst
-.. include:: class/class_fisherfaces.rst
-.. include:: class/class_lbph.rst
-.. include:: class/class_colormap.rst

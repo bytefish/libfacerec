@@ -1,3 +1,6 @@
+Fisherfaces Method
+==================
+
 Fisherfaces
 -----------
 
@@ -14,31 +17,19 @@ model-specific API is explained. ::
   // 711–720.
   class Fisherfaces: public FaceRecognizer {
 
-  private:
-      int _num_components;
-      Mat _eigenvectors;
-      Mat _eigenvalues;
-      Mat _mean;
-      vector<Mat> _projections;
-      vector<int> _labels;
-
   public:
       using FaceRecognizer::save;
       using FaceRecognizer::load;
 
       // Initializes an empty Fisherfaces model.
-      Fisherfaces(int num_components = 0) :
-          _num_components(num_components) {}
+      Fisherfaces(int num_components = 0);
 
       // Initializes and computes a Fisherfaces model with images in src and
       // corresponding labels in labels. num_components will be kept for
       // classification.
       Fisherfaces(InputArray src,
               InputArray labels,
-              int num_components = 0) :
-          _num_components(num_components) {
-          train(src, labels);
-      }
+              int num_components = 0);
 
       ~Fisherfaces() { }
 
@@ -56,44 +47,28 @@ model-specific API is explained. ::
       virtual void save(FileStorage& fs) const;
 
       // Returns the eigenvectors of this Fisherfaces model.
-      Mat eigenvectors() const { return _eigenvectors; }
+      Mat eigenvectors() const;
 
       // Returns the eigenvalues of this Fisherfaces model.
-      Mat eigenvalues() const { return _eigenvalues; }
+      Mat eigenvalues() const;
 
       // Returns the sample mean of this Fisherfaces model.
-      Mat mean() const { return _eigenvalues; }
+      Mat mean() const;
 
       // Returns the number of components used in this Fisherfaces model.
-      int num_components() const { return _num_components; }
+      int num_components() const;
   };  
 
-Fisherfaces::Fisherfaces(int num_components = 0)
-------------------------------------------------
+Fisherfaces::Fisherfaces
+------------------------
 
-Initializes a Fisherfaces model with a given number of components.
+Initializes and trains a Fisherfaces model for given data, labels and stores a given number of components.
 
 .. ocv:function:: Fisherfaces::Fisherfaces(int num_components = 0) 
-
-Initializes a Fisherfaces model with ``num_components``. ``num_components`` 
-number of components are  kept for classification. If no number of components 
-is given (default 0), it is automatically determined from given data 
-in :ocv:func:`Fisherfaces::train`.
-
-If (and only if) ``num_components`` <= 0, then ``num_components`` is set to 
-(C-1) in ocv:func:`Fisherfaces::train`, with *C* being the number of unique 
-classes in ``labels``.
-
-Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)
------------------------------------------------------------------------------------
-
-Initializes and trains a Fisherfaces model with a given number of components 
-for given input data and associated labels.
-
 .. ocv:function:: Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0) 
 
-Initializes and trains a Fisherfaces model with images in src and 
-corresponding labels in ``labels``. ``num_components`` number of components are 
+Initializes and trains a Fisherfaces model with images in src and corresponding 
+labels in ``labels`` (if given). ``num_components`` number of components are 
 kept for classification. If no number of components is given (default 0), it
 is automatically determined from given data in :ocv:func:`Fisherfaces::train`.
 
@@ -104,6 +79,7 @@ If (and only if) ``num_components`` <= 0, then ``num_components`` is set to
 Fisherfaces::save
 -----------------
 
+.. ocv:function::  void Fisherfaces::save(const string& filename) const
 .. ocv:function::  void Fisherfaces::save(FileStorage& fs) const
 
 See :ocv:func:`FaceRecognizer::save`.
@@ -111,6 +87,7 @@ See :ocv:func:`FaceRecognizer::save`.
 Fisherfaces::load
 -----------------
 
+.. ocv:function:: void Fisherfaces::load(const string& filename)
 .. ocv:function:: void Fisherfaces::load(const FileStorage& fs)
 
 See :ocv:func:`FaceRecognizer::load`.

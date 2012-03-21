@@ -39,7 +39,7 @@ colormap::ColorMap
 
 .. ocv:class:: colormap::ColorMap
 
-It's a fact, that human perception isn't built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. :ocv:class:`colormap::ColorMap` is the base class for colormaps in OpenCV. The following colormaps are included in libfacerec and equivalent to their GNU Octave/MATLAB counterparts:
+It's a fact, that human perception isn't built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. :ocv:class:`colormap::ColorMap` is the base class for colormaps in OpenCV. The following colormaps are included in libfacerec, feel free to add your own:
 
 +-----------------------+----------------------------------------------------+
 | Class                 | Scale                                              |
@@ -73,12 +73,11 @@ It's a fact, that human perception isn't built for observing fine changes in gra
 | colormap::Winter      | .. image:: /img/colormaps/colorscale_winter.jpg    |
 +-----------------------+----------------------------------------------------+
 
-
-Applying the Jet colormap on a Matrix is then as easy as writing:
+Applying the ``colormap::Jet`` on a given image ``img`` is then as easy as writing:
 
 .. code-block:: cpp
 
-  colormap::Jet jet; // default: 256-levels
+  colormap::Jet jet;
   Mat colored = jet(img);
 
 There's also a the wrapper function for imshow:
@@ -103,18 +102,22 @@ colormap::ColorMap::operator()
 
 .. ocv:function:: Mat colormap::Colormap::operator()(InputArray src) const
 
-colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)
-------------------------------------------------------------------------------------
+colormap::ColorMap::linear_colormap
+-----------------------------------
+
+Returns a linear interpolated colormap.
 
 .. ocv:function:: Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, int n) const
 
-colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,float,float,float)
---------------------------------------------------------------------------------------------------
+* ``X`` Points corresponding to a color value in ``r``, ``g`` and ``b``.
+* ``r``, ``g``, ``b`` Red, Green, Blue value.
+* ``n`` Number of points to interpolate (determines how smooth the colormap is).
 
 .. ocv:function:: Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, float begin, float end, float n) const
 
-colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,InputArray)
--------------------------------------------------------------------------------------------
+* ``begin`` Interpolation start.
+* ``end`` Interpolation end.
 
 .. ocv:function:: Mat linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, InputArray xi) const
 
+* ``xi`` Interpolation points.
