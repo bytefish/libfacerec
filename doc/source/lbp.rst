@@ -1,4 +1,0 @@
-Local Binary Patterns Histograms
---------------------------------
-
-
