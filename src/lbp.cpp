@@ -176,8 +176,8 @@ void cv::elbp(InputArray src, OutputArray dst, int radius, int neighbors) {
 Mat cv::spatial_histogram(InputArray _src, int numPatterns, int grid_x, int grid_y, bool normed) {
     Mat src = _src.getMat();
     // calculate LBP patch size
-    int width = (int) floor(src.cols/grid_x);
-    int height = (int) floor(src.rows/grid_y);
+    int width = static_cast<int>(floor(src.cols/grid_x));
+    int height = static_cast<int>(floor(src.rows/grid_y));
     // allocate memory for the spatial histogram
     Mat result = Mat::zeros(grid_x * grid_y, numPatterns, CV_32FC1);
     // return matrix with zeros if no data was given
