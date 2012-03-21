@@ -218,7 +218,6 @@ void cv::LBPH::save(FileStorage& fs) const {
     writeFileNodeList(fs, "labels", _labels);
 }
 
-
 void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR)
         CV_Error(CV_StsUnsupportedFormat, "cv::LBPH::train expects InputArray::STD_VECTOR_MAT or _InputArray::STD_VECTOR_VECTOR.");

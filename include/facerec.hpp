@@ -134,8 +134,8 @@ public:
     // Initializes and computes a Fisherfaces model with images in src and
     // corresponding labels in labels. num_components will be kept for
     // classification.
-    Fisherfaces(const vector<Mat>& src,
-            const vector<int>& labels,
+    Fisherfaces(InputArray src,
+            InputArray labels,
             int num_components = 0) :
         _num_components(num_components) {
         train(src, labels);
@@ -210,8 +210,8 @@ public:
     //
     // (radius=1), (neighbors=8) are used in the local binary patterns creation.
     // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
-    LBPH(const vector<Mat>& src,
-            const vector<int>& labels,
+    LBPH(InputArray src,
+            InputArray labels,
             int radius=1, int neighbors=8,
             int grid_x=8, int grid_y=8) :
                 _grid_x(grid_x),
@@ -237,10 +237,10 @@ public:
     void save(FileStorage& fs) const;
 
     // Getter functions.
-    int neighbors() { return _neighbors; }
-    int radius() { return _radius; }
-    int grid_x() { return _grid_x; }
-    int grid_y() { return _grid_y; }
+    int neighbors() const { return _neighbors; }
+    int radius() const { return _radius; }
+    int grid_x() const { return _grid_x; }
+    int grid_y() const { return _grid_y; }
 
 };
 
