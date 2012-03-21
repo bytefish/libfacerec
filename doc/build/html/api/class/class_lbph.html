@@ -1,0 +1,272 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>LBPH &mdash; libfacerec 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="up" title="API" href="../api.html" />
+    <link rel="next" title="imwrite" href="class_colormap.html" />
+    <link rel="prev" title="Fisherfaces" href="class_fisherfaces.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="class_colormap.html" title="imwrite"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="class_fisherfaces.html" title="Fisherfaces"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="lbph">
+<h1>LBPH<a class="headerlink" href="#lbph" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="LBPH">
+<em class="property">class </em><tt class="descname">LBPH</tt><a class="headerlink" href="#LBPH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Implements the Local Binary Patterns Histograms as described in <a class="reference internal" href="../../bib/literature.html#ahonen04">[Ahonen04]</a>.
+Only the model-specific API is explained.</p>
+<div class="highlight-python"><pre>//  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
+//  patterns: Application to face recognition." IEEE Transactions on Pattern
+//  Analysis and Machine Intelligence, 28(12):2037-2041.
+//
+class LBPH : public FaceRecognizer {
+
+private:
+    int _grid_x;
+    int _grid_y;
+    int _radius;
+    int _neighbors;
+
+    vector&lt;Mat&gt; _histograms;
+    vector&lt;int&gt; _labels;
+
+public:
+    using FaceRecognizer::save;
+    using FaceRecognizer::load;
+
+    // Initializes this LBPH Model. The current implementation is rather fixed
+    // as it uses the Extended Local Binary Patterns per default.
+    //
+    // radius, neighbors are used in the local binary patterns creation.
+    // grid_x, grid_y control the grid size of the spatial histograms.
+    LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8) :
+        _grid_x(grid_x),
+        _grid_y(grid_y),
+        _radius(radius),
+        _neighbors(neighbors) {}
+
+    // Initializes and computes this LBPH Model. The current implementation is
+    // rather fixed as it uses the Extended Local Binary Patterns per default.
+    //
+    // (radius=1), (neighbors=8) are used in the local binary patterns creation.
+    // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
+    LBPH(InputArray src,
+            InputArray labels,
+            int radius=1, int neighbors=8,
+            int grid_x=8, int grid_y=8) :
+                _grid_x(grid_x),
+                _grid_y(grid_y),
+                _radius(radius),
+                _neighbors(neighbors) {
+        train(src, labels);
+    }
+
+    ~LBPH() { }
+
+    // Computes a LBPH model with images in src and
+    // corresponding labels in labels.
+    void train(InputArray src, InputArray labels);
+
+    // Predicts the label of a query image in src.
+    int predict(InputArray src) const;
+
+    // See cv::FaceRecognizer::load.
+    void load(const FileStorage&amp; fs);
+
+    // See cv::FaceRecognizer::save.
+    void save(FileStorage&amp; fs) const;
+
+    // Getter functions.
+    int neighbors() const { return _neighbors; }
+    int radius() const { return _radius; }
+    int grid_x() const { return _grid_x; }
+    int grid_y() const { return _grid_y; }
+
+};</pre>
+</div>
+<div class="section" id="lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">
+<h2>LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)<a class="headerlink" href="#lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="lbph-lbph-inputarray-src-inputarray-labels-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">
+<h2>LBPH::LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)<a class="headerlink" href="#lbph-lbph-inputarray-src-inputarray-labels-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="lbph-save">
+<h2>LBPH::save<a class="headerlink" href="#lbph-save" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a>.</p>
+</div>
+<div class="section" id="lbph-load">
+<h2>LBPH::load<a class="headerlink" href="#lbph-load" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a>.</p>
+</div>
+<div class="section" id="lbph-train">
+<h2>LBPH::train<a class="headerlink" href="#lbph-train" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="void train(InputArray src, InputArray labels)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">train</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong><big>)</big><a class="headerlink" href="#void train(InputArray src, InputArray labels)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::train(InputArray src, InputArray labels)" title="void FaceRecognizer::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt></a>.</p>
+</div>
+<div class="section" id="lbph-predict">
+<h2>LBPH::predict<a class="headerlink" href="#lbph-predict" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="int predict(InputArray src) const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference internal" href="../api.html#int FaceRecognizer::predict(InputArray src) const" title="int FaceRecognizer::predict(InputArray src) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt></a>.</p>
+</div>
+<div class="section" id="lbph-neighbors">
+<h2>LBPH::neighbors<a class="headerlink" href="#lbph-neighbors" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="int LBPH::neighbors() const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">LBPH::</tt><tt class="descname">neighbors</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int LBPH::neighbors() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="lbph-radius">
+<h2>LBPH::radius<a class="headerlink" href="#lbph-radius" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="int LBPH::radius() const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">LBPH::</tt><tt class="descname">radius</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int LBPH::radius() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="lbph-grid-x">
+<h2>LBPH::grid_x<a class="headerlink" href="#lbph-grid-x" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="int LBPH::grid_x() const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">LBPH::</tt><tt class="descname">grid_x</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int LBPH::grid_x() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="lbph-grid-y">
+<h2>LBPH::grid_y<a class="headerlink" href="#lbph-grid-y" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="int LBPH::grid_y() const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">LBPH::</tt><tt class="descname">grid_y</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int LBPH::grid_y() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">LBPH</a><ul>
+<li><a class="reference internal" href="#lbph-lbph-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">LBPH::LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)</a></li>
+<li><a class="reference internal" href="#lbph-lbph-inputarray-src-inputarray-labels-int-radius-1-int-neighbors-8-int-grid-x-8-int-grid-y-8">LBPH::LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8)</a></li>
+<li><a class="reference internal" href="#lbph-save">LBPH::save</a></li>
+<li><a class="reference internal" href="#lbph-load">LBPH::load</a></li>
+<li><a class="reference internal" href="#lbph-train">LBPH::train</a></li>
+<li><a class="reference internal" href="#lbph-predict">LBPH::predict</a></li>
+<li><a class="reference internal" href="#lbph-neighbors">LBPH::neighbors</a></li>
+<li><a class="reference internal" href="#lbph-radius">LBPH::radius</a></li>
+<li><a class="reference internal" href="#lbph-grid-x">LBPH::grid_x</a></li>
+<li><a class="reference internal" href="#lbph-grid-y">LBPH::grid_y</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="class_fisherfaces.html"
+                        title="previous chapter">Fisherfaces</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="class_colormap.html"
+                        title="next chapter">imwrite</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/class/class_lbph.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="class_colormap.html" title="imwrite"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="class_fisherfaces.html" title="Fisherfaces"
+             >previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Wagner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

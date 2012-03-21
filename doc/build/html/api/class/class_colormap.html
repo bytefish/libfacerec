@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>imwrite &mdash; libfacerec 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="up" title="API" href="../api.html" />
+    <link rel="next" title="Tutorials" href="../../tutorial/tutorial.html" />
+    <link rel="prev" title="LBPH" href="class_lbph.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../tutorial/tutorial.html" title="Tutorials"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="class_lbph.html" title="LBPH"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="imwrite">
+<h1>imwrite<a class="headerlink" href="#imwrite" title="Permalink to this headline">¶</a></h1>
+<p>Provides a wrapper to <a class="reference internal" href="../api.html#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
+<dl class="function">
+<dt id="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">imwrite</tt><big>(</big>const string&amp; <strong>filename</strong>, InputArray <strong>img</strong>, const colormap::ColorMap&amp; <strong>cm</strong>, const vector&lt;int&gt;&amp; <strong>params</strong>=vector&lt;int&gt;()<big>)</big><a class="headerlink" href="#void imwrite(const string& filename, InputArray img, const colormap::ColorMap& cm, const vector<int>& params)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This makes applying a <a class="reference internal" href="../api.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> and storing the result as easy as writing:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwrite</span><span class="p">(</span><span class="s">&quot;image.png&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../api.html#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for the list of supported formats and flags description.</p>
+</div>
+<div class="section" id="imshow">
+<h1>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h1>
+<p>Provides a wrapper to <a class="reference internal" href="../api.html#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
+<dl class="function">
+<dt id="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">imshow</tt><big>(</big>const string&amp; <strong>winname</strong>, InputArray <strong>img</strong>, const colormap::ColorMap&amp; <strong>cm</strong><big>)</big><a class="headerlink" href="#void imshow(const string& winname, InputArray img, const colormap::ColorMap& cm)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This makes applying a <a class="reference internal" href="../api.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> and storing the result as easy as writing:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwshow</span><span class="p">(</span><span class="s">&quot;image&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="../api.html#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for the list of supported formats and flags description.</p>
+<div class="section" id="colormap">
+<h2>ColorMap<a class="headerlink" href="#colormap" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="colormap::ColorMap">
+<em class="property">class </em><tt class="descclassname">colormap::</tt><tt class="descname">ColorMap</tt><a class="headerlink" href="#colormap::ColorMap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>It&#8217;s a fact, that human perception isn&#8217;t built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. <a class="reference internal" href="../api.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> is the base class for colormaps in OpenCV. The following colormaps are included in libfacerec and equivalent to their GNU Octave/MATLAB counterparts:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Class</th>
+<th class="head">Scale</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>colormap::Autumn</td>
+<td><img alt="../../_images/colorscale_autumn.jpg" class="first last" src="../../_images/colorscale_autumn.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Bone</td>
+<td><img alt="../../_images/colorscale_bone.jpg" class="first last" src="../../_images/colorscale_bone.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Cool</td>
+<td><img alt="../../_images/colorscale_cool.jpg" class="first last" src="../../_images/colorscale_cool.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Hot</td>
+<td><img alt="../../_images/colorscale_hot.jpg" class="first last" src="../../_images/colorscale_hot.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::HSV</td>
+<td><img alt="../../_images/colorscale_hsv.jpg" class="first last" src="../../_images/colorscale_hsv.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Jet</td>
+<td><img alt="../../_images/colorscale_jet.jpg" class="first last" src="../../_images/colorscale_jet.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::MKPJ1</td>
+<td><img alt="../../_images/colorscale_mkpj1.jpg" class="first last" src="../../_images/colorscale_mkpj1.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::MKPJ2</td>
+<td><img alt="../../_images/colorscale_mkpj2.jpg" class="first last" src="../../_images/colorscale_mkpj2.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Ocean</td>
+<td><img alt="../../_images/colorscale_ocean.jpg" class="first last" src="../../_images/colorscale_ocean.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Pink</td>
+<td><img alt="../../_images/colorscale_pink.jpg" class="first last" src="../../_images/colorscale_pink.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Rainbow</td>
+<td><img alt="../../_images/colorscale_rainbow.jpg" class="first last" src="../../_images/colorscale_rainbow.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Spring</td>
+<td><img alt="../../_images/colorscale_spring.jpg" class="first last" src="../../_images/colorscale_spring.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Summer</td>
+<td><img alt="../../_images/colorscale_summer.jpg" class="first last" src="../../_images/colorscale_summer.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Winter</td>
+<td><img alt="../../_images/colorscale_winter.jpg" class="first last" src="../../_images/colorscale_winter.jpg" />
+</td>
+</tr>
+</tbody>
+</table>
+<p>Applying the Jet colormap on a Matrix is then as easy as writing:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span> <span class="n">jet</span><span class="p">;</span> <span class="c1">// default: 256-levels</span>
+<span class="n">Mat</span> <span class="n">colored</span> <span class="o">=</span> <span class="n">jet</span><span class="p">(</span><span class="n">img</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>There&#8217;s also a the wrapper function for imshow:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwshow</span><span class="p">(</span><span class="s">&quot;image&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>And a wrapper to imwrite:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwrite</span><span class="p">(</span><span class="s">&quot;image.png&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="colormap-colormap-init">
+<h1>colormap::ColorMap::init<a class="headerlink" href="#colormap-colormap-init" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="void colormap::ColorMap::init(int n)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">colormap::ColorMap::</tt><tt class="descname">init</tt><big>(</big>int <strong>n</strong><big>)</big><a class="headerlink" href="#void colormap::ColorMap::init(int n)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="colormap-colormap-operator">
+<h1>colormap::ColorMap::operator()<a class="headerlink" href="#colormap-colormap-operator" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="Mat colormap::Colormap::operator()(InputArray src) const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">colormap::Colormap::</tt><tt class="descname">operator()</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat colormap::Colormap::operator()(InputArray src) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int">
+<h1>colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)<a class="headerlink" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, int n) const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">colormap::ColorMap::</tt><tt class="descname">linear_colormap</tt><big>(</big>InputArray <strong>X</strong>, InputArray <strong>r</strong>, InputArray <strong>g</strong>, InputArray <strong>b</strong>, int <strong>n</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, int n) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float">
+<h1>colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,float,float,float)<a class="headerlink" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, float begin, float end, float n) const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">colormap::ColorMap::</tt><tt class="descname">linear_colormap</tt><big>(</big>InputArray <strong>X</strong>, InputArray <strong>r</strong>, InputArray <strong>g</strong>, InputArray <strong>b</strong>, float <strong>begin</strong>, float <strong>end</strong>, float <strong>n</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, float begin, float end, float n) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray">
+<h1>colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,InputArray)<a class="headerlink" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="Mat linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, InputArray xi) const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descname">linear_colormap</tt><big>(</big>InputArray <strong>X</strong>, InputArray <strong>r</strong>, InputArray <strong>g</strong>, InputArray <strong>b</strong>, InputArray <strong>xi</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, InputArray xi) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">imwrite</a></li>
+<li><a class="reference internal" href="#imshow">imshow</a><ul>
+<li><a class="reference internal" href="#colormap">ColorMap</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#colormap-colormap-init">colormap::ColorMap::init</a></li>
+<li><a class="reference internal" href="#colormap-colormap-operator">colormap::ColorMap::operator()</a></li>
+<li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)</a></li>
+<li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,float,float,float)</a></li>
+<li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,InputArray)</a></li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="class_lbph.html"
+                        title="previous chapter">LBPH</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../../tutorial/tutorial.html"
+                        title="next chapter">Tutorials</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/class/class_colormap.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../tutorial/tutorial.html" title="Tutorials"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="class_lbph.html" title="LBPH"
+             >previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Wagner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

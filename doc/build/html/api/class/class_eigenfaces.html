@@ -1,0 +1,304 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Eigenfaces &mdash; libfacerec 0.01 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.01',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="up" title="API" href="../api.html" />
+    <link rel="next" title="Fisherfaces" href="class_fisherfaces.html" />
+    <link rel="prev" title="FaceRecognizer" href="class_facerecognizer.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="class_fisherfaces.html" title="Fisherfaces"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="class_facerecognizer.html" title="FaceRecognizer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="eigenfaces">
+<h1>Eigenfaces<a class="headerlink" href="#eigenfaces" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="Eigenfaces">
+<em class="property">class </em><tt class="descname">Eigenfaces</tt><a class="headerlink" href="#Eigenfaces" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Implements the Eigenfaces Method as described in <a class="reference internal" href="../../bib/literature.html#tp91">[TP91]</a>. Only the model-specific
+API is explained.</p>
+<div class="highlight-python"><pre>class Eigenfaces : public FaceRecognizer {
+
+private:
+    int _num_components;
+    vector&lt;Mat&gt; _projections;
+    vector&lt;int&gt; _labels;
+    Mat _eigenvectors;
+    Mat _eigenvalues;
+    Mat _mean;
+
+public:
+    using FaceRecognizer::save;
+    using FaceRecognizer::load;
+
+    // Initializes an empty Eigenfaces model.
+    Eigenfaces(int num_components = 0) :
+        _num_components(num_components) { }
+
+    // Initializes and computes an Eigenfaces model with images in src and
+    // corresponding labels in labels. num_components will be kept for
+    // classification.
+    Eigenfaces(InputArray src, InputArray labels,
+            int num_components = 0) :
+        _num_components(num_components) {
+        train(src, labels);
+    }
+
+    // Computes an Eigenfaces model with images in src and corresponding labels
+    // in labels.
+    void train(InputArray src, InputArray labels);
+
+    // Predicts the label of a query image in src.
+    int predict(const InputArray src) const;
+
+    // See cv::FaceRecognizer::load.
+    void load(const FileStorage&amp; fs);
+
+    // See cv::FaceRecognizer::save.
+    void save(FileStorage&amp; fs) const;
+
+    // Returns the eigenvectors of this PCA.
+    Mat eigenvectors() const { return _eigenvectors; }
+
+    // Returns the eigenvalues of this PCA.
+    Mat eigenvalues() const { return _eigenvalues; }
+
+    // Returns the sample mean of this PCA.
+    Mat mean() const { return _mean; }
+
+    // Returns the number of components used in this PCA.
+    int num_components() const { return _num_components; }
+};</pre>
+</div>
+<div class="section" id="eigenfaces-eigenfaces-int-num-components-0">
+<h2>Eigenfaces::Eigenfaces(int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-int-num-components-0" title="Permalink to this headline">¶</a></h2>
+<p>Initializes an Eigenfaces model with a given number of components.</p>
+<dl class="function">
+<dt id="Eigenfaces::Eigenfaces(int num_components)">
+<strong>C++:</strong><tt class="descname"> </tt> <tt class="descclassname">Eigenfaces::</tt><tt class="descname">Eigenfaces</tt><big>(</big>int <strong>num_components</strong>=0<big>)</big><a class="headerlink" href="#Eigenfaces::Eigenfaces(int num_components)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Initializes an Eigenfaces model with <tt class="docutils literal"><span class="pre">num_components</span></tt>. <tt class="docutils literal"><span class="pre">num_components</span></tt>
+number of components are kept for classification. If no number of components
+is given (default 0), it is automatically determined from given data in
+<a class="reference internal" href="../api.html#void Eigenfaces::train(InputArray src, InputArray labels)" title="void Eigenfaces::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::train()</span></tt></a>.</p>
+<p>If (and only if) <tt class="docutils literal"><span class="pre">num_components</span></tt> &lt;= 0, then <tt class="docutils literal"><span class="pre">num_components</span></tt> is set to
+(N-1) in ocv:func:<cite>Eigenfaces::train</cite>, with <em>N</em> being the total number of
+samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
+</div>
+<div class="section" id="eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0">
+<h2>Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)<a class="headerlink" href="#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0" title="Permalink to this headline">¶</a></h2>
+<p>Initializes and trains an Eigenfaces model with a given number of components
+for given input data and associated labels.</p>
+<dl class="function">
+<dt id="Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components)">
+<strong>C++:</strong><tt class="descname"> </tt> <tt class="descclassname">Eigenfaces::</tt><tt class="descname">Eigenfaces</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong>, int <strong>num_components</strong>=0<big>)</big><a class="headerlink" href="#Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Initializes and trains an Eigenfaces model with images in src and
+corresponding labels in <tt class="docutils literal"><span class="pre">labels</span></tt>. <tt class="docutils literal"><span class="pre">num_components</span></tt> number of components are
+kept for classification. If no number of components is given (default 0), it is
+automatically determined from given data in <a class="reference internal" href="../api.html#void Eigenfaces::train(InputArray src, InputArray labels)" title="void Eigenfaces::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::train()</span></tt></a>.</p>
+<p>If (and only if) <tt class="docutils literal"><span class="pre">num_components</span></tt> &lt;= 0, then <tt class="docutils literal"><span class="pre">num_components</span></tt> is set to
+(N-1) in ocv:func:<cite>Eigenfaces::train</cite>, with <em>N</em> being the total number of
+samples in <tt class="docutils literal"><span class="pre">src</span></tt>.</p>
+</div>
+<div class="section" id="eigenfaces-save">
+<h2>Eigenfaces::save<a class="headerlink" href="#eigenfaces-save" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="void Eigenfaces::save(FileStorage&amp; fs) const">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Eigenfaces::</tt><tt class="descname">save</tt><big>(</big>FileStorage&amp; <strong>fs</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void Eigenfaces::save(FileStorage& fs) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a>.</p>
+</div>
+<div class="section" id="eigenfaces-load">
+<h2>Eigenfaces::load<a class="headerlink" href="#eigenfaces-load" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="void Eigenfaces::load(const FileStorage&amp; fs)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Eigenfaces::</tt><tt class="descname">load</tt><big>(</big>const FileStorage&amp; <strong>fs</strong><big>)</big><a class="headerlink" href="#void Eigenfaces::load(const FileStorage& fs)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a>.</p>
+</div>
+<div class="section" id="eigenfaces-train">
+<h2>Eigenfaces::train<a class="headerlink" href="#eigenfaces-train" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="void Eigenfaces::train(InputArray src, InputArray labels)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Eigenfaces::</tt><tt class="descname">train</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong><big>)</big><a class="headerlink" href="#void Eigenfaces::train(InputArray src, InputArray labels)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::train(InputArray src, InputArray labels)" title="void FaceRecognizer::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt></a>.</p>
+</div>
+<div class="section" id="eigenfaces-predict">
+<h2>Eigenfaces::predict<a class="headerlink" href="#eigenfaces-predict" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="int Eigenfaces::predict(InputArray src) const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">Eigenfaces::</tt><tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int Eigenfaces::predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>See <a class="reference internal" href="../api.html#int FaceRecognizer::predict(InputArray src) const" title="int FaceRecognizer::predict(InputArray src) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt></a>.</p>
+</div>
+<div class="section" id="eigenfaces-eigenvalues">
+<h2>Eigenfaces::eigenvalues<a class="headerlink" href="#eigenfaces-eigenvalues" title="Permalink to this headline">¶</a></h2>
+<p>Returns the eigenvalues corresponding to each of the eigenvectors.</p>
+<dl class="function">
+<dt id="Mat Eigenfaces::eigenvalues() const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">Eigenfaces::</tt><tt class="descname">eigenvalues</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat Eigenfaces::eigenvalues() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Regarding the data alignment, the eigenvalues are stored in a 1D vector as row.
+They are sorted in a descending order.</p>
+</div>
+<div class="section" id="eigenfaces-eigenvectors">
+<h2>Eigenfaces::eigenvectors<a class="headerlink" href="#eigenfaces-eigenvectors" title="Permalink to this headline">¶</a></h2>
+<p>Returns the eigenvectors of this model.</p>
+<dl class="function">
+<dt id="Mat Eigenfaces::eigenvectors() const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">Eigenfaces::</tt><tt class="descname">eigenvectors</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat Eigenfaces::eigenvectors() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>Regarding the data alignment, the i-th eigenvectors is stored in the i-th column
+of this matrix. The eigenvectors are sorted in a descending order by their
+eigenvalue.</p>
+</div>
+<div class="section" id="eigenfaces-mean">
+<h2>Eigenfaces::mean<a class="headerlink" href="#eigenfaces-mean" title="Permalink to this headline">¶</a></h2>
+<p>Returns the sample mean of this model.</p>
+<dl class="function">
+<dt id="Mat Eigenfaces::mean() const">
+<strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">Eigenfaces::</tt><tt class="descname">mean</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat Eigenfaces::mean() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>The mean is stored as a 1D vector in a row.</p>
+</div>
+<div class="section" id="eigenfaces-num-components">
+<h2>Eigenfaces::num_components<a class="headerlink" href="#eigenfaces-num-components" title="Permalink to this headline">¶</a></h2>
+<p>Returns the number of components (number of Eigenfaces) used for classification.</p>
+<dl class="function">
+<dt id="int Eigenfaces::num_components() const">
+<strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">Eigenfaces::</tt><tt class="descname">num_components</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int Eigenfaces::num_components() const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This number may be 0 for initialized objects. It may be set during the training.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Eigenfaces</a><ul>
+<li><a class="reference internal" href="#eigenfaces-eigenfaces-int-num-components-0">Eigenfaces::Eigenfaces(int num_components = 0)</a></li>
+<li><a class="reference internal" href="#eigenfaces-eigenfaces-inputarray-src-inputarray-labels-int-num-components-0">Eigenfaces::Eigenfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
+<li><a class="reference internal" href="#eigenfaces-save">Eigenfaces::save</a></li>
+<li><a class="reference internal" href="#eigenfaces-load">Eigenfaces::load</a></li>
+<li><a class="reference internal" href="#eigenfaces-train">Eigenfaces::train</a></li>
+<li><a class="reference internal" href="#eigenfaces-predict">Eigenfaces::predict</a></li>
+<li><a class="reference internal" href="#eigenfaces-eigenvalues">Eigenfaces::eigenvalues</a></li>
+<li><a class="reference internal" href="#eigenfaces-eigenvectors">Eigenfaces::eigenvectors</a></li>
+<li><a class="reference internal" href="#eigenfaces-mean">Eigenfaces::mean</a></li>
+<li><a class="reference internal" href="#eigenfaces-num-components">Eigenfaces::num_components</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="class_facerecognizer.html"
+                        title="previous chapter">FaceRecognizer</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="class_fisherfaces.html"
+                        title="next chapter">Fisherfaces</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/class/class_eigenfaces.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="class_fisherfaces.html" title="Fisherfaces"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="class_facerecognizer.html" title="FaceRecognizer"
+             >previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+          <li><a href="../api.html" >API</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Wagner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
