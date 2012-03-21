@@ -34,8 +34,8 @@ This makes applying a :ocv:class:`colormap::ColorMap` and storing the result as 
 
 See :ocv:func:`imshow` for the list of supported formats and flags description.
 
-ColorMap
---------
+colormap::ColorMap
+------------------
 
 .. ocv:class:: colormap::ColorMap
 
