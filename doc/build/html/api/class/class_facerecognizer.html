@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>FaceRecognizer &mdash; libfacerec 0.01 documentation</title>
+    <title>FaceRecognizer (Abstract Base Class) &mdash; libfacerec 0.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,7 +27,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
     <link rel="up" title="API" href="../api.html" />
-    <link rel="next" title="Eigenfaces" href="class_eigenfaces.html" />
+    <link rel="next" title="Eigenfaces Method" href="class_eigenfaces.html" />
     <link rel="prev" title="API" href="../api.html" /> 
   </head>
   <body>
@@ -38,7 +38,7 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="class_eigenfaces.html" title="Eigenfaces"
+          <a href="class_eigenfaces.html" title="Eigenfaces Method"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../api.html" title="API"
@@ -53,15 +53,17 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="facerecognizer">
-<h1>FaceRecognizer<a class="headerlink" href="#facerecognizer" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="facerecognizer-abstract-base-class">
+<h1>FaceRecognizer (Abstract Base Class)<a class="headerlink" href="#facerecognizer-abstract-base-class" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="facerecognizer">
+<h2>FaceRecognizer<a class="headerlink" href="#facerecognizer" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="FaceRecognizer">
 <em class="property">class </em><tt class="descname">FaceRecognizer</tt><a class="headerlink" href="#FaceRecognizer" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <p>All face recognition models in libfacerec are derived from the abstract base
-class <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a>, which provides a unified access to all face
+class <a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a>, which provides a unified access to all face
 recongition algorithms.</p>
 <div class="highlight-cpp"><div class="highlight"><pre><span class="k">namespace</span> <span class="n">cv</span> <span class="p">{</span>
 
@@ -93,7 +95,7 @@ recongition algorithms.</p>
 </div>
 </div>
 <div class="section" id="facerecognizer-facerecognizer">
-<h1>FaceRecognizer::~FaceRecognizer<a class="headerlink" href="#facerecognizer-facerecognizer" title="Permalink to this headline">¶</a></h1>
+<h2>FaceRecognizer::~FaceRecognizer<a class="headerlink" href="#facerecognizer-facerecognizer" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="FaceRecognizer::~FaceRecognizer()">
 <strong>C++:</strong><tt class="descname"> </tt> <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">~FaceRecognizer</tt><big>(</big><big>)</big><a class="headerlink" href="#FaceRecognizer::~FaceRecognizer()" title="Permalink to this definition">¶</a></dt>
@@ -112,14 +114,14 @@ write the following code:</p>
 </div>
 </div>
 <div class="section" id="facerecognizer-train">
-<h1>FaceRecognizer::train<a class="headerlink" href="#facerecognizer-train" title="Permalink to this headline">¶</a></h1>
+<h2>FaceRecognizer::train<a class="headerlink" href="#facerecognizer-train" title="Permalink to this headline">¶</a></h2>
 <p>Trains a FaceRecognizer with given data and associated labels.</p>
 <dl class="function">
 <dt id="void FaceRecognizer::train(InputArray src, InputArray labels)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">train</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong><big>)</big><a class="headerlink" href="#void FaceRecognizer::train(InputArray src, InputArray labels)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Every model subclassing <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> must be able to work with
+<p>Every model subclassing <a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> must be able to work with
 image data (<tt class="docutils literal"><span class="pre">src</span></tt>) given as a <tt class="docutils literal"><span class="pre">vector&lt;Mat&gt;</span></tt>. This is important, because it&#8217;s
 impossible to make general assumptions about the dimensionality of input
 samples. The Local Binary Patterns for example process 2D images, while
@@ -148,7 +150,7 @@ row or a column) of <tt class="docutils literal"><span class="pre">CV_32SC1</spa
 </div>
 </div>
 <div class="section" id="facerecognizer-predict">
-<h1>FaceRecognizer::predict<a class="headerlink" href="#facerecognizer-predict" title="Permalink to this headline">¶</a></h1>
+<h2>FaceRecognizer::predict<a class="headerlink" href="#facerecognizer-predict" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="int FaceRecognizer::predict(InputArray src) const">
 <strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int FaceRecognizer::predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
@@ -164,8 +166,8 @@ state, so the method can be safely called from within different threads.</p>
 </div>
 </div>
 <div class="section" id="facerecognizer-save">
-<h1>FaceRecognizer::save<a class="headerlink" href="#facerecognizer-save" title="Permalink to this headline">¶</a></h1>
-<p>Saves a <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> and its model state.</p>
+<h2>FaceRecognizer::save<a class="headerlink" href="#facerecognizer-save" title="Permalink to this headline">¶</a></h2>
+<p>Saves a <a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> and its model state.</p>
 <dl class="function">
 <dt id="void FaceRecognizer::save(const string&amp; filename) const">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">save</tt><big>(</big>const string&amp; <strong>filename</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void FaceRecognizer::save(const string& filename) const" title="Permalink to this definition">¶</a></dt>
@@ -176,7 +178,7 @@ state, so the method can be safely called from within different threads.</p>
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">save</tt><big>(</big>FileStorage&amp; <strong>fs</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void FaceRecognizer::save(FileStorage& fs) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Every <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> has to overwrite <tt class="docutils literal"><span class="pre">FaceRecognizer::save(FileStorage&amp;</span> <span class="pre">fs)</span></tt>
+<p>Every <a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> has to overwrite <tt class="docutils literal"><span class="pre">FaceRecognizer::save(FileStorage&amp;</span> <span class="pre">fs)</span></tt>
 to save the model state. <tt class="docutils literal"><span class="pre">FaceRecognizer::save(FileStorage&amp;</span> <span class="pre">fs)</span></tt> is then
 called by <tt class="docutils literal"><span class="pre">FaceRecognizer::save(const</span> <span class="pre">string&amp;</span> <span class="pre">filename)</span></tt>, to ease saving a
 model.</p>
@@ -184,8 +186,8 @@ model.</p>
 state, so the method can be safely called from within different threads.</p>
 </div>
 <div class="section" id="facerecognizer-load">
-<h1>FaceRecognizer::load<a class="headerlink" href="#facerecognizer-load" title="Permalink to this headline">¶</a></h1>
-<p>Loads a <a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> and its model state.</p>
+<h2>FaceRecognizer::load<a class="headerlink" href="#facerecognizer-load" title="Permalink to this headline">¶</a></h2>
+<p>Loads a <a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> and its model state.</p>
 <dl class="function">
 <dt id="void FaceRecognizer::load(const string&amp; filename)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">FaceRecognizer::</tt><tt class="descname">load</tt><big>(</big>const string&amp; <strong>filename</strong><big>)</big><a class="headerlink" href="#void FaceRecognizer::load(const string& filename)" title="Permalink to this definition">¶</a></dt>
@@ -197,10 +199,11 @@ state, so the method can be safely called from within different threads.</p>
 <dd></dd></dl>
 
 <p>Loads a persisted model and state from a given XML or YAML file . Every
-<a class="reference internal" href="../api.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> has to overwrite <tt class="docutils literal"><span class="pre">FaceRecognizer::load(FileStorage&amp;</span> <span class="pre">fs)</span></tt>
+<a class="reference internal" href="#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> has to overwrite <tt class="docutils literal"><span class="pre">FaceRecognizer::load(FileStorage&amp;</span> <span class="pre">fs)</span></tt>
 to load the model state. <tt class="docutils literal"><span class="pre">FaceRecognizer::load(FileStorage&amp;</span> <span class="pre">fs)</span></tt> in turn gets
 called by <tt class="docutils literal"><span class="pre">FaceRecognizer::load(const</span> <span class="pre">string&amp;</span> <span class="pre">filename)</span></tt>, to ease saving a
 model.</p>
+</div>
 </div>
 
 
@@ -211,12 +214,15 @@ model.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">FaceRecognizer</a></li>
+<li><a class="reference internal" href="#">FaceRecognizer (Abstract Base Class)</a><ul>
+<li><a class="reference internal" href="#facerecognizer">FaceRecognizer</a></li>
 <li><a class="reference internal" href="#facerecognizer-facerecognizer">FaceRecognizer::~FaceRecognizer</a></li>
 <li><a class="reference internal" href="#facerecognizer-train">FaceRecognizer::train</a></li>
 <li><a class="reference internal" href="#facerecognizer-predict">FaceRecognizer::predict</a></li>
 <li><a class="reference internal" href="#facerecognizer-save">FaceRecognizer::save</a></li>
 <li><a class="reference internal" href="#facerecognizer-load">FaceRecognizer::load</a></li>
+</ul>
+</li>
 </ul>
 
   <h4>Previous topic</h4>
@@ -224,7 +230,7 @@ model.</p>
                         title="previous chapter">API</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="class_eigenfaces.html"
-                        title="next chapter">Eigenfaces</a></p>
+                        title="next chapter">Eigenfaces Method</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/api/class/class_facerecognizer.txt"
@@ -254,7 +260,7 @@ model.</p>
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="class_eigenfaces.html" title="Eigenfaces"
+          <a href="class_eigenfaces.html" title="Eigenfaces Method"
              >next</a> |</li>
         <li class="right" >
           <a href="../api.html" title="API"

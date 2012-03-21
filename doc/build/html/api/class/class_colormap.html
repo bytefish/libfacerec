@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Working with ColorMaps &mdash; libfacerec 0.01 documentation</title>
+    <title>ColorMaps in OpenCV &mdash; libfacerec 0.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -28,7 +28,7 @@
     <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
     <link rel="up" title="API" href="../api.html" />
     <link rel="next" title="Tutorials" href="../../tutorial/tutorial.html" />
-    <link rel="prev" title="LBPH" href="class_lbph.html" /> 
+    <link rel="prev" title="Local Binary Patterns Histograms (LBPH)" href="class_lbph.html" /> 
   </head>
   <body>
     <div class="related">
@@ -41,7 +41,7 @@
           <a href="../../tutorial/tutorial.html" title="Tutorials"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="class_lbph.html" title="LBPH"
+          <a href="class_lbph.html" title="Local Binary Patterns Histograms (LBPH)"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
@@ -53,44 +53,9 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="working-with-colormaps">
-<h1>Working with ColorMaps<a class="headerlink" href="#working-with-colormaps" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="imwrite">
-<h2>imwrite<a class="headerlink" href="#imwrite" title="Permalink to this headline">¶</a></h2>
-<p>Provides a wrapper to <a class="reference internal" href="../api.html#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
-<dl class="function">
-<dt id="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)">
-<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">imwrite</tt><big>(</big>const string&amp; <strong>filename</strong>, InputArray <strong>img</strong>, const colormap::ColorMap&amp; <strong>cm</strong>, const vector&lt;int&gt;&amp; <strong>params</strong>=vector&lt;int&gt;()<big>)</big><a class="headerlink" href="#void imwrite(const string& filename, InputArray img, const colormap::ColorMap& cm, const vector<int>& params)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>This makes applying a <a class="reference internal" href="../api.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> and storing the result as easy as writing:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwrite</span><span class="p">(</span><span class="s">&quot;image.png&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="../api.html#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for the list of supported formats and flags description.</p>
-</div>
-<div class="section" id="imshow">
-<h2>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h2>
-<p>Provides a wrapper to <a class="reference internal" href="../api.html#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
-<dl class="function">
-<dt id="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)">
-<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">imshow</tt><big>(</big>const string&amp; <strong>winname</strong>, InputArray <strong>img</strong>, const colormap::ColorMap&amp; <strong>cm</strong><big>)</big><a class="headerlink" href="#void imshow(const string& winname, InputArray img, const colormap::ColorMap& cm)" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>This makes applying a <a class="reference internal" href="../api.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> and storing the result as easy as writing:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwshow</span><span class="p">(</span><span class="s">&quot;image&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
-</pre></div>
-</div>
-<p>See <a class="reference internal" href="../api.html#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for the list of supported formats and flags description.</p>
-</div>
-<div class="section" id="colormap">
-<h2>ColorMap<a class="headerlink" href="#colormap" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="colormap::ColorMap">
-<em class="property">class </em><tt class="descclassname">colormap::</tt><tt class="descname">ColorMap</tt><a class="headerlink" href="#colormap::ColorMap" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<p>It&#8217;s a fact, that human perception isn&#8217;t built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. <a class="reference internal" href="../api.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> is the base class for colormaps in OpenCV. The following colormaps are included in libfacerec and equivalent to their GNU Octave/MATLAB counterparts:</p>
+  <div class="section" id="colormaps-in-opencv">
+<h1>ColorMaps in OpenCV<a class="headerlink" href="#colormaps-in-opencv" title="Permalink to this headline">¶</a></h1>
+<p>It&#8217;s a fact, that human perception isn&#8217;t built for observing fine changes in grayscale images. Human sensors (eyes and stuff) are more sensitive to observing changes between colors, so you often need to recolor your grayscale images to get a clue about them. <a class="reference internal" href="#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> is the base class for colormaps in OpenCV. The following colormaps are included in libfacerec, feel free to add your own:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="31%" />
@@ -160,8 +125,8 @@
 </tr>
 </tbody>
 </table>
-<p>Applying the Jet colormap on a Matrix is then as easy as writing:</p>
-<div class="highlight-cpp"><div class="highlight"><pre><span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span> <span class="n">jet</span><span class="p">;</span> <span class="c1">// default: 256-levels</span>
+<p>Applying the <tt class="docutils literal"><span class="pre">colormap::Jet</span></tt> on a given image <tt class="docutils literal"><span class="pre">img</span></tt> is then as easy as writing:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span> <span class="n">jet</span><span class="p">;</span>
 <span class="n">Mat</span> <span class="n">colored</span> <span class="o">=</span> <span class="n">jet</span><span class="p">(</span><span class="n">img</span><span class="p">);</span>
 </pre></div>
 </div>
@@ -173,9 +138,69 @@
 <div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwrite</span><span class="p">(</span><span class="s">&quot;image.png&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
 </pre></div>
 </div>
+<div class="section" id="imwrite">
+<h2>imwrite<a class="headerlink" href="#imwrite" title="Permalink to this headline">¶</a></h2>
+<p>Provides a wrapper to <a class="reference internal" href="#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
+<dl class="function">
+<dt id="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">imwrite</tt><big>(</big>const string&amp; <strong>filename</strong>, InputArray <strong>img</strong>, const colormap::ColorMap&amp; <strong>cm</strong>, const vector&lt;int&gt;&amp; <strong>params</strong>=vector&lt;int&gt;()<big>)</big><a class="headerlink" href="#void imwrite(const string& filename, InputArray img, const colormap::ColorMap& cm, const vector<int>& params)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This makes applying a <a class="reference internal" href="#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> and storing the result as easy as writing:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwrite</span><span class="p">(</span><span class="s">&quot;image.png&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> for the list of supported formats and flags description.</p>
+</div>
+<div class="section" id="imshow">
+<h2>imshow<a class="headerlink" href="#imshow" title="Permalink to this headline">¶</a></h2>
+<p>Provides a wrapper to <a class="reference internal" href="#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for use with a given :ocv:class`ColorMap`.</p>
+<dl class="function">
+<dt id="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descname">imshow</tt><big>(</big>const string&amp; <strong>winname</strong>, InputArray <strong>img</strong>, const colormap::ColorMap&amp; <strong>cm</strong><big>)</big><a class="headerlink" href="#void imshow(const string& winname, InputArray img, const colormap::ColorMap& cm)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<p>This makes applying a <a class="reference internal" href="#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a> and storing the result as easy as writing:</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="n">imwshow</span><span class="p">(</span><span class="s">&quot;image&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> for the list of supported formats and flags description.</p>
+</div>
+<div class="section" id="colormap-colormap">
+<h2>colormap::ColorMap<a class="headerlink" href="#colormap-colormap" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="colormap::ColorMap">
+<em class="property">class </em><tt class="descclassname">colormap::</tt><tt class="descname">ColorMap</tt><a class="headerlink" href="#colormap::ColorMap" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<div class="highlight-cpp"><div class="highlight"><pre><span class="k">namespace</span> <span class="n">colormap</span> <span class="p">{</span>
+
+  <span class="k">class</span> <span class="nc">ColorMap</span> <span class="p">{</span>
+
+  <span class="k">public</span><span class="o">:</span>
+
+      <span class="c1">// Applies the colormap on a given image.</span>
+      <span class="n">Mat</span> <span class="k">operator</span><span class="p">()(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
+
+      <span class="c1">// Setup base map to interpolate from.</span>
+      <span class="k">virtual</span> <span class="kt">void</span> <span class="n">init</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+      <span class="c1">// Interpolates from a base colormap.</span>
+      <span class="k">static</span> <span class="n">Mat</span> <span class="n">linear_colormap</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">X</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">r</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">g</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">b</span><span class="p">,</span> <span class="kt">int</span> <span class="n">n</span><span class="p">);</span>
+
+      <span class="c1">// Interpolates from a base colormap.</span>
+      <span class="k">static</span> <span class="n">Mat</span> <span class="n">linear_colormap</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">X</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">r</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">g</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">b</span><span class="p">,</span> <span class="kt">float</span> <span class="n">begin</span><span class="p">,</span> <span class="kt">float</span> <span class="n">end</span><span class="p">,</span> <span class="kt">float</span> <span class="n">n</span><span class="p">);</span>
+
+      <span class="c1">// Interpolates from a base colormap.</span>
+      <span class="k">static</span> <span class="n">Mat</span> <span class="n">linear_colormap</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">X</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">r</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">g</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">b</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">xi</span><span class="p">);</span>
+  <span class="p">};</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="colormap-colormap-init">
 <h2>colormap::ColorMap::init<a class="headerlink" href="#colormap-colormap-init" title="Permalink to this headline">¶</a></h2>
+<p>Initializes the lookup table for this ColorMap (must be overriden by a derived class).</p>
 <dl class="function">
 <dt id="void colormap::ColorMap::init(int n)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">colormap::ColorMap::</tt><tt class="descname">init</tt><big>(</big>int <strong>n</strong><big>)</big><a class="headerlink" href="#void colormap::ColorMap::init(int n)" title="Permalink to this definition">¶</a></dt>
@@ -184,35 +209,43 @@
 </div>
 <div class="section" id="colormap-colormap-operator">
 <h2>colormap::ColorMap::operator()<a class="headerlink" href="#colormap-colormap-operator" title="Permalink to this headline">¶</a></h2>
+<p>Applies this ColorMap on a given image.</p>
 <dl class="function">
 <dt id="Mat colormap::Colormap::operator()(InputArray src) const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">colormap::Colormap::</tt><tt class="descname">operator()</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat colormap::Colormap::operator()(InputArray src) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
-<div class="section" id="colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int">
-<h2>colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)<a class="headerlink" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="colormap-colormap-linear-colormap">
+<h2>colormap::ColorMap::linear_colormap<a class="headerlink" href="#colormap-colormap-linear-colormap" title="Permalink to this headline">¶</a></h2>
+<p>Returns a linear interpolated colormap.</p>
 <dl class="function">
 <dt id="Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, int n) const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">colormap::ColorMap::</tt><tt class="descname">linear_colormap</tt><big>(</big>InputArray <strong>X</strong>, InputArray <strong>r</strong>, InputArray <strong>g</strong>, InputArray <strong>b</strong>, int <strong>n</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, int n) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float">
-<h2>colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,float,float,float)<a class="headerlink" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">X</span></tt> Points corresponding to a color value in <tt class="docutils literal"><span class="pre">r</span></tt>, <tt class="docutils literal"><span class="pre">g</span></tt> and <tt class="docutils literal"><span class="pre">b</span></tt>.</li>
+<li><tt class="docutils literal"><span class="pre">r</span></tt>, <tt class="docutils literal"><span class="pre">g</span></tt>, <tt class="docutils literal"><span class="pre">b</span></tt> Red, Green, Blue value.</li>
+<li><tt class="docutils literal"><span class="pre">n</span></tt> Number of points to interpolate (determines how smooth the colormap is).</li>
+</ul>
 <dl class="function">
 <dt id="Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, float begin, float end, float n) const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">colormap::ColorMap::</tt><tt class="descname">linear_colormap</tt><big>(</big>InputArray <strong>X</strong>, InputArray <strong>r</strong>, InputArray <strong>g</strong>, InputArray <strong>b</strong>, float <strong>begin</strong>, float <strong>end</strong>, float <strong>n</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat colormap::ColorMap::linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, float begin, float end, float n) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-</div>
-<div class="section" id="colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray">
-<h2>colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,InputArray)<a class="headerlink" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">begin</span></tt> Interpolation start.</li>
+<li><tt class="docutils literal"><span class="pre">end</span></tt> Interpolation end.</li>
+</ul>
 <dl class="function">
 <dt id="Mat linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, InputArray xi) const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descname">linear_colormap</tt><big>(</big>InputArray <strong>X</strong>, InputArray <strong>r</strong>, InputArray <strong>g</strong>, InputArray <strong>b</strong>, InputArray <strong>xi</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat linear_colormap(InputArray X, InputArray r, InputArray g, InputArray b, InputArray xi) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">xi</span></tt> Interpolation points.</li>
+</ul>
 </div>
 </div>
 
@@ -224,22 +257,20 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Working with ColorMaps</a><ul>
+<li><a class="reference internal" href="#">ColorMaps in OpenCV</a><ul>
 <li><a class="reference internal" href="#imwrite">imwrite</a></li>
 <li><a class="reference internal" href="#imshow">imshow</a></li>
-<li><a class="reference internal" href="#colormap">ColorMap</a></li>
+<li><a class="reference internal" href="#colormap-colormap">colormap::ColorMap</a></li>
 <li><a class="reference internal" href="#colormap-colormap-init">colormap::ColorMap::init</a></li>
 <li><a class="reference internal" href="#colormap-colormap-operator">colormap::ColorMap::operator()</a></li>
-<li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-int">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,int)</a></li>
-<li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-float-float-float">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,float,float,float)</a></li>
-<li><a class="reference internal" href="#colormap-colormap-linear-colormap-inputarray-inputarray-inputarray-inputarray-inputarray">colormap::ColorMap::linear_colormap(InputArray,InputArray,InputArray,InputArray,InputArray)</a></li>
+<li><a class="reference internal" href="#colormap-colormap-linear-colormap">colormap::ColorMap::linear_colormap</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="class_lbph.html"
-                        title="previous chapter">LBPH</a></p>
+                        title="previous chapter">Local Binary Patterns Histograms (LBPH)</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../../tutorial/tutorial.html"
                         title="next chapter">Tutorials</a></p>
@@ -275,7 +306,7 @@
           <a href="../../tutorial/tutorial.html" title="Tutorials"
              >next</a> |</li>
         <li class="right" >
-          <a href="class_lbph.html" title="LBPH"
+          <a href="class_lbph.html" title="Local Binary Patterns Histograms (LBPH)"
              >previous</a> |</li>
         <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 

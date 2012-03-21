@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Fisherfaces &mdash; libfacerec 0.01 documentation</title>
+    <title>Fisherfaces Method &mdash; libfacerec 0.01 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -27,8 +27,8 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
     <link rel="up" title="API" href="../api.html" />
-    <link rel="next" title="LBPH" href="class_lbph.html" />
-    <link rel="prev" title="Eigenfaces" href="class_eigenfaces.html" /> 
+    <link rel="next" title="Local Binary Patterns Histograms (LBPH)" href="class_lbph.html" />
+    <link rel="prev" title="Eigenfaces Method" href="class_eigenfaces.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,10 +38,10 @@
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="class_lbph.html" title="LBPH"
+          <a href="class_lbph.html" title="Local Binary Patterns Histograms (LBPH)"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="class_eigenfaces.html" title="Eigenfaces"
+          <a href="class_eigenfaces.html" title="Eigenfaces Method"
              accesskey="P">previous</a> |</li>
         <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
@@ -53,8 +53,10 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="fisherfaces">
-<h1>Fisherfaces<a class="headerlink" href="#fisherfaces" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="fisherfaces-method">
+<h1>Fisherfaces Method<a class="headerlink" href="#fisherfaces-method" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="fisherfaces">
+<h2>Fisherfaces<a class="headerlink" href="#fisherfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="Fisherfaces">
 <em class="property">class </em><tt class="descname">Fisherfaces</tt><a class="headerlink" href="#Fisherfaces" title="Permalink to this definition">¶</a></dt>
@@ -68,31 +70,19 @@ model-specific API is explained.</p>
 <span class="c1">// 711–720.</span>
 <span class="k">class</span> <span class="nc">Fisherfaces</span><span class="o">:</span> <span class="k">public</span> <span class="n">FaceRecognizer</span> <span class="p">{</span>
 
-<span class="k">private</span><span class="o">:</span>
-    <span class="kt">int</span> <span class="n">_num_components</span><span class="p">;</span>
-    <span class="n">Mat</span> <span class="n">_eigenvectors</span><span class="p">;</span>
-    <span class="n">Mat</span> <span class="n">_eigenvalues</span><span class="p">;</span>
-    <span class="n">Mat</span> <span class="n">_mean</span><span class="p">;</span>
-    <span class="n">vector</span><span class="o">&lt;</span><span class="n">Mat</span><span class="o">&gt;</span> <span class="n">_projections</span><span class="p">;</span>
-    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">_labels</span><span class="p">;</span>
-
 <span class="k">public</span><span class="o">:</span>
     <span class="k">using</span> <span class="n">FaceRecognizer</span><span class="o">::</span><span class="n">save</span><span class="p">;</span>
     <span class="k">using</span> <span class="n">FaceRecognizer</span><span class="o">::</span><span class="n">load</span><span class="p">;</span>
 
     <span class="c1">// Initializes an empty Fisherfaces model.</span>
-    <span class="n">Fisherfaces</span><span class="p">(</span><span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">:</span>
-        <span class="n">_num_components</span><span class="p">(</span><span class="n">num_components</span><span class="p">)</span> <span class="p">{}</span>
+    <span class="n">Fisherfaces</span><span class="p">(</span><span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
 
     <span class="c1">// Initializes and computes a Fisherfaces model with images in src and</span>
     <span class="c1">// corresponding labels in labels. num_components will be kept for</span>
     <span class="c1">// classification.</span>
     <span class="n">Fisherfaces</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span>
             <span class="n">InputArray</span> <span class="n">labels</span><span class="p">,</span>
-            <span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">)</span> <span class="o">:</span>
-        <span class="n">_num_components</span><span class="p">(</span><span class="n">num_components</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">train</span><span class="p">(</span><span class="n">src</span><span class="p">,</span> <span class="n">labels</span><span class="p">);</span>
-    <span class="p">}</span>
+            <span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
 
     <span class="o">~</span><span class="n">Fisherfaces</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
 
@@ -110,124 +100,123 @@ model-specific API is explained.</p>
     <span class="k">virtual</span> <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">FileStorage</span><span class="o">&amp;</span> <span class="n">fs</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
     <span class="c1">// Returns the eigenvectors of this Fisherfaces model.</span>
-    <span class="n">Mat</span> <span class="n">eigenvectors</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_eigenvectors</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">Mat</span> <span class="n">eigenvectors</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
     <span class="c1">// Returns the eigenvalues of this Fisherfaces model.</span>
-    <span class="n">Mat</span> <span class="n">eigenvalues</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_eigenvalues</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">Mat</span> <span class="n">eigenvalues</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
     <span class="c1">// Returns the sample mean of this Fisherfaces model.</span>
-    <span class="n">Mat</span> <span class="n">mean</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_eigenvalues</span><span class="p">;</span> <span class="p">}</span>
+    <span class="n">Mat</span> <span class="n">mean</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
     <span class="c1">// Returns the number of components used in this Fisherfaces model.</span>
-    <span class="kt">int</span> <span class="n">num_components</span><span class="p">()</span> <span class="k">const</span> <span class="p">{</span> <span class="k">return</span> <span class="n">_num_components</span><span class="p">;</span> <span class="p">}</span>
+    <span class="kt">int</span> <span class="n">num_components</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 <span class="p">};</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="fisherfaces-fisherfaces-int-num-components-0">
-<h1>Fisherfaces::Fisherfaces(int num_components = 0)<a class="headerlink" href="#fisherfaces-fisherfaces-int-num-components-0" title="Permalink to this headline">¶</a></h1>
-<p>Initializes a Fisherfaces model with a given number of components.</p>
+<div class="section" id="fisherfaces-fisherfaces">
+<h2>Fisherfaces::Fisherfaces<a class="headerlink" href="#fisherfaces-fisherfaces" title="Permalink to this headline">¶</a></h2>
+<p>Initializes and trains a Fisherfaces model for given data, labels and stores a given number of components.</p>
 <dl class="function">
 <dt id="Fisherfaces::Fisherfaces(int num_components)">
 <strong>C++:</strong><tt class="descname"> </tt> <tt class="descclassname">Fisherfaces::</tt><tt class="descname">Fisherfaces</tt><big>(</big>int <strong>num_components</strong>=0<big>)</big><a class="headerlink" href="#Fisherfaces::Fisherfaces(int num_components)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Initializes a Fisherfaces model with <tt class="docutils literal"><span class="pre">num_components</span></tt>. <tt class="docutils literal"><span class="pre">num_components</span></tt>
-number of components are  kept for classification. If no number of components
-is given (default 0), it is automatically determined from given data
-in <a class="reference internal" href="../api.html#void Fisherfaces::train(InputArray src, InputArray labels)" title="void Fisherfaces::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Fisherfaces::train()</span></tt></a>.</p>
-<p>If (and only if) <tt class="docutils literal"><span class="pre">num_components</span></tt> &lt;= 0, then <tt class="docutils literal"><span class="pre">num_components</span></tt> is set to
-(C-1) in ocv:func:<cite>Fisherfaces::train</cite>, with <em>C</em> being the number of unique
-classes in <tt class="docutils literal"><span class="pre">labels</span></tt>.</p>
-</div>
-<div class="section" id="fisherfaces-fisherfaces-inputarray-src-inputarray-labels-int-num-components-0">
-<h1>Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)<a class="headerlink" href="#fisherfaces-fisherfaces-inputarray-src-inputarray-labels-int-num-components-0" title="Permalink to this headline">¶</a></h1>
-<p>Initializes and trains a Fisherfaces model with a given number of components
-for given input data and associated labels.</p>
 <dl class="function">
 <dt id="Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components)">
 <strong>C++:</strong><tt class="descname"> </tt> <tt class="descclassname">Fisherfaces::</tt><tt class="descname">Fisherfaces</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong>, int <strong>num_components</strong>=0<big>)</big><a class="headerlink" href="#Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>Initializes and trains a Fisherfaces model with images in src and
-corresponding labels in <tt class="docutils literal"><span class="pre">labels</span></tt>. <tt class="docutils literal"><span class="pre">num_components</span></tt> number of components are
+<p>Initializes and trains a Fisherfaces model with images in src and corresponding
+labels in <tt class="docutils literal"><span class="pre">labels</span></tt> (if given). <tt class="docutils literal"><span class="pre">num_components</span></tt> number of components are
 kept for classification. If no number of components is given (default 0), it
-is automatically determined from given data in <a class="reference internal" href="../api.html#void Fisherfaces::train(InputArray src, InputArray labels)" title="void Fisherfaces::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Fisherfaces::train()</span></tt></a>.</p>
+is automatically determined from given data in <a class="reference internal" href="#void Fisherfaces::train(InputArray src, InputArray labels)" title="void Fisherfaces::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Fisherfaces::train()</span></tt></a>.</p>
 <p>If (and only if) <tt class="docutils literal"><span class="pre">num_components</span></tt> &lt;= 0, then <tt class="docutils literal"><span class="pre">num_components</span></tt> is set to
 (C-1) in ocv:func:<cite>train</cite>, with <em>C</em> being the number of unique classes in
 <tt class="docutils literal"><span class="pre">labels</span></tt>.</p>
 </div>
 <div class="section" id="fisherfaces-save">
-<h1>Fisherfaces::save<a class="headerlink" href="#fisherfaces-save" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::save<a class="headerlink" href="#fisherfaces-save" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="void Fisherfaces::save(const string&amp; filename) const">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">save</tt><big>(</big>const string&amp; <strong>filename</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void Fisherfaces::save(const string& filename) const" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="function">
 <dt id="void Fisherfaces::save(FileStorage&amp; fs) const">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">save</tt><big>(</big>FileStorage&amp; <strong>fs</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void Fisherfaces::save(FileStorage& fs) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_facerecognizer.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-load">
-<h1>Fisherfaces::load<a class="headerlink" href="#fisherfaces-load" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::load<a class="headerlink" href="#fisherfaces-load" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="void Fisherfaces::load(const string&amp; filename)">
+<strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">load</tt><big>(</big>const string&amp; <strong>filename</strong><big>)</big><a class="headerlink" href="#void Fisherfaces::load(const string& filename)" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="function">
 <dt id="void Fisherfaces::load(const FileStorage&amp; fs)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">load</tt><big>(</big>const FileStorage&amp; <strong>fs</strong><big>)</big><a class="headerlink" href="#void Fisherfaces::load(const FileStorage& fs)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_facerecognizer.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-train">
-<h1>Fisherfaces::train<a class="headerlink" href="#fisherfaces-train" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::train<a class="headerlink" href="#fisherfaces-train" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="void Fisherfaces::train(InputArray src, InputArray labels)">
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">train</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong><big>)</big><a class="headerlink" href="#void Fisherfaces::train(InputArray src, InputArray labels)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#void FaceRecognizer::train(InputArray src, InputArray labels)" title="void FaceRecognizer::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_facerecognizer.html#void FaceRecognizer::train(InputArray src, InputArray labels)" title="void FaceRecognizer::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-predict">
-<h1>Fisherfaces::predict<a class="headerlink" href="#fisherfaces-predict" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::predict<a class="headerlink" href="#fisherfaces-predict" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="int Fisherfaces::predict(InputArray src) const">
 <strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">Fisherfaces::</tt><tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int Fisherfaces::predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#int FaceRecognizer::predict(InputArray src) const" title="int FaceRecognizer::predict(InputArray src) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_facerecognizer.html#int FaceRecognizer::predict(InputArray src) const" title="int FaceRecognizer::predict(InputArray src) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-eigenvalues">
-<h1>Fisherfaces::eigenvalues<a class="headerlink" href="#fisherfaces-eigenvalues" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::eigenvalues<a class="headerlink" href="#fisherfaces-eigenvalues" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="Mat Fisherfaces::eigenvalues() const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">Fisherfaces::</tt><tt class="descname">eigenvalues</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat Fisherfaces::eigenvalues() const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#Mat Eigenfaces::eigenvalues() const" title="Mat Eigenfaces::eigenvalues() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::eigenvalues()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_eigenfaces.html#Mat Eigenfaces::eigenvalues() const" title="Mat Eigenfaces::eigenvalues() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::eigenvalues()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-eigenvectors">
-<h1>Fisherfaces::eigenvectors<a class="headerlink" href="#fisherfaces-eigenvectors" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::eigenvectors<a class="headerlink" href="#fisherfaces-eigenvectors" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="Mat Fisherfaces::eigenvectors() const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">Fisherfaces::</tt><tt class="descname">eigenvectors</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat Fisherfaces::eigenvectors() const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#Mat Eigenfaces::eigenvectors() const" title="Mat Eigenfaces::eigenvectors() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::eigenvectors()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_eigenfaces.html#Mat Eigenfaces::eigenvectors() const" title="Mat Eigenfaces::eigenvectors() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::eigenvectors()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-mean">
-<h1>Fisherfaces::mean<a class="headerlink" href="#fisherfaces-mean" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::mean<a class="headerlink" href="#fisherfaces-mean" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="Mat Fisherfaces::mean() const">
 <strong>C++:</strong><tt class="descname"> </tt>Mat <tt class="descclassname">Fisherfaces::</tt><tt class="descname">mean</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#Mat Fisherfaces::mean() const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#Mat Eigenfaces::mean() const" title="Mat Eigenfaces::mean() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::mean()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_eigenfaces.html#Mat Eigenfaces::mean() const" title="Mat Eigenfaces::mean() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::mean()</span></tt></a>.</p>
 </div>
 <div class="section" id="fisherfaces-num-components">
-<h1>Fisherfaces::num_components<a class="headerlink" href="#fisherfaces-num-components" title="Permalink to this headline">¶</a></h1>
+<h2>Fisherfaces::num_components<a class="headerlink" href="#fisherfaces-num-components" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="int Fisherfaces::num_components() const">
 <strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">Fisherfaces::</tt><tt class="descname">num_components</tt><big>(</big><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int Fisherfaces::num_components() const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="../api.html#int Eigenfaces::num_components() const" title="int Eigenfaces::num_components() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::num_components()</span></tt></a>.</p>
+<p>See <a class="reference internal" href="class_eigenfaces.html#int Eigenfaces::num_components() const" title="int Eigenfaces::num_components() const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">Eigenfaces::num_components()</span></tt></a>.</p>
+</div>
 </div>
 
 
@@ -238,9 +227,9 @@ is automatically determined from given data in <a class="reference internal" hre
         <div class="sphinxsidebarwrapper">
   <h3><a href="../../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Fisherfaces</a></li>
-<li><a class="reference internal" href="#fisherfaces-fisherfaces-int-num-components-0">Fisherfaces::Fisherfaces(int num_components = 0)</a></li>
-<li><a class="reference internal" href="#fisherfaces-fisherfaces-inputarray-src-inputarray-labels-int-num-components-0">Fisherfaces::Fisherfaces(InputArray src, InputArray labels, int num_components = 0)</a></li>
+<li><a class="reference internal" href="#">Fisherfaces Method</a><ul>
+<li><a class="reference internal" href="#fisherfaces">Fisherfaces</a></li>
+<li><a class="reference internal" href="#fisherfaces-fisherfaces">Fisherfaces::Fisherfaces</a></li>
 <li><a class="reference internal" href="#fisherfaces-save">Fisherfaces::save</a></li>
 <li><a class="reference internal" href="#fisherfaces-load">Fisherfaces::load</a></li>
 <li><a class="reference internal" href="#fisherfaces-train">Fisherfaces::train</a></li>
@@ -250,13 +239,15 @@ is automatically determined from given data in <a class="reference internal" hre
 <li><a class="reference internal" href="#fisherfaces-mean">Fisherfaces::mean</a></li>
 <li><a class="reference internal" href="#fisherfaces-num-components">Fisherfaces::num_components</a></li>
 </ul>
+</li>
+</ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="class_eigenfaces.html"
-                        title="previous chapter">Eigenfaces</a></p>
+                        title="previous chapter">Eigenfaces Method</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="class_lbph.html"
-                        title="next chapter">LBPH</a></p>
+                        title="next chapter">Local Binary Patterns Histograms (LBPH)</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/api/class/class_fisherfaces.txt"
@@ -286,10 +277,10 @@ is automatically determined from given data in <a class="reference internal" hre
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="class_lbph.html" title="LBPH"
+          <a href="class_lbph.html" title="Local Binary Patterns Histograms (LBPH)"
              >next</a> |</li>
         <li class="right" >
-          <a href="class_eigenfaces.html" title="Eigenfaces"
+          <a href="class_eigenfaces.html" title="Eigenfaces Method"
              >previous</a> |</li>
         <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 
