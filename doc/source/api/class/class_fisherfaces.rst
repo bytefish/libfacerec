@@ -11,7 +11,7 @@ This was also recognized by `Belhumeur <http://www.cs.columbia.edu/~belhumeur/>`
 
 This class implements the Fisherfaces method as described in [Belhumeur97]_.
 
-Please see the `API Examples page </api/examples>` for example programs.
+Please see the :doc:`API Examples page </api/examples>` for example programs.
 
 Fisherfaces
 -----------

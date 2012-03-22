@@ -12,4 +12,5 @@ The basic API of libfacerec is very simple. Once a :ocv:class:`FaceRecognizer` i
    example/example_fisherfaces.rst
    example/example_lbph.rst
    example/example_saving_loading.rst
+   example/example_gender_classification.rst
    example/example_colormap.rst

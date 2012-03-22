@@ -15,9 +15,9 @@ Release highlights
 - New Unit Tests (for LBP Histograms) make the library more robust.
 - Added a documentation and changelog in reStructuredText including:
 
-  - :doc:`API </api/api.rst>` 
-  - :doc:`API Examples </api/examples.rst>` 
-  - :doc:`Literature </literature>`
+  - :doc:`API </api/api>`
+  - :doc:`API Examples </api/examples>`
+  - :doc:`Literature </bib/literature>`
 
 Release 0.01
 ------------
