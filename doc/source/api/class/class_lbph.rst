@@ -3,6 +3,8 @@ Local Binary Patterns Histograms (LBPH)
 
 .. highlight:: cpp
 
+Please see the `API Examples page </api/examples>` for example programs.
+
 LBPH
 ----
 
