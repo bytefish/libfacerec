@@ -35,11 +35,13 @@ Source Code
 -----------
 
 The following program:
+
 * Reads in the data.
 * Learns the Eigenfaces (as ``model0``).
 * Stores the model (``model0``) to ``eigenfaces_at.yml``.
 * Initializes & Loads a new model (``model1``) ``eigenfaces_at.yml``.
 * Shows the first 10 Eigenfaces of ``model1``.
+
 
 .. code-block:: cpp
   
