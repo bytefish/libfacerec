@@ -59,7 +59,7 @@
 <p>A Linear Discriminant Analysis is closely related to a Principal Component Analysis. The PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represent data, it doesn&#8217;t consider any classes and so a lot of discriminative information <em>may</em> be lost when throwing some components away. This <em>can</em> yield bad results, especially when it comes to classification. So in order to find a combination of features that separates best between classes, the Linear Discriminant Analysis instead maximizes the ratio of between-classes to within-classes scatter. The idea is, that same classes should cluster tightly together.</p>
 <p>This was also recognized by <a class="reference external" href="http://www.cs.columbia.edu/~belhumeur/">Belhumeur</a>, <a class="reference external" href="http://www.ece.ucsb.edu/~hespanha/">Hespanha</a> and <a class="reference external" href="http://cseweb.ucsd.edu/~kriegman/">Kriegman</a> and so they applied a Discriminant Analysis to face recognition in their paper <em>&#8220;Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection&#8221;</em> (<a class="reference internal" href="../../bib/literature.html#belhumeur97">[Belhumeur97]</a>). The Eigenfaces approach by Pentland and Turk as described in &#8220;Eigenfaces for Recognition&#8221; (<a class="reference internal" href="../../bib/literature.html#tp91">[TP91]</a>) was a revolutionary one, but the original paper already discusses the negative effects of images with changes in background, light and perspective. So on datasets with differences in the setup, the Principal Component Analysis is likely to find the wrong components for classification and can perform poorly.</p>
 <p>This class implements the Fisherfaces method as described in <a class="reference internal" href="../../bib/literature.html#belhumeur97">[Belhumeur97]</a>.</p>
-<p>Please see the <cite>API Examples page &lt;/api/examples&gt;</cite> for example programs.</p>
+<p>Please see the <a class="reference internal" href="../examples.html"><em>API Examples page</em></a> for example programs.</p>
 <div class="section" id="fisherfaces">
 <h2>Fisherfaces<a class="headerlink" href="#fisherfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -150,7 +150,7 @@ is automatically determined from given data in <a class="reference internal" hre
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">save</tt><big>(</big>FileStorage&amp; <strong>fs</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#void Fisherfaces::save(FileStorage& fs) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="class_facerecognizer.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a>.</p>
+<p>See <tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt>.</p>
 </div>
 <div class="section" id="fisherfaces-load">
 <h2>Fisherfaces::load<a class="headerlink" href="#fisherfaces-load" title="Permalink to this headline">¶</a></h2>
@@ -164,7 +164,7 @@ is automatically determined from given data in <a class="reference internal" hre
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">load</tt><big>(</big>const FileStorage&amp; <strong>fs</strong><big>)</big><a class="headerlink" href="#void Fisherfaces::load(const FileStorage& fs)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="class_facerecognizer.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a>.</p>
+<p>See <tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt>.</p>
 </div>
 <div class="section" id="fisherfaces-train">
 <h2>Fisherfaces::train<a class="headerlink" href="#fisherfaces-train" title="Permalink to this headline">¶</a></h2>
@@ -173,7 +173,7 @@ is automatically determined from given data in <a class="reference internal" hre
 <strong>C++:</strong><tt class="descname"> </tt>void <tt class="descclassname">Fisherfaces::</tt><tt class="descname">train</tt><big>(</big>InputArray <strong>src</strong>, InputArray <strong>labels</strong><big>)</big><a class="headerlink" href="#void Fisherfaces::train(InputArray src, InputArray labels)" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="class_facerecognizer.html#void FaceRecognizer::train(InputArray src, InputArray labels)" title="void FaceRecognizer::train(InputArray src, InputArray labels)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt></a>.</p>
+<p>See <tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::train()</span></tt>.</p>
 </div>
 <div class="section" id="fisherfaces-predict">
 <h2>Fisherfaces::predict<a class="headerlink" href="#fisherfaces-predict" title="Permalink to this headline">¶</a></h2>
@@ -182,7 +182,7 @@ is automatically determined from given data in <a class="reference internal" hre
 <strong>C++:</strong><tt class="descname"> </tt>int <tt class="descclassname">Fisherfaces::</tt><tt class="descname">predict</tt><big>(</big>InputArray <strong>src</strong><big>)</big><tt class="descclassname"> const</tt><a class="headerlink" href="#int Fisherfaces::predict(InputArray src) const" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<p>See <a class="reference internal" href="class_facerecognizer.html#int FaceRecognizer::predict(InputArray src) const" title="int FaceRecognizer::predict(InputArray src) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt></a>.</p>
+<p>See <tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::predict()</span></tt>.</p>
 </div>
 <div class="section" id="fisherfaces-eigenvalues">
 <h2>Fisherfaces::eigenvalues<a class="headerlink" href="#fisherfaces-eigenvalues" title="Permalink to this headline">¶</a></h2>

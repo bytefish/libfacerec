@@ -13,7 +13,7 @@ described by correlated variables and therefore only a few meaningful dimensions
 account for most of the information. The PCA method finds the directions with 
 the greatest variance in the data, called principal components.
 
-Please see the `API Examples page </api/examples>` for example programs.
+Please see the :doc:`API Examples page </api/examples>` for example programs.
 
 Eigenfaces
 ----------
