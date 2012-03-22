@@ -1,12 +1,12 @@
 Changelog
 =========
 
-Release 0.02a
--------------
+Release 0.02
+------------
 
 Reworked the library to provide separate implementations in cpp files, because 
 it's the preferred way of contributing OpenCV libraries. This means the library 
-is not header-only anymore! Slight API changes were done, please see the 
+is not header-only anymore. Slight API changes were done, please see the 
 documentation for details.
 
 Release highlights
@@ -15,8 +15,8 @@ Release highlights
 - New Unit Tests (for LBP Histograms) make the library more robust.
 - Added a documentation and changelog in reStructuredText including:
 
-  - :doc:`API </api>` 
-  - :doc:`Tutorials </tutorial>`
+  - :doc:`API </api/api.rst>` 
+  - :doc:`API Examples </api/examples.rst>` 
   - :doc:`Literature </literature>`
 
 Release 0.01

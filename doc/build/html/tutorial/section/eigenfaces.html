@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Eigenfaces &mdash; libfacerec 0.01 documentation</title>
+    <title>Eigenfaces &mdash; libfacerec 0.02 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.01',
+        VERSION:     '0.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" /> 
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,7 +34,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -45,6 +45,120 @@
             
   <div class="section" id="eigenfaces">
 <h1>Eigenfaces<a class="headerlink" href="#eigenfaces" title="Permalink to this headline">¶</a></h1>
+<p>The problem with the image representation we are given is its high dimensionality. Two-dimensional <img class="math" src="../../_images/math/9009fc86a1b6b57d22bfd7d59cb1482b222af550.png" alt="p \times q"/> grayscale images span a <img class="math" src="../../_images/math/35be26e2d47841ccd1f186ec1bf4b7503f7c020a.png" alt="m = pq"/>-dimensional vector space, so an image with <img class="math" src="../../_images/math/a03a8d0a0057de9fb7872d5025201289768ef7ea.png" alt="100 \times 100"/> pixels lies in a <img class="math" src="../../_images/math/50b19142d92b7b4f1a115c4ec91766582e2b8faf.png" alt="10,000"/>-dimensional image space already. The question is: Are all dimensions equally useful for us? We can only make a decision if there&#8217;s any variance in data, so what we are looking for are the components that account for most of the information. The Principal Component Analysis (PCA) was independently proposed by <a class="reference external" href="http://en.wikipedia.org/wiki/Karl_Pearson">Karl Pearson</a> (1901) and <a class="reference external" href="http://en.wikipedia.org/wiki/Harold_Hotelling">Harold Hotelling</a> (1933) to turn a set of possibly correlated variables into a smaller set of uncorrelated variables. The idea is, that a high-dimensional dataset is often described by correlated variables and therefore only a few meaningful dimensions account for most of the information. The PCA method finds the directions with the greatest variance in the data, called principal components.</p>
+<div class="section" id="algorithmic-description">
+<h2>Algorithmic Description<a class="headerlink" href="#algorithmic-description" title="Permalink to this headline">¶</a></h2>
+<p>Let <img class="math" src="../../_images/math/23122d6beb2bac592db304b3bbda7b0f28ae1451.png" alt="X = \{ x_{1}, x_{2}, \ldots, x_{n} \}"/> be a random vector with observations <img class="math" src="../../_images/math/bfc191762801f9a971096d541704820594c3f567.png" alt="x_i \in R^{d}"/>.</p>
+<ol class="arabic simple">
+<li>Compute the mean <img class="math" src="../../_images/math/e4d596b8ec5988181407262caab536df81b88711.png" alt="\mu = \frac{1}{n} \sum_{i=1}^{n} x_{i}"/></li>
+</ol>
+<blockquote>
+<div><div class="math">
+<p><img src="../../_images/math/cfdef60ac28d7e9f8595cb22078f5f6f807e7966.png" alt="\mu = \frac{1}{n} \sum_{i=1}^{n} x_{i}"/></p>
+</div></div></blockquote>
+<ol class="arabic simple" start="2">
+<li>Compute the the Covariance Matrix <cite>S</cite></li>
+</ol>
+<blockquote>
+<div><div class="math">
+<p><img src="../../_images/math/d9f465a64e2d47192734f6ddf7d87946e2b9bd22.png" alt="S = \frac{1}{n} \sum_{i=1}^{n} (x_{i} - \mu) (x_{i} - \mu)^{T}`"/></p>
+</div></div></blockquote>
+<ol class="arabic simple" start="3">
+<li>Compute the eigenvalues <img class="math" src="../../_images/math/40aaba40c8de27cbabb7bca7ab7fc3dc4b1c47b1.png" alt="\lambda_{i}"/> and eigenvectors <img class="math" src="../../_images/math/d90aec1b84cbaf3a3b5f4cc12899656b5d17894b.png" alt="v_{i}"/> of <img class="math" src="../../_images/math/ad28c83c99a8fd0dd2e2e594c9d02ee532765a0a.png" alt="S"/></li>
+</ol>
+<blockquote>
+<div><div class="math">
+<p><img src="../../_images/math/06d1f4273c4db7c0c65d69bafbb567b657833f4c.png" alt="S v_{i} = \lambda_{i} v_{i}, i=1,2,\ldots,n"/></p>
+</div></div></blockquote>
+<ol class="arabic simple" start="4">
+<li>Order the eigenvectors descending by their eigenvalue. The <img class="math" src="../../_images/math/8c325612684d41304b9751c175df7bcc0f61f64f.png" alt="k"/> principal components are the eigenvectors corresponding to the <img class="math" src="../../_images/math/8c325612684d41304b9751c175df7bcc0f61f64f.png" alt="k"/> largest eigenvalues.</li>
+</ol>
+<p>The <img class="math" src="../../_images/math/8c325612684d41304b9751c175df7bcc0f61f64f.png" alt="k"/> principal components of the observed vector <img class="math" src="../../_images/math/26eeb5258ca5099acf8fe96b2a1049c48c89a5e6.png" alt="x"/> are then given by:</p>
+<div class="math">
+<p><img src="../../_images/math/5961c621d90f45e988785ee3ea7664ac13c48110.png" alt="y = W^{T} (x - \mu)"/></p>
+</div><p>where <img class="math" src="../../_images/math/c008cbe0d83c94d22c7515559f4f5194f9ade05a.png" alt="W = (v_{1}, v_{2}, \ldots, v_{k})"/>. The reconstruction from the PCA basis is given by:</p>
+<div class="math">
+<p><img src="../../_images/math/2c20021c5146152f0f999b4f370cfdc4a3762deb.png" alt="x = W y + \mu"/></p>
+</div></div>
+<div class="section" id="opencv">
+<h2>OpenCV<a class="headerlink" href="#opencv" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &quot;opencv2/opencv.hpp&quot;</span>
+<span class="cp">#include &quot;opencv2/highgui/highgui.hpp&quot;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;fstream&gt;</span>
+<span class="cp">#include &lt;sstream&gt;</span>
+
+<span class="cp">#include &quot;facerec.hpp&quot;</span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="n">read_csv</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">filename</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">Mat</span><span class="o">&gt;&amp;</span> <span class="n">images</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">labels</span><span class="p">,</span> <span class="kt">char</span> <span class="n">separator</span> <span class="o">=</span> <span class="sc">&#39;;&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">file</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="n">ifstream</span><span class="o">::</span><span class="n">in</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="p">();</span>
+    <span class="n">string</span> <span class="n">line</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">classlabel</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">getline</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">stringstream</span> <span class="n">liness</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+        <span class="n">getline</span><span class="p">(</span><span class="n">liness</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">separator</span><span class="p">);</span>
+        <span class="n">getline</span><span class="p">(</span><span class="n">liness</span><span class="p">,</span> <span class="n">classlabel</span><span class="p">);</span>
+        <span class="n">images</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="mi">0</span><span class="p">));</span>
+        <span class="n">labels</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">atoi</span><span class="p">(</span><span class="n">classlabel</span><span class="p">.</span><span class="n">c_str</span><span class="p">()));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="c1">// check for command line arguments</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;usage: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &lt;csv.ext&gt;&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// path to your CSV</span>
+    <span class="n">string</span> <span class="n">fn_csv</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="c1">// images and corresponding labels</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">Mat</span><span class="o">&gt;</span> <span class="n">images</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">labels</span><span class="p">;</span>
+    <span class="c1">// read in the data</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="n">read_csv</span><span class="p">(</span><span class="n">fn_csv</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">exception</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Error opening file </span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">fn_csv</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// get width and height</span>
+    <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">cols</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">rows</span><span class="p">;</span>
+    <span class="c1">// get test instances</span>
+    <span class="n">Mat</span> <span class="n">testSample</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">images</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">testLabel</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">labels</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="c1">// ... and delete last element</span>
+    <span class="n">images</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+    <span class="n">labels</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+    <span class="c1">// build the Fisherfaces model</span>
+    <span class="n">Eigenfaces</span> <span class="n">model</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">);</span>
+    <span class="c1">// test model</span>
+    <span class="kt">int</span> <span class="n">predicted</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">predict</span><span class="p">(</span><span class="n">testSample</span><span class="p">);</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;predicted class = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">predicted</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;actual class = &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">testLabel</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+    <span class="c1">// get the eigenvectors</span>
+    <span class="n">Mat</span> <span class="n">W</span> <span class="o">=</span> <span class="n">model</span><span class="p">.</span><span class="n">eigenvectors</span><span class="p">();</span>
+    <span class="c1">// show first 10 fisherfaces</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// get eigenvector #i</span>
+        <span class="n">Mat</span> <span class="n">ev</span> <span class="o">=</span> <span class="n">W</span><span class="p">.</span><span class="n">col</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">clone</span><span class="p">();</span>
+        <span class="c1">// reshape to original site</span>
+        <span class="n">Mat</span> <span class="n">grayscale</span> <span class="o">=</span> <span class="n">toGrayscale</span><span class="p">(</span><span class="n">ev</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="p">));</span>
+        <span class="c1">// show image (with Jet colormap)</span>
+        <span class="n">imshow</span><span class="p">(</span><span class="n">num2str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">grayscale</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<img alt="../../_images/eigenfaces_at.png" src="../../_images/eigenfaces_at.png" />
+</div>
 </div>
 
 
@@ -53,6 +167,15 @@
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Eigenfaces</a><ul>
+<li><a class="reference internal" href="#algorithmic-description">Algorithmic Description</a></li>
+<li><a class="reference internal" href="#opencv">OpenCV</a></li>
+</ul>
+</li>
+</ul>
+
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../../_sources/tutorial/section/eigenfaces.txt"
@@ -81,7 +204,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li> 
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

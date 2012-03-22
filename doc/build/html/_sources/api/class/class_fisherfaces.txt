@@ -1,10 +1,20 @@
 Fisherfaces Method
 ==================
 
+.. highlight:: cpp
+
+The Linear Discriminant Analysis (LDA) is a class-specific dimensionality reduction. It was invented by the great statistician `Sir R. A. Fisher <http://en.wikipedia.org/wiki/Ronald_Fisher>`_, who successfully used it for classifying flowers in his 1936 paper *"The use of multiple measurements in taxonomic problems"* ([Fisher36]_). 
+
+A Linear Discriminant Analysis is closely related to a Principal Component Analysis. The PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represent data, it doesn't consider any classes and so a lot of discriminative information *may* be lost when throwing some components away. This *can* yield bad results, especially when it comes to classification. So in order to find a combination of features that separates best between classes, the Linear Discriminant Analysis instead maximizes the ratio of between-classes to within-classes scatter. The idea is, that same classes should cluster tightly together.
+
+This was also recognized by `Belhumeur <http://www.cs.columbia.edu/~belhumeur/>`_, `Hespanha <http://www.ece.ucsb.edu/~hespanha/>`_ and `Kriegman <http://cseweb.ucsd.edu/~kriegman/>`_ and so they applied a Discriminant Analysis to face recognition in their paper *"Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection"* ([Belhumeur97]_). The Eigenfaces approach by Pentland and Turk as described in "Eigenfaces for Recognition" ([TP91]_) was a revolutionary one, but the original paper already discusses the negative effects of images with changes in background, light and perspective. So on datasets with differences in the setup, the Principal Component Analysis is likely to find the wrong components for classification and can perform poorly.
+
+This class implements the Fisherfaces method as described in [Belhumeur97]_.
+
+Please see the `API Examples page </api/examples>` for example programs.
+
 Fisherfaces
 -----------
-
-.. highlight:: cpp
 
 .. ocv:class:: Fisherfaces
 
@@ -27,11 +37,9 @@ model-specific API is explained. ::
       // Initializes and computes a Fisherfaces model with images in src and
       // corresponding labels in labels. num_components will be kept for
       // classification.
-      Fisherfaces(InputArray src,
-              InputArray labels,
-              int num_components = 0);
+      Fisherfaces(InputArray src, InputArray labels, int num_components = 0);
 
-      ~Fisherfaces() { }
+      ~Fisherfaces() {}
 
       // Computes a Fisherfaces model with images in src and corresponding labels
       // in labels.
@@ -47,7 +55,7 @@ model-specific API is explained. ::
       virtual void save(FileStorage& fs) const;
 
       // Returns the eigenvectors of this Fisherfaces model.
-      Mat eigenvectors() const;
+      Mat eigenvectors() const; 
 
       // Returns the eigenvalues of this Fisherfaces model.
       Mat eigenvalues() const;

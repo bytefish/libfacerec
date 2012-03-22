@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Fisherfaces Method &mdash; libfacerec 0.01 documentation</title>
+    <title>Fisherfaces Method &mdash; libfacerec 0.02 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.01',
+        VERSION:     '0.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" />
     <link rel="up" title="API" href="../api.html" />
     <link rel="next" title="Local Binary Patterns Histograms (LBPH)" href="class_lbph.html" />
     <link rel="prev" title="Eigenfaces Method" href="class_eigenfaces.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="class_eigenfaces.html" title="Eigenfaces Method"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
       </ul>
     </div>  
@@ -55,6 +55,11 @@
             
   <div class="section" id="fisherfaces-method">
 <h1>Fisherfaces Method<a class="headerlink" href="#fisherfaces-method" title="Permalink to this headline">¶</a></h1>
+<p>The Linear Discriminant Analysis (LDA) is a class-specific dimensionality reduction. It was invented by the great statistician <a class="reference external" href="http://en.wikipedia.org/wiki/Ronald_Fisher">Sir R. A. Fisher</a>, who successfully used it for classifying flowers in his 1936 paper <em>&#8220;The use of multiple measurements in taxonomic problems&#8221;</em> (<a class="reference internal" href="../../bib/literature.html#fisher36">[Fisher36]</a>).</p>
+<p>A Linear Discriminant Analysis is closely related to a Principal Component Analysis. The PCA finds a linear combination of features that maximizes the total variance in data. While this is clearly a powerful way to represent data, it doesn&#8217;t consider any classes and so a lot of discriminative information <em>may</em> be lost when throwing some components away. This <em>can</em> yield bad results, especially when it comes to classification. So in order to find a combination of features that separates best between classes, the Linear Discriminant Analysis instead maximizes the ratio of between-classes to within-classes scatter. The idea is, that same classes should cluster tightly together.</p>
+<p>This was also recognized by <a class="reference external" href="http://www.cs.columbia.edu/~belhumeur/">Belhumeur</a>, <a class="reference external" href="http://www.ece.ucsb.edu/~hespanha/">Hespanha</a> and <a class="reference external" href="http://cseweb.ucsd.edu/~kriegman/">Kriegman</a> and so they applied a Discriminant Analysis to face recognition in their paper <em>&#8220;Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection&#8221;</em> (<a class="reference internal" href="../../bib/literature.html#belhumeur97">[Belhumeur97]</a>). The Eigenfaces approach by Pentland and Turk as described in &#8220;Eigenfaces for Recognition&#8221; (<a class="reference internal" href="../../bib/literature.html#tp91">[TP91]</a>) was a revolutionary one, but the original paper already discusses the negative effects of images with changes in background, light and perspective. So on datasets with differences in the setup, the Principal Component Analysis is likely to find the wrong components for classification and can perform poorly.</p>
+<p>This class implements the Fisherfaces method as described in <a class="reference internal" href="../../bib/literature.html#belhumeur97">[Belhumeur97]</a>.</p>
+<p>Please see the <cite>API Examples page &lt;/api/examples&gt;</cite> for example programs.</p>
 <div class="section" id="fisherfaces">
 <h2>Fisherfaces<a class="headerlink" href="#fisherfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -80,11 +85,9 @@ model-specific API is explained.</p>
     <span class="c1">// Initializes and computes a Fisherfaces model with images in src and</span>
     <span class="c1">// corresponding labels in labels. num_components will be kept for</span>
     <span class="c1">// classification.</span>
-    <span class="n">Fisherfaces</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span>
-            <span class="n">InputArray</span> <span class="n">labels</span><span class="p">,</span>
-            <span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">Fisherfaces</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">labels</span><span class="p">,</span> <span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
 
-    <span class="o">~</span><span class="n">Fisherfaces</span><span class="p">()</span> <span class="p">{</span> <span class="p">}</span>
+    <span class="o">~</span><span class="n">Fisherfaces</span><span class="p">()</span> <span class="p">{}</span>
 
     <span class="c1">// Computes a Fisherfaces model with images in src and corresponding labels</span>
     <span class="c1">// in labels.</span>
@@ -282,7 +285,7 @@ is automatically determined from given data in <a class="reference internal" hre
         <li class="right" >
           <a href="class_eigenfaces.html" title="Eigenfaces Method"
              >previous</a> |</li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 
       </ul>
     </div>

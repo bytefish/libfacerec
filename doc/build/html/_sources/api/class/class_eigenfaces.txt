@@ -1,6 +1,20 @@
 Eigenfaces Method
 =================
 
+.. highlight:: cpp
+
+The Eigenfaces Method is basically a Principal Component Analysis (PCA) with 
+1-Nearest Neighbor classifier. So what is a PCA? The PCA was independently 
+proposed by `Karl Pearson <http://en.wikipedia.org/wiki/Karl_Pearson>`_ (1901) 
+and `Harold Hotelling <http://en.wikipedia.org/wiki/Harold_Hotelling>`_ (1933) 
+to turn a set of possibly correlated variables into a smaller set of 
+uncorrelated variables. The idea is, that a high-dimensional dataset is often 
+described by correlated variables and therefore only a few meaningful dimensions 
+account for most of the information. The PCA method finds the directions with 
+the greatest variance in the data, called principal components.
+
+Please see the `API Examples page </api/examples>` for example programs.
+
 Eigenfaces
 ----------
 
@@ -136,4 +150,6 @@ Returns the number of components (number of Eigenfaces) used for classification.
 .. ocv:function:: int Eigenfaces::num_components() const
 
 This number may be 0 for initialized objects. It may be set during the training.
+
+
 

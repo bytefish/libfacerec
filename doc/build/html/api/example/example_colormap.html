@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Working with ColorMap &mdash; libfacerec 0.02 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.02',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" />
+    <link rel="up" title="API Examples" href="../examples.html" />
+    <link rel="next" title="Changelog" href="../../changelog/changelog.html" />
+    <link rel="prev" title="Saving and Loading a FaceRecognizer" href="example_saving_loading.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../changelog/changelog.html" title="Changelog"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example_saving_loading.html" title="Saving and Loading a FaceRecognizer"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" accesskey="U">API Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="working-with-colormap">
+<h1>Working with ColorMap<a class="headerlink" href="#working-with-colormap" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Applying a colormap on an image is very easy with
+<a class="reference internal" href="../class/class_colormap.html#colormap::ColorMap" title="class colormap::ColorMap"><tt class="xref ocv ocv-class docutils literal"><span class="pre">colormap::ColorMap</span></tt></a>. This page will show you how to use
+colormaps in OpenCV for your images.</p>
+<p>Imagine we want to recolor <a class="reference external" href="http://en.wikipedia.org/wiki/Lenna">Lena</a>:</p>
+<img alt="../../_images/lena.jpg" src="../../_images/lena.jpg" />
+<p>Then recoloring can be done with <tt class="xref ocv ocv-func docutils literal"><span class="pre">ColorMap::operator()</span></tt> or by using
+the ColorMap version of <a class="reference internal" href="../class/class_colormap.html#void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)" title="void imwrite(const string&amp; filename, InputArray img, const colormap::ColorMap&amp; cm, const vector&lt;int&gt;&amp; params)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imwrite()</span></tt></a> or <a class="reference internal" href="../class/class_colormap.html#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a>. Here&#8217;s a
+sample program, that loads <a class="reference external" href="http://en.wikipedia.org/wiki/Lenna">Lena</a> and
+applies various colormaps on the image. The results are shown below the code.</p>
+</div>
+<div class="section" id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &quot;opencv2/opencv.hpp&quot;</span>
+<span class="cp">#include &quot;opencv2/highgui/highgui.hpp&quot;</span>
+
+<span class="cp">#include &quot;facerec.hpp&quot;</span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="c1">// Read the image. It doesn&#39;t matter if you load as grayscale or not.</span>
+    <span class="n">Mat</span> <span class="n">img</span> <span class="o">=</span> <span class="n">imread</span><span class="p">(</span><span class="s">&quot;/home/philipp/lena.jpg&quot;</span><span class="p">,</span> <span class="n">CV_LOAD_IMAGE_GRAYSCALE</span><span class="p">);</span>
+    <span class="c1">// Use imwrite wrapper that works with ColorMaps.</span>
+    <span class="n">string</span> <span class="n">prefix</span><span class="p">(</span><span class="s">&quot;lena_&quot;</span><span class="p">);</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;autumn.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Autumn</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;bone.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Bone</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;jet.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;winter.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Winter</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;rainbow.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Rainbow</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;ocean.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Ocean</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;summer.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Summer</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;spring.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Spring</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;cool.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Cool</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;hsv.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">HSV</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;pink.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Pink</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;hot.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Hot</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;mkpj1.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">MKPJ1</span><span class="p">());</span>
+    <span class="n">imwrite</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">string</span><span class="p">(</span><span class="s">&quot;mkpj2.jpg&quot;</span><span class="p">),</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">MKPJ2</span><span class="p">());</span>
+    <span class="c1">// using a colormap is as simple as doing</span>
+    <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span> <span class="n">jet</span><span class="p">;</span>
+    <span class="n">Mat</span> <span class="n">img_jet</span> <span class="o">=</span> <span class="n">jet</span><span class="p">(</span><span class="n">img</span><span class="p">);</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="s">&quot;img_jet0&quot;</span><span class="p">,</span> <span class="n">img_jet</span><span class="p">);</span>
+    <span class="c1">// or you can use the imshow wrapper</span>
+    <span class="n">imshow</span><span class="p">(</span><span class="s">&quot;img_jet1&quot;</span><span class="p">,</span> <span class="n">img</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+    <span class="c1">// draw the images</span>
+    <span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="31%" />
+<col width="69%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Colormap Class</th>
+<th class="head">Colormapped Lena</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>colormap::Autumn</td>
+<td><img alt="../../_images/lena_autumn.jpg" class="first last" src="../../_images/lena_autumn.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Bone</td>
+<td><img alt="../../_images/lena_bone.jpg" class="first last" src="../../_images/lena_bone.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Cool</td>
+<td><img alt="../../_images/lena_cool.jpg" class="first last" src="../../_images/lena_cool.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Hot</td>
+<td><img alt="../../_images/lena_hot.jpg" class="first last" src="../../_images/lena_hot.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::HSV</td>
+<td><img alt="../../_images/lena_hsv.jpg" class="first last" src="../../_images/lena_hsv.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Jet</td>
+<td><img alt="../../_images/lena_jet.jpg" class="first last" src="../../_images/lena_jet.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::MKPJ1</td>
+<td><img alt="../../_images/lena_mkpj1.jpg" class="first last" src="../../_images/lena_mkpj1.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::MKPJ2</td>
+<td><img alt="../../_images/lena_mkpj2.jpg" class="first last" src="../../_images/lena_mkpj2.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Ocean</td>
+<td><img alt="../../_images/lena_ocean.jpg" class="first last" src="../../_images/lena_ocean.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Pink</td>
+<td><img alt="../../_images/lena_pink.jpg" class="first last" src="../../_images/lena_pink.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Rainbow</td>
+<td><img alt="../../_images/lena_rainbow.jpg" class="first last" src="../../_images/lena_rainbow.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Spring</td>
+<td><img alt="../../_images/lena_spring.jpg" class="first last" src="../../_images/lena_spring.jpg" />
+</td>
+</tr>
+<tr class="row-even"><td>colormap::Summer</td>
+<td><img alt="../../_images/lena_summer.jpg" class="first last" src="../../_images/lena_summer.jpg" />
+</td>
+</tr>
+<tr class="row-odd"><td>colormap::Winter</td>
+<td><img alt="../../_images/lena_winter.jpg" class="first last" src="../../_images/lena_winter.jpg" />
+</td>
+</tr>
+</tbody>
+</table>
+<p>And here are the <a class="reference internal" href="../class/class_colormap.html#void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)" title="void imshow(const string&amp; winname, InputArray img, const colormap::ColorMap&amp; cm)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">imshow()</span></tt></a> results:</p>
+<img alt="../../_images/lena_imshow_jet.jpg" src="../../_images/lena_imshow_jet.jpg" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Working with ColorMap</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#source-code">Source Code</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example_saving_loading.html"
+                        title="previous chapter">Saving and Loading a FaceRecognizer</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../../changelog/changelog.html"
+                        title="next chapter">Changelog</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/example/example_colormap.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../changelog/changelog.html" title="Changelog"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example_saving_loading.html" title="Saving and Loading a FaceRecognizer"
+             >previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" >API Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Wagner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

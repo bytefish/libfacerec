@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Eigenfaces Method &mdash; libfacerec 0.01 documentation</title>
+    <title>Eigenfaces Method &mdash; libfacerec 0.02 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.01',
+        VERSION:     '0.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" />
     <link rel="up" title="API" href="../api.html" />
     <link rel="next" title="Fisherfaces Method" href="class_fisherfaces.html" />
     <link rel="prev" title="FaceRecognizer (Abstract Base Class)" href="class_facerecognizer.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="class_facerecognizer.html" title="FaceRecognizer (Abstract Base Class)"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
       </ul>
     </div>  
@@ -55,6 +55,16 @@
             
   <div class="section" id="eigenfaces-method">
 <h1>Eigenfaces Method<a class="headerlink" href="#eigenfaces-method" title="Permalink to this headline">¶</a></h1>
+<p>The Eigenfaces Method is basically a Principal Component Analysis (PCA) with
+1-Nearest Neighbor classifier. So what is a PCA? The PCA was independently
+proposed by <a class="reference external" href="http://en.wikipedia.org/wiki/Karl_Pearson">Karl Pearson</a> (1901)
+and <a class="reference external" href="http://en.wikipedia.org/wiki/Harold_Hotelling">Harold Hotelling</a> (1933)
+to turn a set of possibly correlated variables into a smaller set of
+uncorrelated variables. The idea is, that a high-dimensional dataset is often
+described by correlated variables and therefore only a few meaningful dimensions
+account for most of the information. The PCA method finds the directions with
+the greatest variance in the data, called principal components.</p>
+<p>Please see the <cite>API Examples page &lt;/api/examples&gt;</cite> for example programs.</p>
 <div class="section" id="eigenfaces">
 <h2>Eigenfaces<a class="headerlink" href="#eigenfaces" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -64,46 +74,47 @@
 
 <p>Implements the Eigenfaces Method as described in <a class="reference internal" href="../../bib/literature.html#tp91">[TP91]</a>. Only the model-specific
 API is explained.</p>
-<div class="highlight-python"><pre>class Eigenfaces : public FaceRecognizer {
+<div class="highlight-cpp"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Eigenfaces</span> <span class="o">:</span> <span class="k">public</span> <span class="n">FaceRecognizer</span> <span class="p">{</span>
 
-public:
-    using FaceRecognizer::save;
-    using FaceRecognizer::load;
+<span class="k">public</span><span class="o">:</span>
+    <span class="k">using</span> <span class="n">FaceRecognizer</span><span class="o">::</span><span class="n">save</span><span class="p">;</span>
+    <span class="k">using</span> <span class="n">FaceRecognizer</span><span class="o">::</span><span class="n">load</span><span class="p">;</span>
 
-    // Initializes an empty Eigenfaces model.
-    Eigenfaces(int num_components = 0);
+    <span class="c1">// Initializes an empty Eigenfaces model.</span>
+    <span class="n">Eigenfaces</span><span class="p">(</span><span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
 
-    // Initializes and computes an Eigenfaces model with images in src and
-    // corresponding labels in labels. num_components will be kept for
-    // classification.
-    Eigenfaces(InputArray src, InputArray labels,
-            int num_components = 0);
+    <span class="c1">// Initializes and computes an Eigenfaces model with images in src and</span>
+    <span class="c1">// corresponding labels in labels. num_components will be kept for</span>
+    <span class="c1">// classification.</span>
+    <span class="n">Eigenfaces</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">labels</span><span class="p">,</span>
+            <span class="kt">int</span> <span class="n">num_components</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);</span>
 
-    // Computes an Eigenfaces model with images in src and corresponding labels
-    // in labels.
-    void train(InputArray src, InputArray labels);
+    <span class="c1">// Computes an Eigenfaces model with images in src and corresponding labels</span>
+    <span class="c1">// in labels.</span>
+    <span class="kt">void</span> <span class="n">train</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">labels</span><span class="p">);</span>
 
-    // Predicts the label of a query image in src.
-    int predict(const InputArray src) const;
+    <span class="c1">// Predicts the label of a query image in src.</span>
+    <span class="kt">int</span> <span class="n">predict</span><span class="p">(</span><span class="k">const</span> <span class="n">InputArray</span> <span class="n">src</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
-    // See cv::FaceRecognizer::load.
-    void load(const FileStorage&amp; fs);
+    <span class="c1">// See cv::FaceRecognizer::load.</span>
+    <span class="kt">void</span> <span class="n">load</span><span class="p">(</span><span class="k">const</span> <span class="n">FileStorage</span><span class="o">&amp;</span> <span class="n">fs</span><span class="p">);</span>
 
-    // See cv::FaceRecognizer::save.
-    void save(FileStorage&amp; fs) const;
+    <span class="c1">// See cv::FaceRecognizer::save.</span>
+    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">FileStorage</span><span class="o">&amp;</span> <span class="n">fs</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
-    // Returns the eigenvectors of this PCA.
-    Mat eigenvectors() const;
+    <span class="c1">// Returns the eigenvectors of this PCA.</span>
+    <span class="n">Mat</span> <span class="n">eigenvectors</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
-    // Returns the eigenvalues of this PCA.
-    Mat eigenvalues() const;
+    <span class="c1">// Returns the eigenvalues of this PCA.</span>
+    <span class="n">Mat</span> <span class="n">eigenvalues</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
-    // Returns the sample mean of this PCA.
-    Mat mean() const;
+    <span class="c1">// Returns the sample mean of this PCA.</span>
+    <span class="n">Mat</span> <span class="n">mean</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
-    // Returns the number of components used in this PCA.
-    int num_components() const;
-};</pre>
+    <span class="c1">// Returns the number of components used in this PCA.</span>
+    <span class="kt">int</span> <span class="n">num_components</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+<span class="p">};</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="eigenfaces-eigenfaces">
@@ -281,7 +292,7 @@ eigenvalue.</p>
         <li class="right" >
           <a href="class_facerecognizer.html" title="FaceRecognizer (Abstract Base Class)"
              >previous</a> |</li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 
       </ul>
     </div>

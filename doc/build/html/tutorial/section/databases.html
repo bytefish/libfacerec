@@ -1,0 +1,102 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Databases &mdash; libfacerec 0.02 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.02',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="databases">
+<h1>Databases<a class="headerlink" href="#databases" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial you won&#8217;t work through a toy example, but see how the algorithms work on real image data. We are doing face recognition, so you&#8217;ll need some face images! You can decide to either create your own database or start with one of the available databases. <a class="reference external" href="http://face-rec.org/databases/">face-rec.org/databases</a> gives an up-to-date overview of publicly available datasets, parts of the following descriptions are quoted from there. Three interesting databases are:</p>
+<ul>
+<li><p class="first"><a class="reference external" href="http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html">AT&amp;T Facedatabase</a> The AT&amp;T Facedatabase, sometimes also referred to as <em>ORL Database of Faces</em>, contains ten different images of each of 40 distinct subjects. For some subjects, the images were taken at different times, varying the lighting, facial expressions (open / closed eyes, smiling / not smiling) and facial details (glasses / no glasses). All the images were taken against a dark homogeneous background with the subjects in an upright, frontal position (with tolerance for some side movement).</p>
+</li>
+<li><p class="first"><a class="reference external" href="http://cvc.yale.edu/projects/yalefaces/yalefaces.html">Yale Facedatabase A</a> The AT&amp;T Facedatabase is good for initial tests, but it&#8217;s a fairly easy database. The Eigenfaces method already has a 97% recognition rate, so you won&#8217;t see any improvements with other algorithms. The Yale Facedatabase A is a more appropriate dataset for initial experiments, because the recognition problem is harder. The database consists of 15 people (14 male, 1 female) each with 11 grayscale images sized <img class="math" src="../../_images/math/db15d0317e077c6242d224287b3e2dcd2bdcbd0f.png" alt="320 \times 243"/> pixel. There are changes in the light conditions (center light, left light, right light), facial expressions (happy, normal, sad, sleepy, surprised, wink) and glasses (glasses, no-glasses).</p>
+<p>Bad news is it&#8217;s not available for public download anymore, because the original server seems to be down. You can find some sites mirroring it (<a class="reference external" href="http://vismod.media.mit.edu/vismod/classes/mas622-00/datasets/">like the MIT</a>), but I can&#8217;t make guarantees about the integrity. If you need to crop and align the images yourself, read my notes at <a class="reference external" href="http://bytefish.de/blog/fisherfaces">bytefish.de/blog/fisherfaces</a>.</p>
+</li>
+<li><p class="first"><a class="reference external" href="http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html">Extended Yale Facedatabase B</a> The Extended Yale Facedatabase B contains 2414 images of 38 different people in its cropped version. The focus of this database is set on extracting features that are robust to illumination, the images have almost no variation in emotion/occlusion/... . I personally think, that this dataset is too large for the experiments I perform in this document. You better use the <a class="reference external" href="http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html">AT&amp;T Facedatabase</a> for intial testing. A first version of the Yale Facedatabase B was used in <a class="reference internal" href="../../bib/literature.html#belhumeur97">[Belhumeur97]</a> to see how the Eigenfaces and Fisherfaces method perform under heavy illumination changes. [Lee2005] used the same setup to take 16128 images of 28 people. The Extended Yale Facedatabase B is the merge of the two databases, which is now known as Extended Yalefacedatabase B.</p>
+</li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/tutorial/section/databases.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Wagner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

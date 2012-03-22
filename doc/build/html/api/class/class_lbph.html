@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Local Binary Patterns Histograms (LBPH) &mdash; libfacerec 0.01 documentation</title>
+    <title>Local Binary Patterns Histograms (LBPH) &mdash; libfacerec 0.02 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -16,7 +16,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.01',
+        VERSION:     '0.02',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="libfacerec 0.01 documentation" href="../../index.html" />
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" />
     <link rel="up" title="API" href="../api.html" />
     <link rel="next" title="ColorMaps in OpenCV" href="class_colormap.html" />
     <link rel="prev" title="Fisherfaces Method" href="class_fisherfaces.html" /> 
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="class_fisherfaces.html" title="Fisherfaces Method"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
           <li><a href="../api.html" accesskey="U">API</a> &raquo;</li> 
       </ul>
     </div>  
@@ -55,6 +55,7 @@
             
   <div class="section" id="local-binary-patterns-histograms-lbph">
 <h1>Local Binary Patterns Histograms (LBPH)<a class="headerlink" href="#local-binary-patterns-histograms-lbph" title="Permalink to this headline">¶</a></h1>
+<p>Please see the <cite>API Examples page &lt;/api/examples&gt;</cite> for example programs.</p>
 <div class="section" id="lbph">
 <h2>LBPH<a class="headerlink" href="#lbph" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -64,53 +65,54 @@
 
 <p>Implements the Local Binary Patterns Histograms as described in <a class="reference internal" href="../../bib/literature.html#ahonen04">[Ahonen04]</a>.
 Only the model-specific API is explained.</p>
-<div class="highlight-python"><pre>//  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
-//  patterns: Application to face recognition." IEEE Transactions on Pattern
-//  Analysis and Machine Intelligence, 28(12):2037-2041.
-//
-class LBPH : public FaceRecognizer {
+<div class="highlight-cpp"><div class="highlight"><pre><span class="c1">//  Ahonen T, Hadid A. and Pietikäinen M. &quot;Face description with local binary</span>
+<span class="c1">//  patterns: Application to face recognition.&quot; IEEE Transactions on Pattern</span>
+<span class="c1">//  Analysis and Machine Intelligence, 28(12):2037-2041.</span>
+<span class="c1">//</span>
+<span class="k">class</span> <span class="nc">LBPH</span> <span class="o">:</span> <span class="k">public</span> <span class="n">FaceRecognizer</span> <span class="p">{</span>
 
-public:
-    using FaceRecognizer::save;
-    using FaceRecognizer::load;
+<span class="k">public</span><span class="o">:</span>
+    <span class="k">using</span> <span class="n">FaceRecognizer</span><span class="o">::</span><span class="n">save</span><span class="p">;</span>
+    <span class="k">using</span> <span class="n">FaceRecognizer</span><span class="o">::</span><span class="n">load</span><span class="p">;</span>
 
-    // Initializes this LBPH Model. The current implementation is rather fixed
-    // as it uses the Extended Local Binary Patterns per default.
-    //
-    // radius, neighbors are used in the local binary patterns creation.
-    // grid_x, grid_y control the grid size of the spatial histograms.
-    LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8);
+    <span class="c1">// Initializes this LBPH Model. The current implementation is rather fixed</span>
+    <span class="c1">// as it uses the Extended Local Binary Patterns per default.</span>
+    <span class="c1">//</span>
+    <span class="c1">// radius, neighbors are used in the local binary patterns creation.</span>
+    <span class="c1">// grid_x, grid_y control the grid size of the spatial histograms.</span>
+    <span class="n">LBPH</span><span class="p">(</span><span class="kt">int</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">neighbors</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="kt">int</span> <span class="n">grid_x</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="kt">int</span> <span class="n">grid_y</span><span class="o">=</span><span class="mi">8</span><span class="p">);</span>
 
-    // Initializes and computes this LBPH Model. The current implementation is
-    // rather fixed as it uses the Extended Local Binary Patterns per default.
-    //
-    // (radius=1), (neighbors=8) are used in the local binary patterns creation.
-    // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
-    LBPH(InputArray src, InputArray labels, int radius=1, int neighbors=8, int grid_x=8, int grid_y=8);
+    <span class="c1">// Initializes and computes this LBPH Model. The current implementation is</span>
+    <span class="c1">// rather fixed as it uses the Extended Local Binary Patterns per default.</span>
+    <span class="c1">//</span>
+    <span class="c1">// (radius=1), (neighbors=8) are used in the local binary patterns creation.</span>
+    <span class="c1">// (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.</span>
+    <span class="n">LBPH</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">labels</span><span class="p">,</span> <span class="kt">int</span> <span class="n">radius</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="kt">int</span> <span class="n">neighbors</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="kt">int</span> <span class="n">grid_x</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="kt">int</span> <span class="n">grid_y</span><span class="o">=</span><span class="mi">8</span><span class="p">);</span>
 
-    // Destructor.
-    ~LBPH() {}
+    <span class="c1">// Destructor.</span>
+    <span class="o">~</span><span class="n">LBPH</span><span class="p">()</span> <span class="p">{}</span>
 
-    // Computes a LBPH model with images in src and
-    // corresponding labels in labels.
-    void train(InputArray src, InputArray labels);
+    <span class="c1">// Computes a LBPH model with images in src and</span>
+    <span class="c1">// corresponding labels in labels.</span>
+    <span class="kt">void</span> <span class="n">train</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">,</span> <span class="n">InputArray</span> <span class="n">labels</span><span class="p">);</span>
 
-    // Predicts the label of a query image in src.
-    int predict(InputArray src) const;
+    <span class="c1">// Predicts the label of a query image in src.</span>
+    <span class="kt">int</span> <span class="n">predict</span><span class="p">(</span><span class="n">InputArray</span> <span class="n">src</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
-    // See cv::FaceRecognizer::load.
-    void load(const FileStorage&amp; fs);
+    <span class="c1">// See cv::FaceRecognizer::load.</span>
+    <span class="kt">void</span> <span class="n">load</span><span class="p">(</span><span class="k">const</span> <span class="n">FileStorage</span><span class="o">&amp;</span> <span class="n">fs</span><span class="p">);</span>
 
-    // See cv::FaceRecognizer::save.
-    void save(FileStorage&amp; fs) const;
+    <span class="c1">// See cv::FaceRecognizer::save.</span>
+    <span class="kt">void</span> <span class="n">save</span><span class="p">(</span><span class="n">FileStorage</span><span class="o">&amp;</span> <span class="n">fs</span><span class="p">)</span> <span class="k">const</span><span class="p">;</span>
 
-    // Getter functions.
-    int neighbors() const;
-    int radius() const;
-    int grid_x() const;
-    int grid_y() const;
+    <span class="c1">// Getter functions.</span>
+    <span class="kt">int</span> <span class="n">neighbors</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">radius</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">grid_x</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">grid_y</span><span class="p">()</span> <span class="k">const</span><span class="p">;</span>
 
-};</pre>
+<span class="p">};</span>
+</pre></div>
 </div>
 </div>
 <div class="section" id="lbph-lbph">
@@ -249,7 +251,7 @@ public:
         <li class="right" >
           <a href="class_fisherfaces.html" title="Fisherfaces Method"
              >previous</a> |</li>
-        <li><a href="../../index.html">libfacerec 0.01 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
           <li><a href="../api.html" >API</a> &raquo;</li> 
       </ul>
     </div>

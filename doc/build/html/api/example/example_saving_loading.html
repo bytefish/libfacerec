@@ -1,0 +1,254 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Saving and Loading a FaceRecognizer &mdash; libfacerec 0.02 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.02',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="libfacerec 0.02 documentation" href="../../index.html" />
+    <link rel="up" title="API Examples" href="../examples.html" />
+    <link rel="next" title="Working with ColorMap" href="example_colormap.html" />
+    <link rel="prev" title="Local Binary Patterns (LBPH) Histograms Example" href="example_lbph.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="example_colormap.html" title="Working with ColorMap"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="example_lbph.html" title="Local Binary Patterns (LBPH) Histograms Example"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" accesskey="U">API Examples</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="saving-and-loading-a-facerecognizer">
+<h1>Saving and Loading a FaceRecognizer<a class="headerlink" href="#saving-and-loading-a-facerecognizer" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p>Saving and loading a <a class="reference internal" href="../class/class_facerecognizer.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a> is very important. Training a
+FaceRecognizer can be a very time-intense task, plus it&#8217;s often impossible
+to ship the whole face database to the user of your product.</p>
+<p>The task of saving and loading a FaceRecognizer is very, very easy with
+libfacerec. You only have to call <a class="reference internal" href="../class/class_facerecognizer.html#void FaceRecognizer::load(const string&amp; filename)" title="void FaceRecognizer::load(const string&amp; filename)"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::load()</span></tt></a> for loading
+and <a class="reference internal" href="../class/class_facerecognizer.html#void FaceRecognizer::save(const string&amp; filename) const" title="void FaceRecognizer::save(const string&amp; filename) const"><tt class="xref ocv ocv-func docutils literal"><span class="pre">FaceRecognizer::save()</span></tt></a> for saving a <a class="reference internal" href="../class/class_facerecognizer.html#FaceRecognizer" title="class FaceRecognizer"><tt class="xref ocv ocv-class docutils literal"><span class="pre">FaceRecognizer</span></tt></a>.</p>
+<p>Imagine we want to learn the Eigenfaces of the <a class="reference external" href="http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html">AT&amp;T Facedatabase</a>
+store the model to a YAML file and then load it again. From the loaded model
+we&#8217;ll show the first 10 Eigenfaces.</p>
+<p>Filenames and class labels of the subjects are given in a simple CSV file
+<em>faces.txt</em>, which looks like this:</p>
+<div class="highlight-none"><div class="highlight"><pre>/home/philipp/facerec/data/at/s1/1.pgm;0
+/home/philipp/facerec/data/at/s1/2.pgm;0
+...
+/home/philipp/facerec/data/at/s2/1.pgm;1
+/home/philipp/facerec/data/at/s2/2.pgm;1
+...
+/home/philipp/facerec/data/at/s40/1.pgm;39
+/home/philipp/facerec/data/at/s40/2.pgm;39
+</pre></div>
+</div>
+</div>
+<div class="section" id="source-code">
+<h2>Source Code<a class="headerlink" href="#source-code" title="Permalink to this headline">¶</a></h2>
+<p>The following program:
+* Reads in the data.
+* Learns the Eigenfaces (as <tt class="docutils literal"><span class="pre">model0</span></tt>).
+* Stores the model (<tt class="docutils literal"><span class="pre">model0</span></tt>) to <tt class="docutils literal"><span class="pre">eigenfaces_at.yml</span></tt>.
+* Initializes &amp; Loads a new model (<tt class="docutils literal"><span class="pre">model1</span></tt>) <tt class="docutils literal"><span class="pre">eigenfaces_at.yml</span></tt>.
+* Shows the first 10 Eigenfaces of <tt class="docutils literal"><span class="pre">model1</span></tt>.</p>
+<div class="highlight-cpp"><div class="highlight"><pre><span class="cp">#include &quot;opencv2/opencv.hpp&quot;</span>
+<span class="cp">#include &quot;opencv2/highgui/highgui.hpp&quot;</span>
+
+<span class="cp">#include &lt;iostream&gt;</span>
+<span class="cp">#include &lt;fstream&gt;</span>
+<span class="cp">#include &lt;sstream&gt;</span>
+
+<span class="cp">#include &quot;facerec.hpp&quot;</span>
+
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">cv</span><span class="p">;</span>
+<span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="p">;</span>
+
+<span class="kt">void</span> <span class="n">read_csv</span><span class="p">(</span><span class="k">const</span> <span class="n">string</span><span class="o">&amp;</span> <span class="n">filename</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="n">Mat</span><span class="o">&gt;&amp;</span> <span class="n">images</span><span class="p">,</span> <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">labels</span><span class="p">,</span> <span class="kt">char</span> <span class="n">separator</span> <span class="o">=</span> <span class="sc">&#39;;&#39;</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">ifstream</span> <span class="n">file</span><span class="p">(</span><span class="n">filename</span><span class="p">.</span><span class="n">c_str</span><span class="p">(),</span> <span class="n">ifstream</span><span class="o">::</span><span class="n">in</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">file</span><span class="p">)</span>
+        <span class="k">throw</span> <span class="n">std</span><span class="o">::</span><span class="n">exception</span><span class="p">();</span>
+    <span class="n">string</span> <span class="n">line</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">classlabel</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">getline</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">line</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">stringstream</span> <span class="n">liness</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
+        <span class="n">getline</span><span class="p">(</span><span class="n">liness</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">separator</span><span class="p">);</span>
+        <span class="n">getline</span><span class="p">(</span><span class="n">liness</span><span class="p">,</span> <span class="n">classlabel</span><span class="p">);</span>
+        <span class="n">images</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">imread</span><span class="p">(</span><span class="n">path</span><span class="p">,</span><span class="mi">0</span><span class="p">));</span>
+        <span class="n">labels</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">atoi</span><span class="p">(</span><span class="n">classlabel</span><span class="p">.</span><span class="n">c_str</span><span class="p">()));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span><span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="c1">// check for command line arguments</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">argc</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;usage: &quot;</span> <span class="o">&lt;&lt;</span> <span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="s">&quot; &lt;csv.ext&gt;&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// path to your CSV</span>
+    <span class="n">string</span> <span class="n">fn_csv</span> <span class="o">=</span> <span class="n">string</span><span class="p">(</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+    <span class="c1">// images and corresponding labels</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="n">Mat</span><span class="o">&gt;</span> <span class="n">images</span><span class="p">;</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">labels</span><span class="p">;</span>
+    <span class="c1">// read in the data</span>
+    <span class="k">try</span> <span class="p">{</span>
+        <span class="n">read_csv</span><span class="p">(</span><span class="n">fn_csv</span><span class="p">,</span> <span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">);</span>
+    <span class="p">}</span> <span class="k">catch</span> <span class="p">(</span><span class="n">exception</span><span class="o">&amp;</span> <span class="n">e</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cerr</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;Error opening file </span><span class="se">\&quot;</span><span class="s">&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">fn_csv</span> <span class="o">&lt;&lt;</span> <span class="s">&quot;</span><span class="se">\&quot;</span><span class="s">.&quot;</span> <span class="o">&lt;&lt;</span> <span class="n">endl</span><span class="p">;</span>
+        <span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="c1">// get width and height</span>
+    <span class="kt">int</span> <span class="n">width</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">cols</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">height</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="n">rows</span><span class="p">;</span>
+    <span class="c1">// get test instances</span>
+    <span class="n">Mat</span> <span class="n">testSample</span> <span class="o">=</span> <span class="n">images</span><span class="p">[</span><span class="n">images</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="kt">int</span> <span class="n">testLabel</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">labels</span><span class="p">.</span><span class="n">size</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span><span class="p">];</span>
+    <span class="c1">// ... and delete last element</span>
+    <span class="n">images</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+    <span class="n">labels</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span>
+    <span class="c1">// build the Fisherfaces model</span>
+    <span class="n">Eigenfaces</span> <span class="n">model0</span><span class="p">(</span><span class="n">images</span><span class="p">,</span> <span class="n">labels</span><span class="p">);</span>
+    <span class="c1">// then save the model</span>
+    <span class="n">model0</span><span class="p">.</span><span class="n">save</span><span class="p">(</span><span class="s">&quot;eigenfaces_at.yml&quot;</span><span class="p">);</span>
+    <span class="c1">// now load it from another object</span>
+    <span class="n">Eigenfaces</span> <span class="n">model1</span><span class="p">;</span>
+    <span class="n">model1</span><span class="p">.</span><span class="n">load</span><span class="p">(</span><span class="s">&quot;eigenfaces_at.yml&quot;</span><span class="p">);</span>
+    <span class="c1">// get the eigenvectors</span>
+    <span class="n">Mat</span> <span class="n">W</span> <span class="o">=</span> <span class="n">model1</span><span class="p">.</span><span class="n">eigenvectors</span><span class="p">();</span>
+    <span class="c1">// show first 10 fisherfaces</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">min</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">W</span><span class="p">.</span><span class="n">cols</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// get eigenvector #i</span>
+        <span class="n">Mat</span> <span class="n">ev</span> <span class="o">=</span> <span class="n">W</span><span class="p">.</span><span class="n">col</span><span class="p">(</span><span class="n">i</span><span class="p">).</span><span class="n">clone</span><span class="p">();</span>
+        <span class="c1">// reshape to original site</span>
+        <span class="n">Mat</span> <span class="n">grayscale</span> <span class="o">=</span> <span class="n">toGrayscale</span><span class="p">(</span><span class="n">ev</span><span class="p">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">height</span><span class="p">));</span>
+        <span class="c1">// show image (with Jet colormap)</span>
+        <span class="n">imshow</span><span class="p">(</span><span class="n">num2str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">grayscale</span><span class="p">,</span> <span class="n">colormap</span><span class="o">::</span><span class="n">Jet</span><span class="p">());</span>
+    <span class="p">}</span>
+    <span class="n">waitKey</span><span class="p">(</span><span class="mi">0</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="results">
+<h2>Results<a class="headerlink" href="#results" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">eigenfaces_at.yml</span></tt> contains the model state, we&#8217;ll simply show the first 10
+lines with <tt class="docutils literal"><span class="pre">head</span> <span class="pre">eigenfaces_at.yml</span></tt>:</p>
+<div class="highlight-none"><div class="highlight"><pre>philipp@mango:~/github/libfacerec-build$ head eigenfaces_at.yml
+%YAML:1.0
+num_components: 399
+mean: !!opencv-matrix
+   rows: 1
+   cols: 10304
+   dt: d
+   data: [ 8.5558897243107765e+01, 8.5511278195488714e+01,
+       8.5854636591478695e+01, 8.5796992481203006e+01,
+       8.5952380952380949e+01, 8.6162907268170414e+01,
+       8.6082706766917283e+01, 8.5776942355889716e+01,
+</pre></div>
+</div>
+<p>And here are the Eigenfaces:</p>
+<img alt="../../_images/stored_loaded_eigenfaces_at.png" src="../../_images/stored_loaded_eigenfaces_at.png" />
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Saving and Loading a FaceRecognizer</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#source-code">Source Code</a></li>
+<li><a class="reference internal" href="#results">Results</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="example_lbph.html"
+                        title="previous chapter">Local Binary Patterns (LBPH) Histograms Example</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="example_colormap.html"
+                        title="next chapter">Working with ColorMap</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/api/example/example_saving_loading.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="example_colormap.html" title="Working with ColorMap"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="example_lbph.html" title="Local Binary Patterns (LBPH) Histograms Example"
+             >previous</a> |</li>
+        <li><a href="../../index.html">libfacerec 0.02 documentation</a> &raquo;</li>
+          <li><a href="../examples.html" >API Examples</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2012, Philipp Wagner.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
