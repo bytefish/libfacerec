@@ -4,19 +4,12 @@ Gender Classification with OpenCV (and libfacerec)
 Introduction
 ------------
 
-A lot of people interested in face recognition are also interested in gender 
-classification. In this tutorial you'll learn how to perform gender 
-classification with OpenCV and libfacerec. 
+You want to decide wether a given face is *male* or *female*. In this tutorial you'll learn how to perform a gender classification with OpenCV and libfacerec. 
 
 Prerequisites
 -------------
 
-First of all you'll need some sample images of male and female faces. I have 
-decided to search celebrity faces using `Google Images <http://www.google.com/images>`_ 
-with the faces filter turned on (my god, they have great algorithms at `Google <http://www.google.com>`_!). 
-
-My database has 8 male and 5 female subjects, each with 10 images. Here are the 
-names if you aren't that creative:
+First of all you'll need some sample images of male and female faces. I've decided to search faces of celebrities using `Google Images <http://www.google.com/images>`_ with the faces filter turned on (my god, they have great algorithms at `Google <http://www.google.com>`_!). My database has 8 male and 5 female subjects, each with 10 images. Here are the names, if you don't know who to search:
 
 * Angelina Jolie
 * Arnold Schwarzenegger
@@ -32,53 +25,39 @@ names if you aren't that creative:
 * Patrick Stewart
 * Tom Cruise
 
-
-All images were chosen to have a frontal face perspective, were aligned at the 
-eyes and have been cropped to equal size, just like this set of George Clooney
-images:
+All images were chosen to have a frontal face perspective, were aligned at the eyes and have been cropped to equal size, just like this set of George Clooney images:
 
 .. image:: /img/tutorial/gender_classification/clooney.png
 
 Choice of Algorithm
 -------------------
 
-If we want to decide wether a person is male or female, we must use a 
-class-specific method, in order to learn the discriminative features of 
-both classes. The Eigenfaces method is based on a Principal Component
-Analysis, which is an unsupervised method, hence it is not suited for this task. 
+If we want to decide wether a person is *male* or *female*, we must use a class-specific method to learn the discriminative features of both classes. The Eigenfaces method is based on the Principal ComponentAnalysis, an unsupervised statistical model not suitable for this task. The Fisherfaces method yields a class-specific linear projection, so it is much better suited for a gender classification task. A detailed writeup on gender classification with the Fisherfaces method is given at `<http://www.bytefish.de/blog/gender_classification>`_. For a subject-dependent cross-validation the Fisherfaces method achieves a 99% recognition rate on my preprocessed dataset. A subject-dependent cross-validation simply means, images of the subject under test were also included in the training set (different images of the same person). 
 
-The Fisherfaces method instead yields a class-specific linear projection, so it 
-is better suited for the gender classification task. The Fisherfaces method 
-actually performs very good. You can read my writeup on this at 
-`<http://www.bytefish.de/blog/gender_classification>`_. 
+Have a look at the way a cross-validation splits a Dataset *D* with 3 classes (*c0*,*c1*,*c2*) each with 3 observations (*o0*,*o1*,*o2*) into a (non-overlapping) Test Subset *A* and Training Subset *B*: 
 
-Please let me give a short summary of the results.
+.. code-block:: none
 
-For a subject-dependent cross-validation the Fisherfaces method yields a 99% 
-recognition rate on my preprocessed dataset. A subject-dependent 
-cross-validation simply means, images of the subject under test were also 
-included in the training set (different images of the same person). So these 
-figures may be misleading, because the method still may find the nearest 
-distance to the person under test and its associated gender; instead of finding
-the closest gender.
+      o0 o1 o2        o0 o1 o2        o0 o1 o2  
+  c0 | A  B  B |  c0 | B  A  B |  c0 | B  B  A |
+  c1 | A  B  B |  c1 | B  A  B |  c1 | B  B  A |
+  c2 | A  B  B |  c2 | B  A  B |  c2 | B  B  A |
 
-If you are evaluating algorithms for let's say gender or emotion classification, 
-then always make sure to use a subject-independent cross-validation. Never use 
-any of the images of a person under test for training, but use all images of 
-this person only for testing. I mention this here, because I've seen papers 
-reporting about awesome accuracy in Emotion classification, when all they did 
-was a subject-dependent cross-validation.
+Allthough the folds are not overlapping (training data is *never* used for testing) the training set contains images of persons we want to know the gender from. So the prediction may depend on the subject and the method finds the closest match to a persons image, but not the gender. What we aim for is a split by class:
 
-However, back to our problem. A subject-independent cross validation still 
-yields a 98% recognition rate for the Fisherfaces. That means, that this 
-algorithm is great for gender classification; as long as your input data 
-is accurately aligned.
+.. code-block:: none
+
+      o0 o1 o2        o0 o1 o2        o0 o1 o2  
+  c0 | A  A  A |  c0 | B  B  B |  c0 | B  B  B |
+  c1 | B  B  B |  c1 | A  A  A |  c1 | B  B  B |
+  c2 | B  B  B |  c2 | B  B  B |  c2 | A  A  A |
+
+With this strategy the cross-validation becomes subject-independent, because *images of a subject are never used for learning the model*. The Fisherfaces Method achieves a 98% recognition rate for a subject-independent cross-validation, so it works great... as long as your data is correctly aligned.
 
 gender.txt
 ----------
 
-In the code I will read the images from a CSV file *gender.txt*, which looks 
-like this for my sample images:
+In the sample code I will read filenames to images from a CSV file *gender.txt*, which looks like this for my sample images:
 
 .. code-block:: none
 
@@ -99,8 +78,7 @@ like this for my sample images:
   /home/philipp/facerec/data/gender/female/crop_emma_watson/emma_watson_03.jpg;1
 
 
-You see were this leads to. The label ``0`` is the class *male* and label ``1`` 
-is for female subjects.
+You see were this leads to: label ``0`` is for class *male* and label ``1`` is for *female* subjects.
 
 Source Code
 -----------
@@ -184,12 +162,11 @@ Source Code
 Results
 -------
 
-If you run the program with your *gender.txt*, you'll see the Fisherface that 
-best separates male and female images:
+If you run the program with your *gender.txt*, you'll see the Fisherface that best separates male and female images:
 
 .. image:: /img/tutorial/gender_classification/fisherface_0.png
 
-and the prediction should yield the correct gender:
+And the prediction should yield the correct gender:
 
 .. code-block:: none
 
