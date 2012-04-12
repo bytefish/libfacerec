@@ -68,8 +68,8 @@ inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors
     Mat _m2 = Mat::zeros(src.rows, src.cols, CV_32FC1);
     for(int n=0; n<neighbors; n++) {
         // sample points
-        float x = static_cast<float>(radius) * cos(2.0*M_PI*n/static_cast<float>(neighbors));
-        float y = static_cast<float>(radius) * -sin(2.0*M_PI*n/static_cast<float>(neighbors));
+        float x = static_cast<float>(radius) * cos(2.0*CV_PI*n/static_cast<float>(neighbors));
+        float y = static_cast<float>(radius) * -sin(2.0*CV_PI*n/static_cast<float>(neighbors));
         // relative indices
         int fx = static_cast<int>(floor(x));
         int fy = static_cast<int>(floor(y));
@@ -176,8 +176,8 @@ void cv::elbp(InputArray src, OutputArray dst, int radius, int neighbors) {
 Mat cv::spatial_histogram(InputArray _src, int numPatterns, int grid_x, int grid_y, bool normed) {
     Mat src = _src.getMat();
     // calculate LBP patch size
-    int width = static_cast<int>(floor(src.cols/grid_x));
-    int height = static_cast<int>(floor(src.rows/grid_y));
+    int width = src.cols/grid_x;
+    int height = src.rows/grid_y;
     // allocate memory for the spatial histogram
     Mat result = Mat::zeros(grid_x * grid_y, numPatterns, CV_32FC1);
     // return matrix with zeros if no data was given

@@ -123,8 +123,8 @@ void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
     // holds the mean over all classes
     Mat meanTotal = Mat::zeros(1, D, data.type());
     // holds the mean for each class
-    Mat meanClass[C];
-    int numClass[C];
+    vector<Mat> meanClass(C);
+    vector<int> numClass(C);
     // initialize
     for (int i = 0; i < C; i++) {
         numClass[i] = 0;

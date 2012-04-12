@@ -143,6 +143,7 @@ Mat cv::histc(InputArray _src, int minVal, int maxVal, bool normed) {
     default:
         CV_Error(CV_StsUnmatchedFormats, "This type is not implemented yet."); break;
     }
+    return Mat();
 }
 
 //------------------------------------------------------------------------------
@@ -295,6 +296,7 @@ Mat cv::interp1(InputArray _x, InputArray _Y, InputArray _xi) {
         case CV_32FC1: return interp1_<float>(x,Y,xi); break;
         case CV_64FC1: return interp1_<double>(x,Y,xi); break;
     }
+    return Mat();
 }
 
 //------------------------------------------------------------------------------
@@ -302,7 +304,7 @@ Mat cv::interp1(InputArray _x, InputArray _Y, InputArray _xi) {
 //------------------------------------------------------------------------------
 Mat cv::linspace(float x0, float x1, int n) {
     Mat pts(n, 1, CV_32FC1);
-    float step = (x1-x0)/floor(n-1);
+    float step = (x1-x0)/static_cast<float>(n-1);
     for(int i = 0; i < n; i++)
         pts.at<float>(i,0) = x0+i*step;
     return pts;
