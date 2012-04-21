@@ -10,9 +10,9 @@ This project now open for bug reports and feature requests. Please note: the bug
 
 The documentation of the library comes with an extensive API description and carefully designed tutorials. It is available in the `doc/build` folder coming with this project. If you want to compile the documentation yourself, then switch to the folder `doc` and run `make <target>`. For the html version you would `make html` and for the PDF version `make latexpdf`. You'll need [Sphinx](http://sphinx.pocoo.org) for this. 
 
-# Building the library in Windows
+# Building the library with Microsoft Visual Studio 2008/2010
 
-If you have problems with building libfacerec in Windows, then please read my blog post at:
+If you have problems with building libfacerec with Microsoft Visual Studio 2008/2010, then please read my blog post at:
 
 * [http://www.bytefish.de/blog/opencv_visual_studio_and_libfacerecs](http://www.bytefish.de/blog/opencv_visual_studio_and_libfacerec)
 
