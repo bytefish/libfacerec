@@ -4,7 +4,7 @@
 
 # Issues and Feature Requests
 
-This project now open for bug reports and feature requests. Please note: the bug tracker is not the right place to ask for implementation details or pose questions on algorithmic theory, such questions be closed.
+This project is now open for bug reports and feature requests.
 
 # Tutorial
 
