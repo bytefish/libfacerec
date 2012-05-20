@@ -106,7 +106,7 @@ histc_(const Mat& src, int minVal=0, int maxVal=255, bool normed=false) {
     // Establish the number of bins.
     int histSize = maxVal-minVal+1;
     // Set the ranges.
-    float range[] = { minVal, maxVal } ;
+    float range[] = { minVal, maxVal+1 } ;
     const float* histRange = { range };
     // calc histogram
     calcHist(&src, 1, 0, Mat(), result, 1, &histSize, &histRange, true, false);

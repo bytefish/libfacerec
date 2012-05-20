@@ -18,7 +18,8 @@
 #ifndef __FACEREC_HPP__
 #define __FACEREC_HPP__
 
-#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
+
 
 #include "colormap.hpp"
 #include "subspace.hpp"

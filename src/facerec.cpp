@@ -19,6 +19,8 @@
 #include "helper.hpp"
 #include "decomposition.hpp"
 
+#include "opencv2/imgproc/imgproc.hpp"
+
 //------------------------------------------------------------------------------
 // cv::FaceRecognizer
 //------------------------------------------------------------------------------
@@ -145,7 +147,7 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     lda.eigenvalues().convertTo(_eigenvalues, CV_64FC1);
     // Now calculate the projection matrix as pca.eigenvectors * lda.eigenvectors.
     // Note: OpenCV stores the eigenvectors by row, so we need to transpose it!
-    gemm(pca.eigenvectors, lda.eigenvectors(), 1.0, Mat(), 0.0, _eigenvectors, CV_GEMM_A_T);
+    gemm(pca.eigenvectors, lda.eigenvectors(), 1.0, Mat(), 0.0, _eigenvectors, GEMM_1_T);
     // store the projections of the original data
     for(int sampleIdx = 0; sampleIdx < data.rows; sampleIdx++) {
         Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx));

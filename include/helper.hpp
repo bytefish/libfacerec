@@ -19,7 +19,8 @@
 #ifndef __HELPER_HPP__
 #define __HELPER_HPP__
 
-#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
+
 #include <vector>
 #include <set>
 

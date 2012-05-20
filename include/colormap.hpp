@@ -18,8 +18,7 @@
 #ifndef COLORMAP_HPP_
 #define COLORMAP_HPP_
 
-#include <cv.h>
-#include <iostream>
+#include "opencv2/core/core.hpp"
 #include "helper.hpp"
 
 
