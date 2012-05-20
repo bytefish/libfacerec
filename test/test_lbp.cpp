@@ -1,4 +1,4 @@
-#include "test_precomp.hpp"
+
 #include "opencv2/opencv.hpp"
 #include "opencv2/ts/ts.hpp"
 
