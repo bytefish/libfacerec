@@ -29,13 +29,17 @@ target_link_libraries(${the_library} ${OpenCV_LIBS})
 #---------------------------------
 # add tests
 #---------------------------------
+if(NOT DEFINED ENABLE_TESTS)
+    set(ENABLE_TESTS FALSE CACHE BOOL "Enable to make the tests")
+endif()
 
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test)
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test AND ENABLE_TESTS)
 	file(GLOB test_srcs "test/*.cpp")
 	file(GLOB test_hdrs "test/*.h*")
 	set(the_test_target "opencv_test_${name}")
 	add_executable(${the_test_target} ${test_srcs} ${test_hdrs})
-	target_link_libraries(${the_test_target} ${OpenCV_LIBS} ${the_library})
+	# link to opencv_ts, as it is not in OpenCV_LIBS for OpenCV 2.3.1 
+	target_link_libraries(${the_test_target} opencv_ts ${OpenCV_LIBS} ${the_library})
 	enable_testing()
 	get_target_property(LOC ${the_test_target} LOCATION)
 	add_test(${the_test_target} "${LOC}")
