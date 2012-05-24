@@ -24,7 +24,7 @@ file(GLOB lib_srcs "src/*.cpp")
 # build the library & link
 #---------------------------------
 add_library(${the_library} ${lib_srcs} ${lib_hdrs})
-target_link_libraries(${the_library} ${OpenCV_LIBS})
+target_link_libraries(${the_library} opencv_core opencv_imgproc opencv_highgui)
 
 #---------------------------------
 # add tests
@@ -39,7 +39,7 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/test AND ENABLE_TESTS)
 	set(the_test_target "opencv_test_${name}")
 	add_executable(${the_test_target} ${test_srcs} ${test_hdrs})
 	# link to opencv_ts, as it is not in OpenCV_LIBS for OpenCV 2.3.1 
-	target_link_libraries(${the_test_target} opencv_ts ${OpenCV_LIBS} ${the_library})
+	target_link_libraries(${the_test_target} ${the_library} opencv_core opencv_ts)
 	enable_testing()
 	get_target_property(LOC ${the_test_target} LOCATION)
 	add_test(${the_test_target} "${LOC}")
@@ -49,4 +49,4 @@ endif()
 # compile a sample executable
 #---------------------------------
 add_executable(fisherfaces src/main.cpp)
-target_link_libraries(fisherfaces ${OpenCV_LIBS} ${the_library})
+target_link_libraries(fisherfaces ${the_library} opencv_core opencv_imgproc opencv_highgui)
