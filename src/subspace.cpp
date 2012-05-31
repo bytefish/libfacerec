@@ -43,13 +43,9 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
     // copy data & make sure we are using the correct type
     src.convertTo(Y, W.type());
     // calculate the reconstruction
-    gemm(Y,
-            W,
-            1.0,
-            (d == mean.total()) ? repeat(mean.reshape(1,1), n, 1) : Mat(),
-            (d == mean.total()) ? 1.0 : 0.0,
-            X,
-            GEMM_2_T);
+    gemm(Y, W, 1.0, Mat(), 0.0, X, GEMM_2_T);
+    if(mean.total() == X.cols)
+        add(X, repeat(mean.reshape(1,1), n, 1), X);
     return X;
 }
 
