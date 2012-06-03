@@ -132,7 +132,12 @@ Mat transpose(InputArray src);
 // Converts an integer number to a string.
 //
 // Equivalent to GNU Octave/MATLAB function "num2str".
-string num2str(int num);
+template <typename _Tp>
+string num2str(_Tp num) {
+    stringstream ss;
+    ss << num;
+    return ss.str();
+}
 
 // Performs a linear interpolation of n equally-spaced sample between x0
 // (interpolation start) and x1 (interpolation end).

@@ -19,6 +19,8 @@
 #include "helper.hpp"
 #include "decomposition.hpp"
 
+#include <iostream>
+
 #include "opencv2/imgproc/imgproc.hpp"
 
 //------------------------------------------------------------------------------
@@ -120,25 +122,25 @@ void cv::Eigenfaces::save(FileStorage& fs) const {
 //------------------------------------------------------------------------------
 void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     if(_lbls.getMat().type() != CV_32SC1)
-            CV_Error(CV_StsUnsupportedFormat, "Labels must be given as integer (CV_32SC1).");
+        error(Exception(CV_StsUnsupportedFormat, "Labels must be given as integer (CV_32SC1).", "cv::Fisherfaces::train", __FILE__, __LINE__));
     // get data
     vector<int> labels = _lbls.getMat();
+    // wrap asRowMatrix in a try/catch, as people tend to pass wrong data here
     Mat data = asRowMatrix(src, CV_64FC1);
-    // dimensionality
-    int N = data.rows; // number of samples
-    int D = data.cols; // dimension of samples
-    // assert correct data alignment
+    // number of samples (N) and dimensions (D)
+    int N = data.rows;
+    int D = data.cols;
+    // assert data is correctly given
     if(labels.size() != N)
-        CV_Error(CV_StsUnsupportedFormat, "Labels must be given as integer (CV_32SC1).");
-    // compute the Fisherfaces
-    int C = remove_dups(labels).size(); // number of unique classes
+        error(Exception(CV_StsBadArg, "The number of samples (src) must equal the number of labels (labels).", "cv::Fisherfaces::train", __FILE__, __LINE__));
+    int C = remove_dups(labels).size(); // calc number of unique classes
     // clip number of components to be a valid number
     if((_num_components <= 0) || (_num_components > (C-1)))
         _num_components = (C-1);
     // perform a PCA and keep (N-C) components
     PCA pca(data, Mat(), CV_PCA_DATA_AS_ROW, (N-C));
     // project the data and perform a LDA on it
-    subspace::LDA lda(pca.project(data),labels, _num_components);
+    subspace::LDA lda(pca.project(data), labels, _num_components);
     // store the total mean vector
     _mean = pca.mean.reshape(1,1);
     // store labels
@@ -171,7 +173,6 @@ int cv::Fisherfaces::predict(InputArray _src) const {
     }
     return minClass;
 }
-
 
 // See cv::FaceRecognizer::load.
 void cv::Fisherfaces::load(const FileStorage& fs) {
@@ -222,14 +223,14 @@ void cv::LBPH::save(FileStorage& fs) const {
 
 void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR)
-        CV_Error(CV_StsUnsupportedFormat, "cv::LBPH::train expects InputArray::STD_VECTOR_MAT or _InputArray::STD_VECTOR_VECTOR.");
+        error(Exception(CV_StsBadArg, "The images are expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::LBPH::train", __FILE__, __LINE__));
     // get the vector of matrices
     vector<Mat> src;
     _src.getMatVector(src);
     // turn the label matrix into a vector
     vector<int> labels = _lbls.getMat();
     if(labels.size() != src.size())
-        CV_Error(CV_StsUnsupportedFormat, "The number of labels must equal the number of samples.");
+        throw cv::Exception(CV_StsBadArg, "The number of samples (src) must equal the number of labels (labels).", "cv::LBPH::train", __FILE__, __LINE__);
     // store given labels
     _labels = labels;
     // store the spatial histograms of the original data

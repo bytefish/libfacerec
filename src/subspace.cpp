@@ -12,15 +12,25 @@ Mat cv::subspace::project(InputArray _W, InputArray _mean, InputArray _src) {
     Mat W = _W.getMat();
     Mat mean = _mean.getMat();
     Mat src = _src.getMat();
+    // get number of samples and dimension
+    int n = src.rows;
+    int d = src.cols;
+    // make sure the data has the correct shape
+    if(W.rows != d) {
+        string error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::project", __FILE__, __LINE__));
+    }
+    // make sure mean is correct if not empty
+    if(!mean.empty() && (mean.total() != d)) {
+        string error_message = format("Wrong mean shape for the given data matrix. Expected %d, but was %d.", d, mean.total());
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::project", __FILE__, __LINE__));
+    }
     // create temporary matrices
     Mat X, Y;
-    // copy data & make sure we are using the correct type
+    // make sure you operate on correct type
     src.convertTo(X, W.type());
-    // get number of samples and dimension
-    int n = X.rows;
-    int d = X.cols;
-    // center the data if correct aligned sample mean is given
-    if(mean.total() == d)
+    // safe to do, because of above assertion
+    if(!mean.empty())
         subtract(X, repeat(mean.reshape(1,1), n, 1), X);
     // finally calculate projection as Y = (X-mean)*W
     gemm(X, W, 1.0, Mat(), 0.0, Y);
@@ -38,13 +48,24 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
     // get number of samples and dimension
     int n = src.rows;
     int d = src.cols;
+    // make sure the data has the correct shape
+    if(W.cols != d) {
+        string error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::reconstruct", __FILE__, __LINE__));
+    }
+    // make sure mean is correct if not empty
+    if(!mean.empty() && (mean.total() != W.rows)) {
+        string error_message = format("Wrong mean shape for the given eigenvector matrix. Expected %d, but was %d.", W.cols, mean.total());
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::reconstruct", __FILE__, __LINE__));
+    }
     // initalize temporary matrices
     Mat X, Y;
     // copy data & make sure we are using the correct type
     src.convertTo(Y, W.type());
     // calculate the reconstruction
     gemm(Y, W, 1.0, Mat(), 0.0, X, GEMM_2_T);
-    if(mean.total() == X.cols)
+    // safe to do because of above assertion
+    if(!mean.empty())
         add(X, repeat(mean.reshape(1,1), n, 1), X);
     return X;
 }

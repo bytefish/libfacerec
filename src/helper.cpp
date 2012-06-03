@@ -197,19 +197,33 @@ Mat cv::sortMatrixRowsByIndices(InputArray src, InputArray indices) {
 // cv::asRowMatrix
 //------------------------------------------------------------------------------
 Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
+    // make sure the input data is a vector of matrices or vector of vector
+    if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR)
+        throw cv::Exception(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::asRowMatrix", __FILE__, __LINE__);
     // number of samples
-    int n = (int) src.total();
-    // return empty matrix if no data given
+    size_t n = src.total();
+    // return empty matrix if no matrices given
     if(n == 0)
         return Mat();
-    // dimensionality of samples
-    int d = src.getMat(0).total();
+    // dimensionality of (reshaped) samples
+    size_t d = src.getMat(0).total();
     // create data matrix
     Mat data(n, d, rtype);
-    // copy data
+    // now copy data
     for(int i = 0; i < n; i++) {
+        // make sure data can be reshaped, throw exception if not!
+        if(src.getMat(i).total() != d) {
+            string error_message = format("Wrong number of elements in matrix #%d! Expected %d was %d.", i, d, src.getMat(i).total());
+            error(cv::Exception(CV_StsBadArg, error_message, "cv::asRowMatrix", __FILE__, __LINE__));
+        }
+        // get a hold of the current row
         Mat xi = data.row(i);
-        src.getMat(i).reshape(1, 1).convertTo(xi, rtype, alpha, beta);
+        // make reshape happy by cloning for non-continuous matrices
+        if(src.getMat(i).isContinuous()) {
+            src.getMat(i).reshape(1, 1).convertTo(xi, rtype, alpha, beta);
+        } else {
+            src.getMat(i).clone().reshape(1, 1).convertTo(xi, rtype, alpha, beta);
+        }
     }
     return data;
 }
@@ -218,6 +232,9 @@ Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta
 // cv::asColumnMatrix
 //------------------------------------------------------------------------------
 Mat cv::asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
+    // make sure the input data is a vector of matrices or vector of vector
+    if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR)
+        error(cv::Exception(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::asColumnMatrix", __FILE__, __LINE__));
     int n = (int) src.total();
     // return empty matrix if no data given
     if(n == 0)
@@ -226,10 +243,21 @@ Mat cv::asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha, double b
     int d = src.getMat(0).total();
     // create data matrix
     Mat data(d, n, rtype);
-    // copy data
+    // now copy data
     for(int i = 0; i < n; i++) {
+        // make sure data can be reshaped, throw exception if not!
+        if(src.getMat(i).total() != d) {
+            string error_message = format("Wrong number of elements in matrix #%d! Expected %d was %d.", i, d, src.getMat(i).total());
+            error(cv::Exception(CV_StsBadArg, error_message, "cv::asRowMatrix", __FILE__, __LINE__));
+        }
+        // get a hold of the current row
         Mat yi = data.col(i);
-        src.getMat(i).reshape(1, d).convertTo(yi, rtype, alpha, beta);
+        // make reshape happy by cloning for non-continuous matrices
+        if(src.getMat(i).isContinuous()) {
+            src.getMat(i).reshape(1, d).convertTo(yi, rtype, alpha, beta);
+        } else {
+            src.getMat(i).clone().reshape(1, d).convertTo(yi, rtype, alpha, beta);
+        }
     }
     return data;
 }
@@ -283,9 +311,16 @@ Mat cv::interp1(InputArray _x, InputArray _Y, InputArray _xi) {
     Mat x = _x.getMat();
     Mat Y = _Y.getMat();
     Mat xi = _xi.getMat();
-    // check types & alignment
-    assert((x.type() == Y.type()) && (Y.type() == xi.type()));
-    assert((x.cols == 1) && (x.rows == Y.rows) && (x.cols == Y.cols));
+    // check type
+    if((x.type() != Y.type()) || (Y.type() != xi.type())) {
+        string error_message = format("Interpolation matrices must have the same type (was %d, %d, %d).", x.type(), Y.type(), xi.type());
+        error(cv::Exception(CV_StsBadArg, error_message , "cv::interp1", __FILE__, __LINE__));
+    }
+    // check alignment
+    if((x.cols != 1) || (x.rows != Y.rows) || (x.cols != Y.cols)) {
+        string error_message = format("Wrong alignment of given interpolation matrices, was x.rows=%d, x.cols=%d, Y.rows=%d, Y.cols=%d",x.rows, x.cols, Y.rows, Y.cols);
+        error(cv::Exception(CV_StsBadArg, error_message , "cv::interp1", __FILE__, __LINE__));
+    }
     // call templated interp1
     switch(x.type()) {
         case CV_8SC1: return interp1_<char>(x,Y,xi); break;
@@ -316,8 +351,10 @@ Mat cv::linspace(float x0, float x1, int n) {
 Mat cv::toGrayscale(InputArray _src, int dtype) {
     Mat src = _src.getMat();
     // only allow one channel
-    if(src.channels() != 1)
-        CV_Error(CV_StsBadArg, "Only Matrices with one channel are supported");
+    if(src.channels() != 1) {
+        string error_message = format("Only Matrices with one channel are supported. Expected 1, but was %d.", src.channels());
+        error(Exception(CV_StsBadArg, error_message , "cv::toGrayscale", __FILE__, __LINE__));
+    }
     // create and return normalized image
     Mat dst;
     cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
@@ -332,13 +369,4 @@ Mat cv::transpose(InputArray _src) {
     Mat dst;
     transpose(src, dst);
     return dst;
-}
-
-//------------------------------------------------------------------------------
-// cv::num2str
-//------------------------------------------------------------------------------
-string cv::num2str(int num) {
-    stringstream ss;
-    ss << num;
-    return ss.str();
 }

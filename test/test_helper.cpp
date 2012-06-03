@@ -159,7 +159,26 @@ TEST(HelperTest, checkSortByRow) {
 //------------------------------------------------------------------------------
 // cv::asRowMatrix
 //------------------------------------------------------------------------------
-TEST(HelperTest, checkAsRowMatrix) {
+TEST(HelperTest, asRowMatrix_Empty) {
+    vector<Mat> matrices;
+    Mat expected = Mat();
+    Mat actual = asRowMatrix(matrices, CV_8UC1);
+    ASSERT_EQ(expected.empty(), actual.empty());
+}
+
+TEST(HelperTest, asRowMatrix_SingleMat) {
+    vector<Mat> matrices;
+    Mat m0 =  (Mat_<double>(3,1) << 1.0, 2.0, 3.0);
+
+    matrices.push_back(m0);
+
+    Mat expected = (Mat_<double>(1,3) << 1.0, 2.0, 3.0, 4.0);
+    Mat actual = asRowMatrix(matrices, matrices[0].type());
+
+    ASSERT_TRUE(isEqual(expected, actual));
+}
+
+TEST(HelperTest, asRowMatrix_MultipleMat) {
     vector<Mat> matrices;
     Mat m0 =  (Mat_<double>(2,1) << 1.0, 2.0);
     Mat m1 =  (Mat_<double>(2,1) << 3.0, 4.0);
@@ -168,15 +187,65 @@ TEST(HelperTest, checkAsRowMatrix) {
     // {{1.0,2.0},
     //  {3.0,4.0}}
     Mat expected = (Mat_<double>(2,2) << 1.0, 2.0, 3.0, 4.0);
-    // get data matrix with matrices by row
     Mat actual = asRowMatrix(matrices, matrices[0].type());
+
     ASSERT_TRUE(isEqual(expected, actual));
 }
 
+TEST(HelperTest, asRowMatrix_DifferentTypesMat) {
+    vector<Mat> matrices;
+    Mat m0 =  (Mat_<float>(2,1) << 1.0, 2.0);
+    Mat m1 =  (Mat_<int>(2,1) << 3, 4);
+    Mat m2 =  (Mat_<unsigned char>(2,1) << 5, 6);
+
+    matrices.push_back(m0);
+    matrices.push_back(m1);
+    matrices.push_back(m2);
+
+    // {{1.0,2.0},
+    //  {3.0,4.0},
+    //  {5.0,6.0}}
+    Mat expected = (Mat_<double>(3,2) << 1.0, 2.0, 3.0, 4.0, 5.0, 6.0);
+    Mat actual = asRowMatrix(matrices, CV_64FC1);
+
+    ASSERT_TRUE(isEqual(expected, actual));
+}
+
+TEST(HelperTest, asRowMatrix_DifferentShapesMat) {
+    vector<Mat> matrices;
+    Mat m0 =  (Mat_<double>(3,1) << 1.0, 2.0, 3.0);
+    Mat m1 =  (Mat_<double>(2,1) << 3.0, 4.0);
+    Mat m2 =  (Mat_<double>(3,1) << 3.0, 4.0, 1.0);
+
+    matrices.push_back(m0);
+    matrices.push_back(m1);
+    matrices.push_back(m2);
+
+    ASSERT_THROW(asRowMatrix(matrices, matrices[0].type()), cv::Exception);
+}
+
 //------------------------------------------------------------------------------
-// cv::asRowMatrix
+// cv::asColumnMatrix
 //------------------------------------------------------------------------------
-TEST(HelperTest, checkAsColumnMatrix) {
+TEST(HelperTest, asColumnMatrix_EmptyMat) {
+    vector<Mat> matrices;
+    Mat expected = Mat();
+    Mat actual = asColumnMatrix(matrices, CV_8UC1);
+    ASSERT_EQ(expected.empty(), actual.empty());
+}
+
+TEST(HelperTest, asColumnMatrix_SingleMat) {
+    vector<Mat> matrices;
+    Mat m0 =  (Mat_<double>(2,1) << 1.0, 2.0);
+    matrices.push_back(m0);
+
+    Mat expected = (Mat_<double>(2,1) << 1.0, 2.0);
+    Mat actual = asColumnMatrix(matrices, matrices[0].type());
+
+    ASSERT_TRUE(isEqual(expected, actual));
+}
+
+TEST(HelperTest, asColumnMatrix_MultipleMat) {
     vector<Mat> matrices;
     Mat m0 =  (Mat_<double>(2,1) << 1.0, 2.0);
     Mat m1 =  (Mat_<double>(2,1) << 3.0, 4.0);
@@ -188,6 +257,20 @@ TEST(HelperTest, checkAsColumnMatrix) {
     // get data matrix with matrices by row
     Mat actual = asColumnMatrix(matrices, matrices[0].type());
     ASSERT_TRUE(isEqual(expected, actual));
+}
+
+TEST(HelperTest, asColumnMatrix_DifferentShapesMat) {
+    vector<Mat> matrices;
+
+    Mat m0 =  (Mat_<double>(3,1) << 1.0, 2.0, 3.0);
+    Mat m1 =  (Mat_<double>(2,1) << 3.0, 4.0);
+    Mat m2 =  (Mat_<double>(3,1) << 1.0, 2.0, 3.0);
+
+    matrices.push_back(m0);
+    matrices.push_back(m1);
+    matrices.push_back(m2);
+
+    ASSERT_THROW(asColumnMatrix(matrices, matrices[0].type()), cv::Exception);
 }
 
 //------------------------------------------------------------------------------
