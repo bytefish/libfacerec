@@ -47,9 +47,10 @@ void cv::FaceRecognizer::load(const string& filename) {
 // cv::Eigenfaces
 //------------------------------------------------------------------------------
 void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
-    // assert type
-    if(_lbls.getMat().type() != CV_32SC1)
-        CV_Error(CV_StsUnsupportedFormat, "Labels must be given as integer (CV_32SC1).");
+    if(_lbls.getMat().type() != CV_32SC1) {
+        string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
+    }
     // get labels
     vector<int> labels = _lbls.getMat();
     // observations in row
@@ -59,8 +60,10 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
     // dimensionality of data
     int d = data.cols;
     // assert there are as much samples as labels
-    if(n != labels.size())
-        CV_Error(CV_StsBadArg, "The number of samples must equal the number of labels!");
+    if(n != labels.size()) {
+        string error_message = format("The number of samples (src) must equal the number of labels (labels). Was len(samples)=%d, len(labels)=%d.", n, labels.size());
+        error(cv::Exception(CV_StsBadArg, error_message,  "cv::Eigenfaces::train", __FILE__, __LINE__));
+    }
     // clip number of components to be valid
     if((_num_components <= 0) || (_num_components > n))
         _num_components = n;
@@ -73,7 +76,7 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
     _labels = labels; // store labels for prediction
     // save projections
     for(int sampleIdx = 0; sampleIdx < data.rows; sampleIdx++) {
-        Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx));
+        Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx).clone());
         this->_projections.push_back(p);
     }
 }
@@ -121,8 +124,10 @@ void cv::Eigenfaces::save(FileStorage& fs) const {
 // cv::Fisherfaces
 //------------------------------------------------------------------------------
 void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
-    if(_lbls.getMat().type() != CV_32SC1)
-        error(Exception(CV_StsUnsupportedFormat, "Labels must be given as integer (CV_32SC1).", "cv::Fisherfaces::train", __FILE__, __LINE__));
+    if(_lbls.getMat().type() != CV_32SC1) {
+        string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+    }
     // get data
     vector<int> labels = _lbls.getMat();
     // wrap asRowMatrix in a try/catch, as people tend to pass wrong data here
@@ -131,9 +136,12 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     int N = data.rows;
     int D = data.cols;
     // assert data is correctly given
-    if(labels.size() != N)
-        error(Exception(CV_StsBadArg, "The number of samples (src) must equal the number of labels (labels).", "cv::Fisherfaces::train", __FILE__, __LINE__));
-    int C = remove_dups(labels).size(); // calc number of unique classes
+    if(labels.size() != N) {
+        string error_message = format("The number of samples (src) must equal the number of labels (labels)! len(src)=%d, len(labels)=%d.", N, labels.size());
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+    }
+    // the following equals len(unique(C))
+    int C = remove_dups(labels).size();
     // clip number of components to be a valid number
     if((_num_components <= 0) || (_num_components > (C-1)))
         _num_components = (C-1);
@@ -145,14 +153,14 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     _mean = pca.mean.reshape(1,1);
     // store labels
     _labels = labels;
-    // store the eigenvalues of the discriminants
+    // store the eigenvalues of the discriminants (and make sure they are doubles!)
     lda.eigenvalues().convertTo(_eigenvalues, CV_64FC1);
     // Now calculate the projection matrix as pca.eigenvectors * lda.eigenvectors.
     // Note: OpenCV stores the eigenvectors by row, so we need to transpose it!
     gemm(pca.eigenvectors, lda.eigenvectors(), 1.0, Mat(), 0.0, _eigenvectors, GEMM_1_T);
     // store the projections of the original data
     for(int sampleIdx = 0; sampleIdx < data.rows; sampleIdx++) {
-        Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx));
+        Mat p = subspace::project(_eigenvectors, _mean, data.row(sampleIdx).clone());
         _projections.push_back(p);
     }
 }
@@ -229,8 +237,10 @@ void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     _src.getMatVector(src);
     // turn the label matrix into a vector
     vector<int> labels = _lbls.getMat();
-    if(labels.size() != src.size())
-        throw cv::Exception(CV_StsBadArg, "The number of samples (src) must equal the number of labels (labels).", "cv::LBPH::train", __FILE__, __LINE__);
+    if(labels.size() != src.size()) {
+        string error_message = format("The number of samples (src) must equal the number of labels (labels). Was len(samples)=%d, len(labels)=%d.", src.size(), labels.size());
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::LBPH::train", __FILE__, __LINE__));
+    }
     // store given labels
     _labels = labels;
     // store the spatial histograms of the original data
