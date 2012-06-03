@@ -13,7 +13,22 @@ using namespace std;
 //------------------------------------------------------------------------------
 // subspace::project
 //------------------------------------------------------------------------------
-TEST(TestSubspace, subspaceProject) {
+TEST(TestSubspace, subspaceProject_EmptyMean) {
+    // TODO
+    ASSERT_TRUE(false);
+}
+
+TEST(TestSubspace, subspaceProject_CorrectShapes) {
+    // TODO
+    ASSERT_TRUE(false);
+}
+
+TEST(TestSubspace, subspaceProject_WrongShapes) {
+    // TODO
+    ASSERT_TRUE(false);
+}
+
+TEST(TestSubspace, subspaceProject_DifferentTypes) {
     // TODO
     ASSERT_TRUE(false);
 }
@@ -21,8 +36,23 @@ TEST(TestSubspace, subspaceProject) {
 //------------------------------------------------------------------------------
 // subspace::reconstruct
 //------------------------------------------------------------------------------
-TEST(TestSubspace, subspaceReconstruct) {
+
+TEST(TestSubspace, subspaceReconstruct_EmptyMean) {
     // TODO
     ASSERT_TRUE(false);
 }
 
+TEST(TestSubspace, subspaceReconstruct_CorrectShapes) {
+    // TODO
+    ASSERT_TRUE(false);
+}
+
+TEST(TestSubspace, subspaceReconstruct_WrongShapes) {
+    // TODO
+    ASSERT_TRUE(false);
+}
+
+TEST(TestSubspace, subspaceProject_DifferentTypes) {
+    // TODO
+    ASSERT_TRUE(false);
+}
