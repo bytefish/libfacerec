@@ -224,6 +224,11 @@ TEST(HelperTest, asRowMatrix_DifferentShapesMat) {
     ASSERT_THROW(asRowMatrix(matrices, matrices[0].type()), cv::Exception);
 }
 
+TEST(HelperTest, asRowMatrix_WrongInputArray) {
+    Mat matrices;
+    ASSERT_THROW(asRowMatrix(matrices, matrices.type()), cv::Exception);
+}
+
 //------------------------------------------------------------------------------
 // cv::asColumnMatrix
 //------------------------------------------------------------------------------
@@ -271,6 +276,11 @@ TEST(HelperTest, asColumnMatrix_DifferentShapesMat) {
     matrices.push_back(m2);
 
     ASSERT_THROW(asColumnMatrix(matrices, matrices[0].type()), cv::Exception);
+}
+
+TEST(HelperTest, asColumnMatrix_WrongInputArray) {
+    Mat matrices;
+    ASSERT_THROW(asColumnMatrix(matrices, matrices.type()), cv::Exception);
 }
 
 //------------------------------------------------------------------------------
