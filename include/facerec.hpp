@@ -151,9 +151,6 @@ public:
     // Predicts the label of a query image in src.
     int predict(InputArray src) const;
 
-    // Predicts the label of a query image in src.
-    int predict1(InputArray src) const;
-
     // See cv::FaceRecognizer::load.
     virtual void load(const FileStorage& fs);
 
