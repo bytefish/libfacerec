@@ -82,10 +82,15 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
 }
 
 int cv::Eigenfaces::predict(InputArray _src) const {
-    // get data
     Mat src = _src.getMat();
+    // check data alignment just for clearer exception messages
+    if(_eigenvectors.rows != src.total()) {
+        string error_message = format("Wrong input image size, training and test images must be of equal size! Expected an image with %d number of elements, got %d.", _eigenvectors.rows, src.total());
+        error(cv::Exception(CV_StsError, error_message, "cv::Eigenfaces::predict", __FILE__, __LINE__));
+    }
     // project into PCA subspace
     Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
+    // find 1-nearest neighbor
     double minDist = numeric_limits<double>::max();
     int minClass = -1;
     for(int sampleIdx = 0; sampleIdx < _projections.size(); sampleIdx++) {
@@ -167,6 +172,11 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
 
 int cv::Fisherfaces::predict(InputArray _src) const {
     Mat src = _src.getMat();
+    // check data alignment just for clearer exception messages
+    if(_eigenvectors.rows != src.total()) {
+        string error_message = format("Wrong input image size, training and test images must be of equal size! Expected an image with %d number of elements, got %d.", _eigenvectors.rows, src.total());
+        error(cv::Exception(CV_StsError, error_message, "cv::Fisherfaces::predict", __FILE__, __LINE__));
+    }
     // project into LDA subspace
     Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
     // find 1-nearest neighbor
@@ -205,6 +215,7 @@ void cv::Fisherfaces::save(FileStorage& fs) const {
     writeFileNodeList(fs, "projections", _projections);
     writeFileNodeList(fs, "labels", _labels);
 }
+
 //------------------------------------------------------------------------------
 // cv::LBPH
 //------------------------------------------------------------------------------
