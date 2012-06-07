@@ -83,9 +83,14 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
 
 int cv::Eigenfaces::predict(InputArray _src) const {
     Mat src = _src.getMat();
-    // check data alignment just for clearer exception messages
-    if(_eigenvectors.rows != src.total()) {
-        string error_message = format("Wrong input image size, training and test images must be of equal size! Expected an image with %d number of elements, got %d.", _eigenvectors.rows, src.total());
+
+    if(_projections.empty()) {
+        // throw error if no data (or simply return -1?)
+        string error_message = "This cv::Eigenfaces model is not computed yet. Did you call cv::Eigenfaces::train?";
+        error(cv::Exception(CV_StsError, error_message, "cv::Eigenfaces::predict", __FILE__, __LINE__));
+    } else if(_eigenvectors.rows != src.total()) {
+        // check data alignment just for clearer exception messages
+        string error_message = format("Wrong input image size. Reason: Training and Test images must be of equal size! Expected an image with %d elements, but got %d.", _eigenvectors.rows, src.total());
         error(cv::Exception(CV_StsError, error_message, "cv::Eigenfaces::predict", __FILE__, __LINE__));
     }
     // project into PCA subspace
@@ -173,8 +178,12 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
 int cv::Fisherfaces::predict(InputArray _src) const {
     Mat src = _src.getMat();
     // check data alignment just for clearer exception messages
-    if(_eigenvectors.rows != src.total()) {
-        string error_message = format("Wrong input image size, training and test images must be of equal size! Expected an image with %d number of elements, got %d.", _eigenvectors.rows, src.total());
+    if(_projections.empty()) {
+        // throw error if no data (or simply return -1?)
+        string error_message = "This cv::Fisherfaces model is not computed yet. Did you call cv::Fisherfaces::train?";
+        error(cv::Exception(CV_StsError, error_message, "cv::Fisherfaces::predict", __FILE__, __LINE__));
+    } else if(_eigenvectors.rows != src.total()) {
+        string error_message = format("Wrong input image size. Reason: Training and Test images must be of equal size! Expected an image with %d elements, but got %d.", _eigenvectors.rows, src.total());
         error(cv::Exception(CV_StsError, error_message, "cv::Fisherfaces::predict", __FILE__, __LINE__));
     }
     // project into LDA subspace
