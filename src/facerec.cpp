@@ -261,10 +261,10 @@ void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     }
     if(_src.total() == 0) {
         string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::LBPH::train", __FILE__, __LINE__));
     } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::LBPH::train", __FILE__, __LINE__));
     }
     // get the vector of matrices
     vector<Mat> src;
