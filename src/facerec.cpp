@@ -47,7 +47,10 @@ void cv::FaceRecognizer::load(const string& filename) {
 // cv::Eigenfaces
 //------------------------------------------------------------------------------
 void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
-    if(_lbls.getMat().type() != CV_32SC1) {
+    if(src.total() == 0) {
+        string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
+    } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
         error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
     }
@@ -83,7 +86,6 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
 
 int cv::Eigenfaces::predict(InputArray _src) const {
     Mat src = _src.getMat();
-
     if(_projections.empty()) {
         // throw error if no data (or simply return -1?)
         string error_message = "This cv::Eigenfaces model is not computed yet. Did you call cv::Eigenfaces::train?";
@@ -134,7 +136,10 @@ void cv::Eigenfaces::save(FileStorage& fs) const {
 // cv::Fisherfaces
 //------------------------------------------------------------------------------
 void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
-    if(_lbls.getMat().type() != CV_32SC1) {
+    if(src.total() == 0) {
+        string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
+    } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
         error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
     }
@@ -250,8 +255,17 @@ void cv::LBPH::save(FileStorage& fs) const {
 }
 
 void cv::LBPH::train(InputArray _src, InputArray _lbls) {
-    if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR)
-        error(Exception(CV_StsBadArg, "The images are expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::LBPH::train", __FILE__, __LINE__));
+    if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR) {
+        string error_message = "The images are expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).";
+        error(Exception(CV_StsBadArg, error_message, "cv::LBPH::train", __FILE__, __LINE__));
+    }
+    if(src.total() == 0) {
+        string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+    } else if(_lbls.getMat().type() != CV_32SC1) {
+        string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
+        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+    }
     // get the vector of matrices
     vector<Mat> src;
     _src.getMatVector(src);
