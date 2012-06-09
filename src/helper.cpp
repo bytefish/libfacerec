@@ -198,8 +198,9 @@ Mat cv::sortMatrixRowsByIndices(InputArray src, InputArray indices) {
 //------------------------------------------------------------------------------
 Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
     // make sure the input data is a vector of matrices or vector of vector
-    if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR)
-        throw cv::Exception(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::asRowMatrix", __FILE__, __LINE__);
+    if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR) {
+        error(cv::Exception(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::asRowMatrix", __FILE__, __LINE__));
+    }
     // number of samples
     size_t n = src.total();
     // return empty matrix if no matrices given

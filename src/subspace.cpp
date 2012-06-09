@@ -70,7 +70,6 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
     return X;
 }
 
-
 //------------------------------------------------------------------------------
 // Linear Discriminant Analysis implementation
 //------------------------------------------------------------------------------
@@ -128,6 +127,12 @@ void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
     int D = data.cols;
     // number of unique labels
     int C = num2label.size();
+    // we can't do a LDA on one class, what do you
+    // want to separate from each other then?
+    if(C == 1) {
+        string error_message = "At least two classes are needed to perform a LDA. Reason: Only one class was given!";
+        error(cv::Exception(CV_StsBadArg, error_message, "cv::LDA::lda", __FILE__, __LINE__));
+    }
     // throw error if less labels, than samples
     if (labels.size() != N)
         CV_Error(CV_StsBadArg, "Error: The number of samples must equal the number of labels.");
@@ -157,12 +162,12 @@ void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
         add(meanClass[classIdx], instance, meanClass[classIdx]);
         numClass[classIdx]++;
     }
-    // calculate means
-    meanTotal.convertTo(meanTotal, meanTotal.type(),
-            1.0 / static_cast<double> (N));
-    for (int i = 0; i < C; i++)
-        meanClass[i].convertTo(meanClass[i], meanClass[i].type(),
-                1.0 / static_cast<double> (numClass[i]));
+    // calculate total mean
+    meanTotal.convertTo(meanTotal, meanTotal.type(), 1.0 / static_cast<double> (N));
+    // calculate class means
+    for (int i = 0; i < C; i++) {
+        meanClass[i].convertTo(meanClass[i], meanClass[i].type(), 1.0 / static_cast<double> (numClass[i]));
+    }
     // subtract class means
     for (int i = 0; i < N; i++) {
         int classIdx = mapped_labels[i];
