@@ -16,7 +16,17 @@
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
 
+
+//#include <string>
+//#include <cv.h>
+//#include <highgui.h>
+//
+
+//
+//}
 #include "opencv2/core/core.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
 #include "opencv2/highgui/highgui.hpp"
 
 #include <iostream>
@@ -35,11 +45,13 @@ void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, 
         throw std::exception();
     string line, path, classlabel;
     while (getline(file, line)) {
-        stringstream liness(line);
+        istringstream liness(line);
         getline(liness, path, separator);
         getline(liness, classlabel);
-        images.push_back(imread(path, 0));
-        labels.push_back(atoi(classlabel.c_str()));
+        if(!path.empty() && !classlabel.empty()) {
+            images.push_back(imread(path, 0));
+            labels.push_back(atoi(classlabel.c_str()));
+        }
     }
 }
 
@@ -70,8 +82,14 @@ int main(int argc, const char *argv[]) {
     // ... and delete last element
     images.pop_back();
     labels.pop_back();
-    // build the Fisherfaces model
-    Fisherfaces model(images, labels);
+
+    // calculate the Eigenfaces (all)
+    Eigenfaces model(images, labels);
+    // or calculate 10 Eigenfaces
+    //Eigenfaces model(images, labels, 10);
+    // or calculate the Fisherfaces
+    // Fisherfaces model(images, labels);
+
     // test model
     int predicted = model.predict(testSample);
     cout << "predicted class = " << predicted << endl;
