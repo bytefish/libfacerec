@@ -259,7 +259,7 @@ void cv::LBPH::train(InputArray _src, InputArray _lbls) {
         string error_message = "The images are expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).";
         error(Exception(CV_StsBadArg, error_message, "cv::LBPH::train", __FILE__, __LINE__));
     }
-    if(src.total() == 0) {
+    if(_src.total() == 0) {
         string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
         error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
     } else if(_lbls.getMat().type() != CV_32SC1) {
