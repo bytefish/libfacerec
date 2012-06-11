@@ -10,8 +10,9 @@ using namespace std;
 //------------------------------------------------------------------------------
 
 Mat cv::colormap::ColorMap::operator()(InputArray _src) const {
-    if(_lut.total() != 256)
+    if(_lut.total() != 256) {
         CV_Error(CV_StsAssert, "cv::LUT only supports tables of size 256.");
+    }
     Mat src = _src.getMat();
     // Return original matrix if wrong type is given (is fail loud better here?)
     if(src.type() != CV_8UC1 && src.type() != CV_8UC3)

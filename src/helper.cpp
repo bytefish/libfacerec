@@ -88,8 +88,9 @@ bool cv::isSymmetric(InputArray src, double eps) {
 //------------------------------------------------------------------------------
 Mat cv::argsort(InputArray _src, bool ascending) {
     Mat src = _src.getMat();
-    if (src.rows != 1 && src.cols != 1)
+    if (src.rows != 1 && src.cols != 1) {
         CV_Error(CV_StsBadArg, "cv::argsort only sorts 1D matrices.");
+    }
     int flags = CV_SORT_EVERY_ROW+(ascending ? CV_SORT_ASCENDING : CV_SORT_DESCENDING);
     Mat sorted_indices;
     cv::sortIdx(src.reshape(1,1),sorted_indices,flags);
@@ -151,8 +152,10 @@ Mat cv::histc(InputArray _src, int minVal, int maxVal, bool normed) {
 //------------------------------------------------------------------------------
 
 void cv::sortMatrixColumnsByIndices(InputArray _src, InputArray _indices, OutputArray _dst) {
-    if(_indices.getMat().type() != CV_32SC1)
-        CV_Error(CV_StsUnsupportedFormat, "cv::sortColumnsByIndices only works on integer indices!");
+    if(_indices.getMat().type() != CV_32SC1) {
+    	string error_message = format("cv::sortRowsByIndices only works on integer indices! Expected: %d. Given: %d.", CV_32SC1, _indices.getMat().type());
+    	CV_Error(CV_StsBadArg, error_message);
+    }
     Mat src = _src.getMat();
     vector<int> indices = _indices.getMat();
     _dst.create(src.rows, src.cols, src.type());
@@ -174,8 +177,10 @@ Mat cv::sortMatrixColumnsByIndices(InputArray src, InputArray indices) {
 // cv::sortMatrixRowsByIndices
 //------------------------------------------------------------------------------
 void cv::sortMatrixRowsByIndices(InputArray _src, InputArray _indices, OutputArray _dst) {
-    if(_indices.getMat().type() != CV_32SC1)
-        CV_Error(CV_StsUnsupportedFormat, "cv::sortRowsByIndices only works on integer indices!");
+    if(_indices.getMat().type() != CV_32SC1) {
+    	string error_message = format("cv::sortRowsByIndices only works on integer indices! Expected: %d. Given: %d.", CV_32SC1, _indices.getMat().type());
+    	CV_Error(CV_StsBadArg, error_message);
+    }
     Mat src = _src.getMat();
     vector<int> indices = _indices.getMat();
     _dst.create(src.rows, src.cols, src.type());
@@ -199,7 +204,7 @@ Mat cv::sortMatrixRowsByIndices(InputArray src, InputArray indices) {
 Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
     // make sure the input data is a vector of matrices or vector of vector
     if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR) {
-        error(cv::Exception(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::asRowMatrix", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).");
     }
     // number of samples
     size_t n = src.total();
@@ -215,7 +220,7 @@ Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta
         // make sure data can be reshaped, throw exception if not!
         if(src.getMat(i).total() != d) {
             string error_message = format("Wrong number of elements in matrix #%d! Expected %d was %d.", i, d, src.getMat(i).total());
-            error(cv::Exception(CV_StsBadArg, error_message, "cv::asRowMatrix", __FILE__, __LINE__));
+            CV_Error(CV_StsBadArg, error_message);
         }
         // get a hold of the current row
         Mat xi = data.row(i);
@@ -234,8 +239,9 @@ Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta
 //------------------------------------------------------------------------------
 Mat cv::asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
     // make sure the input data is a vector of matrices or vector of vector
-    if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR)
-        error(cv::Exception(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).", "cv::asColumnMatrix", __FILE__, __LINE__));
+    if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR) {
+        CV_Error(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).");
+    }
     int n = (int) src.total();
     // return empty matrix if no data given
     if(n == 0)
@@ -249,7 +255,7 @@ Mat cv::asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha, double b
         // make sure data can be reshaped, throw exception if not!
         if(src.getMat(i).total() != d) {
             string error_message = format("Wrong number of elements in matrix #%d! Expected %d was %d.", i, d, src.getMat(i).total());
-            error(cv::Exception(CV_StsBadArg, error_message, "cv::asRowMatrix", __FILE__, __LINE__));
+            CV_Error(CV_StsBadArg, error_message);
         }
         // get a hold of the current row
         Mat yi = data.col(i);
@@ -315,12 +321,12 @@ Mat cv::interp1(InputArray _x, InputArray _Y, InputArray _xi) {
     // check type
     if((x.type() != Y.type()) || (Y.type() != xi.type())) {
         string error_message = format("Interpolation matrices must have the same type (was %d, %d, %d).", x.type(), Y.type(), xi.type());
-        error(cv::Exception(CV_StsBadArg, error_message , "cv::interp1", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // check alignment
     if((x.cols != 1) || (x.rows != Y.rows) || (x.cols != Y.cols)) {
         string error_message = format("Wrong alignment of given interpolation matrices, was x.rows=%d, x.cols=%d, Y.rows=%d, Y.cols=%d",x.rows, x.cols, Y.rows, Y.cols);
-        error(cv::Exception(CV_StsBadArg, error_message , "cv::interp1", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // call templated interp1
     switch(x.type()) {
@@ -354,7 +360,7 @@ Mat cv::toGrayscale(InputArray _src, int dtype) {
     // only allow one channel
     if(src.channels() != 1) {
         string error_message = format("Only Matrices with one channel are supported. Expected 1, but was %d.", src.channels());
-        error(Exception(CV_StsBadArg, error_message , "cv::toGrayscale", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // create and return normalized image
     Mat dst;

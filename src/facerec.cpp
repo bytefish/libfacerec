@@ -19,8 +19,6 @@
 #include "helper.hpp"
 #include "decomposition.hpp"
 
-#include <iostream>
-
 #include "opencv2/imgproc/imgproc.hpp"
 
 //------------------------------------------------------------------------------
@@ -49,10 +47,10 @@ void cv::FaceRecognizer::load(const string& filename) {
 void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
     if(src.total() == 0) {
         string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
+        CV_Error(CV_StsUnsupportedFormat, error_message);
     } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
+        CV_Error(CV_StsUnsupportedFormat, error_message);
     }
     // get labels
     vector<int> labels = _lbls.getMat();
@@ -65,7 +63,7 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
     // assert there are as much samples as labels
     if(n != labels.size()) {
         string error_message = format("The number of samples (src) must equal the number of labels (labels). Was len(samples)=%d, len(labels)=%d.", n, labels.size());
-        error(cv::Exception(CV_StsBadArg, error_message,  "cv::Eigenfaces::train", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // clip number of components to be valid
     if((_num_components <= 0) || (_num_components > n))
@@ -84,30 +82,36 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
     }
 }
 
-int cv::Eigenfaces::predict(InputArray _src) const {
+void cv::Eigenfaces::predict(InputArray _src, int &minClass, double &minDist) const {
     Mat src = _src.getMat();
     if(_projections.empty()) {
         // throw error if no data (or simply return -1?)
         string error_message = "This cv::Eigenfaces model is not computed yet. Did you call cv::Eigenfaces::train?";
-        error(cv::Exception(CV_StsError, error_message, "cv::Eigenfaces::predict", __FILE__, __LINE__));
+        CV_Error(CV_StsError, error_message);
     } else if(_eigenvectors.rows != src.total()) {
         // check data alignment just for clearer exception messages
         string error_message = format("Wrong input image size. Reason: Training and Test images must be of equal size! Expected an image with %d elements, but got %d.", _eigenvectors.rows, src.total());
-        error(cv::Exception(CV_StsError, error_message, "cv::Eigenfaces::predict", __FILE__, __LINE__));
+        CV_Error(CV_StsError, error_message);
     }
     // project into PCA subspace
     Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
     // find 1-nearest neighbor
-    double minDist = numeric_limits<double>::max();
-    int minClass = -1;
+    minDist = DBL_MAX;
+    minClass = -1;
     for(int sampleIdx = 0; sampleIdx < _projections.size(); sampleIdx++) {
         double dist = norm(_projections[sampleIdx], q, NORM_L2);
-        if(dist < minDist) {
+        if((dist < minDist) && (dist < _threshold)) {
             minDist = dist;
             minClass = _labels[sampleIdx];
         }
     }
-    return minClass;
+}
+
+int cv::Eigenfaces::predict(InputArray _src) const {
+    int label;
+    double dummy;
+    predict(_src, label, dummy);
+    return label;
 }
 
 void cv::Eigenfaces::load(const FileStorage& fs) {
@@ -138,10 +142,10 @@ void cv::Eigenfaces::save(FileStorage& fs) const {
 void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     if(src.total() == 0) {
         string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Eigenfaces::train", __FILE__, __LINE__));
+        CV_Error(CV_StsUnsupportedFormat, error_message);
     } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+        CV_Error(CV_StsUnsupportedFormat, error_message);
     }
     // get data
     vector<int> labels = _lbls.getMat();
@@ -153,7 +157,7 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     // assert data is correctly given
     if(labels.size() != N) {
         string error_message = format("The number of samples (src) must equal the number of labels (labels)! len(src)=%d, len(labels)=%d.", N, labels.size());
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::Fisherfaces::train", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // the following equals len(unique(C))
     int C = remove_dups(labels).size();
@@ -181,29 +185,36 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
 }
 
 int cv::Fisherfaces::predict(InputArray _src) const {
+    int label;
+    double dummy;
+    predict(_src, label, dummy);
+    return label;
+}
+
+
+void cv::Fisherfaces::predict(InputArray _src, int &minClass, double &minDist) const {
     Mat src = _src.getMat();
     // check data alignment just for clearer exception messages
     if(_projections.empty()) {
         // throw error if no data (or simply return -1?)
         string error_message = "This cv::Fisherfaces model is not computed yet. Did you call cv::Fisherfaces::train?";
-        error(cv::Exception(CV_StsError, error_message, "cv::Fisherfaces::predict", __FILE__, __LINE__));
+        CV_Error(CV_StsError, error_message);
     } else if(_eigenvectors.rows != src.total()) {
         string error_message = format("Wrong input image size. Reason: Training and Test images must be of equal size! Expected an image with %d elements, but got %d.", _eigenvectors.rows, src.total());
-        error(cv::Exception(CV_StsError, error_message, "cv::Fisherfaces::predict", __FILE__, __LINE__));
+        CV_Error(CV_StsError, error_message);
     }
     // project into LDA subspace
     Mat q = subspace::project(_eigenvectors, _mean, src.reshape(1,1));
     // find 1-nearest neighbor
-    double minDist = numeric_limits<double>::max();
-    int minClass = -1;
+    minDist = DBL_MAX;
+    minClass = -1;
     for(int sampleIdx = 0; sampleIdx < _projections.size(); sampleIdx++) {
         double dist = norm(_projections[sampleIdx], q, NORM_L2);
-        if(dist < minDist) {
+        if((dist < minDist) && (dist < _threshold)) {
             minDist = dist;
             minClass = _labels[sampleIdx];
         }
     }
-    return minClass;
 }
 
 // See cv::FaceRecognizer::load.
@@ -257,14 +268,14 @@ void cv::LBPH::save(FileStorage& fs) const {
 void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR) {
         string error_message = "The images are expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).";
-        error(Exception(CV_StsBadArg, error_message, "cv::LBPH::train", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     if(_src.total() == 0) {
         string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::LBPH::train", __FILE__, __LINE__));
+        CV_Error(CV_StsUnsupportedFormat, error_message);
     } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
-        error(cv::Exception(CV_StsUnsupportedFormat, error_message, "cv::LBPH::train", __FILE__, __LINE__));
+        CV_Error(CV_StsUnsupportedFormat, error_message);
     }
     // get the vector of matrices
     vector<Mat> src;
@@ -273,7 +284,7 @@ void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     vector<int> labels = _lbls.getMat();
     if(labels.size() != src.size()) {
         string error_message = format("The number of samples (src) must equal the number of labels (labels). Was len(samples)=%d, len(labels)=%d.", src.size(), labels.size());
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::LBPH::train", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // store given labels
     _labels = labels;
@@ -293,8 +304,14 @@ void cv::LBPH::train(InputArray _src, InputArray _lbls) {
     }
 }
 
-
 int cv::LBPH::predict(InputArray _src) const {
+    int label;
+    double dummy;
+    predict(_src, label, dummy);
+    return label;
+}
+
+void cv::LBPH::predict(InputArray _src, int &minClass, double &minDist) const {
     Mat src = _src.getMat();
     // get the spatial histogram from input image
     Mat lbp_image = elbp(src, _radius, _neighbors);
@@ -305,14 +322,13 @@ int cv::LBPH::predict(InputArray _src) const {
             _grid_y, /* grid size y */
             true /* normed histograms */);
     // find 1-nearest neighbor
-    double minDist = numeric_limits<double>::max();
-    int minClass = -1;
+    minDist = DBL_MAX;
+    minClass = -1;
     for(int sampleIdx = 0; sampleIdx < _histograms.size(); sampleIdx++) {
         double dist = compareHist(_histograms[sampleIdx], query, CV_COMP_CHISQR);
-        if(dist < minDist) {
+        if((dist < minDist) && (dist < _threshold)) {
             minDist = dist;
             minClass = _labels[sampleIdx];
         }
     }
-    return minClass;
 }

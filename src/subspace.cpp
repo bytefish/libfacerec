@@ -18,20 +18,25 @@ Mat cv::subspace::project(InputArray _W, InputArray _mean, InputArray _src) {
     // make sure the data has the correct shape
     if(W.rows != d) {
         string error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::project", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // make sure mean is correct if not empty
     if(!mean.empty() && (mean.total() != d)) {
         string error_message = format("Wrong mean shape for the given data matrix. Expected %d, but was %d.", d, mean.total());
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::project", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // create temporary matrices
     Mat X, Y;
     // make sure you operate on correct type
     src.convertTo(X, W.type());
     // safe to do, because of above assertion
-    if(!mean.empty())
-        subtract(X, repeat(mean.reshape(1,1), n, 1), X);
+    // safe to do, because of above assertion
+    if(!mean.empty()) {
+        for(int i=0; i<n; i++) {
+            Mat r_i = X.row(i);
+            subtract(r_i, mean.reshape(1,1), r_i);
+        }
+    }
     // finally calculate projection as Y = (X-mean)*W
     gemm(X, W, 1.0, Mat(), 0.0, Y);
     return Y;
@@ -51,12 +56,12 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
     // make sure the data has the correct shape
     if(W.cols != d) {
         string error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::reconstruct", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // make sure mean is correct if not empty
     if(!mean.empty() && (mean.total() != W.rows)) {
         string error_message = format("Wrong mean shape for the given eigenvector matrix. Expected %d, but was %d.", W.cols, mean.total());
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::subspace::reconstruct", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // initalize temporary matrices
     Mat X, Y;
@@ -65,8 +70,12 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
     // calculate the reconstruction
     gemm(Y, W, 1.0, Mat(), 0.0, X, GEMM_2_T);
     // safe to do because of above assertion
-    if(!mean.empty())
-        add(X, repeat(mean.reshape(1,1), n, 1), X);
+    if(!mean.empty()) {
+        for(int i=0; i<n; i++) {
+            Mat r_i = X.row(i);
+            add(r_i, mean.reshape(1,1), r_i);
+        }
+    }
     return X;
 }
 
@@ -75,8 +84,9 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
 //------------------------------------------------------------------------------
 void cv::subspace::LDA::save(const string& filename) const {
     FileStorage fs(filename, FileStorage::WRITE);
-    if (!fs.isOpened())
+    if (!fs.isOpened()) {
         CV_Error(CV_StsError, "File can't be opened for writing!");
+    }
     this->save(fs);
     fs.release();
 }
@@ -84,8 +94,9 @@ void cv::subspace::LDA::save(const string& filename) const {
 // Deserializes this object from a given filename.
 void cv::subspace::LDA::load(const string& filename) {
     FileStorage fs(filename, FileStorage::READ);
-    if (!fs.isOpened())
+    if (!fs.isOpened()) {
        CV_Error(CV_StsError, "File can't be opened for writing!");
+    }
     this->load(fs);
     fs.release();
 }
@@ -131,11 +142,13 @@ void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
     // want to separate from each other then?
     if(C == 1) {
         string error_message = "At least two classes are needed to perform a LDA. Reason: Only one class was given!";
-        error(cv::Exception(CV_StsBadArg, error_message, "cv::LDA::lda", __FILE__, __LINE__));
+        CV_Error(CV_StsBadArg, error_message);
     }
     // throw error if less labels, than samples
-    if (labels.size() != N)
-        CV_Error(CV_StsBadArg, "Error: The number of samples must equal the number of labels.");
+    if (labels.size() != N) {
+        string error_message = format("The number of samples must equal the number of labels. Given %d labels, %d samples. ",labels.size(), N);
+        CV_Error(CV_StsBadArg, error_message);
+    }
     // warn if within-classes scatter matrix becomes singular
     if (N < D)
         cout << "Warning: Less observations than feature dimension given!"

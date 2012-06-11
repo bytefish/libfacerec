@@ -42,6 +42,9 @@ public:
     // Gets a prediction from a FaceRecognizer.
     virtual int predict(InputArray src) const = 0;
 
+    // Gets a prediction from a FaceRecognizer.
+    virtual void predict(InputArray src, int &label, double &confidence) const = 0;
+
     // Serializes this object to a given filename.
     virtual void save(const string& filename) const;
 
@@ -61,26 +64,31 @@ class Eigenfaces : public FaceRecognizer {
 
 private:
     int _num_components;
+    double _threshold;
+
     vector<Mat> _projections;
     vector<int> _labels;
     Mat _eigenvectors;
     Mat _eigenvalues;
     Mat _mean;
 
+
 public:
     using FaceRecognizer::save;
     using FaceRecognizer::load;
 
     // Initializes an empty Eigenfaces model.
-    Eigenfaces(int num_components = 0) :
-        _num_components(num_components) { }
+    Eigenfaces(int num_components = 0, double threshold = DBL_MAX) :
+        _num_components(num_components),
+        _threshold(threshold) { }
 
     // Initializes and computes an Eigenfaces model with images in src and
     // corresponding labels in labels. num_components will be kept for
     // classification.
     Eigenfaces(InputArray src, InputArray labels,
-            int num_components = 0) :
-        _num_components(num_components) {
+            int num_components = 0, double threshold = DBL_MAX) :
+        _num_components(num_components),
+        _threshold(threshold) {
         train(src, labels);
     }
 
@@ -90,6 +98,9 @@ public:
 
     // Predicts the label of a query image in src.
     int predict(const InputArray src) const;
+
+    // Returns the predicted label and confidence for the prediction.
+    void predict(InputArray src, int &label, double &confidence) const;
 
     // See cv::FaceRecognizer::load.
     void load(const FileStorage& fs);
@@ -108,6 +119,13 @@ public:
 
     // Returns the number of components used in this PCA.
     int num_components() const { return _num_components; }
+
+    // Returns the threshold used in this cv::Eigenfaces.
+    double getThreshold() const { return _threshold; }
+
+    // Sets the threshold used in this cv::Eigenfaces.
+    void setThreshold(double threshold) { _threshold = threshold; }
+
 };
 
 // Belhumeur, P. N., Hespanha, J., and Kriegman, D. "Eigenfaces vs. Fisher-
@@ -118,27 +136,31 @@ class Fisherfaces: public FaceRecognizer {
 
 private:
     int _num_components;
+    double _threshold;
+
     Mat _eigenvectors;
     Mat _eigenvalues;
     Mat _mean;
     vector<Mat> _projections;
     vector<int> _labels;
 
+
 public:
     using FaceRecognizer::save;
     using FaceRecognizer::load;
 
     // Initializes an empty Fisherfaces model.
-    Fisherfaces(int num_components = 0) :
-        _num_components(num_components) {}
+    Fisherfaces(int num_components = 0, double threshold = DBL_MAX) :
+        _num_components(num_components),
+        _threshold(threshold) {}
 
     // Initializes and computes a Fisherfaces model with images in src and
     // corresponding labels in labels. num_components will be kept for
     // classification.
-    Fisherfaces(InputArray src,
-            InputArray labels,
-            int num_components = 0) :
-        _num_components(num_components) {
+    Fisherfaces(InputArray src, InputArray labels,
+            int num_components = 0, double threshold = DBL_MAX) :
+        _num_components(num_components),
+        _threshold(threshold) {
         train(src, labels);
     }
 
@@ -150,6 +172,9 @@ public:
 
     // Predicts the label of a query image in src.
     int predict(InputArray src) const;
+
+    // Returns the predicted label and confidence for the prediction.
+    void predict(InputArray src, int &label, double &confidence) const;
 
     // See cv::FaceRecognizer::load.
     virtual void load(const FileStorage& fs);
@@ -168,13 +193,15 @@ public:
 
     // Returns the number of components used in this Fisherfaces model.
     int num_components() const { return _num_components; }
+
+    // Returns the threshold used in this cv::Fisherfaces.
+    double getThreshold() const { return _threshold; }
+
+    // Sets the threshold used in this cv::Fisherfaces.
+    void setThreshold(double threshold) { _threshold = threshold; }
 };
 
 // Face Recognition based on Local Binary Patterns.
-//
-// TODO Allow to change the distance metric.
-// TODO Allow to change LBP computation (Extended LBP used right now).
-// TODO Optimize, Optimize, Optimize!
 //
 //  Ahonen T, Hadid A. and Pietikäinen M. "Face description with local binary
 //  patterns: Application to face recognition." IEEE Transactions on Pattern
@@ -187,6 +214,7 @@ private:
     int _grid_y;
     int _radius;
     int _neighbors;
+    double _threshold;
 
     vector<Mat> _histograms;
     vector<int> _labels;
@@ -200,25 +228,29 @@ public:
     //
     // radius, neighbors are used in the local binary patterns creation.
     // grid_x, grid_y control the grid size of the spatial histograms.
-    LBPH(int radius=1, int neighbors=8, int grid_x=8, int grid_y=8) :
+    LBPH(int radius=1, int neighbors=8,
+            int grid_x=8, int grid_y=8,
+            double threshold = DBL_MAX) :
         _grid_x(grid_x),
         _grid_y(grid_y),
         _radius(radius),
-        _neighbors(neighbors) {}
+        _neighbors(neighbors),
+        _threshold(threshold) {}
 
     // Initializes and computes this LBPH Model. The current implementation is
     // rather fixed as it uses the Extended Local Binary Patterns per default.
     //
     // (radius=1), (neighbors=8) are used in the local binary patterns creation.
     // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
-    LBPH(InputArray src,
-            InputArray labels,
+    LBPH(InputArray src, InputArray labels,
             int radius=1, int neighbors=8,
-            int grid_x=8, int grid_y=8) :
+            int grid_x=8, int grid_y=8,
+            double threshold = DBL_MAX) :
                 _grid_x(grid_x),
                 _grid_y(grid_y),
                 _radius(radius),
-                _neighbors(neighbors) {
+                _neighbors(neighbors),
+                _threshold(threshold) {
         train(src, labels);
     }
 
@@ -231,6 +263,9 @@ public:
     // Predicts the label of a query image in src.
     int predict(InputArray src) const;
 
+    // Returns the predicted label and confidence for the prediction.
+    void predict(InputArray src, int &label, double &confidence) const;
+
     // See cv::FaceRecognizer::load.
     void load(const FileStorage& fs);
 
@@ -242,6 +277,13 @@ public:
     int radius() const { return _radius; }
     int grid_x() const { return _grid_x; }
     int grid_y() const { return _grid_y; }
+
+    // Returns the threshold used in this cv::LBPH.
+    double getThreshold() const { return _threshold; }
+
+    // Sets the threshold used in this cv::LBPH.
+    void setThreshold(double threshold) { _threshold = threshold; }
+
 
 };
 
