@@ -52,6 +52,15 @@ void cv::Eigenfaces::train(InputArray src, InputArray _lbls) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
         CV_Error(CV_StsUnsupportedFormat, error_message);
     }
+    // make sure data has correct size
+    if(src.total() > 1) {
+        for(int i = 1; i < src.total(); i++) {
+            if(src.getMat(i-1).total() != src.getMat(i).total()) {
+                string error_message = format("In the Eigenfaces method all input samples (training images) must be of equal size! Expected %d pixels, but was %d pixels.", src.getMat(i-1).total(), src.getMat(i).total());
+                CV_Error(CV_StsUnsupportedFormat, error_message);
+            }
+        }
+    }
     // get labels
     vector<int> labels = _lbls.getMat();
     // observations in row
@@ -146,6 +155,15 @@ void cv::Fisherfaces::train(InputArray src, InputArray _lbls) {
     } else if(_lbls.getMat().type() != CV_32SC1) {
         string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
         CV_Error(CV_StsUnsupportedFormat, error_message);
+    }
+    // make sure data has correct size
+    if(src.total() > 1) {
+        for(int i = 1; i < src.total(); i++) {
+            if(src.getMat(i-1).total() != src.getMat(i).total()) {
+                string error_message = format("In the Fisherfaces method all input samples (training images) must be of equal size! Expected %d pixels, but was %d pixels.", src.getMat(i-1).total(), src.getMat(i).total());
+                CV_Error(CV_StsUnsupportedFormat, error_message);
+            }
+        }
     }
     // get data
     vector<int> labels = _lbls.getMat();
