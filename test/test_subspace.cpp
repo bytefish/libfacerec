@@ -52,7 +52,7 @@ TEST(TestSubspace, subspaceReconstruct_WrongShapes) {
     ASSERT_TRUE(false);
 }
 
-TEST(TestSubspace, subspaceProject_DifferentTypes) {
+TEST(TestSubspace, subspaceReconstruct_DifferentTypes) {
     // TODO
     ASSERT_TRUE(false);
 }
