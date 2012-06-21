@@ -154,9 +154,9 @@ int main(int argc, const char *argv[]) {
         // Reshape to original size & normalize to [0...255] for imshow.
         Mat grayscale = toGrayscale(ev.reshape(1, height));
         // Show the image & apply a Jet colormap for better sensing.
-        //Mat cgrayscale;
-        //applyColorMap(grayscale, cgrayscale, COLORMAP_JET);
-        imshow(format("%d", i), grayscale);
+        Mat cgrayscale;
+        applyColorMap(grayscale, cgrayscale, COLORMAP_JET);
+        imshow(format("%d", i), cgrayscale);
     }
     waitKey(0);
 

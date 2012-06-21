@@ -118,31 +118,6 @@ Mat asRowMatrix(InputArrayOfArrays src, int rtype, double alpha=1, double beta=0
 // Turns a vector of matrices into a column matrix.
 Mat asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha=1, double beta=0);
 
-// yi = interp1(x,Y,xi) interpolates to find yi, the values of the
-// underlying function Y at the points in the  or array xi.
-//
-// Equivalent to GNU Octave/MATLAB function "interp1".
-Mat interp1(InputArray x, InputArray Y, InputArray xi);
-
-// Transposes a matrix.
-Mat transpose(InputArray src);
-
-// Converts an integer number to a string.
-//
-// Equivalent to GNU Octave/MATLAB function "num2str".
-template <typename _Tp>
-string num2str(_Tp num) {
-    stringstream ss;
-    ss << num;
-    return ss.str();
-}
-
-// Performs a linear interpolation of n equally-spaced sample between x0
-// (interpolation start) and x1 (interpolation end).
-//
-// Equivalent to GNU Octave/MATLAB function "linspace".
-Mat linspace(float x0, float x1, int n);
-
 } // //namespace cv
 
 #endif

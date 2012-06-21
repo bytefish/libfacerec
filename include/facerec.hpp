@@ -20,7 +20,6 @@
 
 #include "opencv2/core/core.hpp"
 
-#include "colormap.hpp"
 #include "subspace.hpp"
 #include "helper.hpp"
 #include "lbp.hpp"
@@ -28,10 +27,48 @@
 using namespace std;
 
 namespace cv {
+enum
+{
+    COLORMAP_AUTUMN = 0,
+    COLORMAP_BONE = 1,
+    COLORMAP_JET = 2,
+    COLORMAP_WINTER = 3,
+    COLORMAP_RAINBOW = 4,
+    COLORMAP_OCEAN = 5,
+    COLORMAP_SUMMER = 6,
+    COLORMAP_SPRING = 7,
+    COLORMAP_COOL = 8,
+    COLORMAP_HSV = 9,
+    COLORMAP_PINK = 10,
+    COLORMAP_HOT = 11
+};
 
 /**
- * cv::FaceRecognizer is the abstract base class for all face recognition
- * algorithms in OpenCV.
+ * Applies a colormap to the image given in src and returns the
+ * colormap version in dst. Note: Mat::create is called on dst!
+ *
+ * The available colormaps are:
+ *
+ *   COLORMAP_AUTUMN = 0,
+ *   COLORMAP_BONE = 1,
+ *   COLORMAP_JET = 2,
+ *   COLORMAP_WINTER = 3,
+ *   COLORMAP_RAINBOW = 4,
+ *   COLORMAP_OCEAN = 5,
+ *   COLORMAP_SUMMER = 6,
+ *   COLORMAP_SPRING = 7,
+ *   COLORMAP_COOL = 8,
+ *   COLORMAP_HSV = 9,
+ *   COLORMAP_PINK = 10,
+ *   COLORMAP_HOT = 11
+ *
+ */
+CV_EXPORTS void applyColorMap(InputArray src, OutputArray dst, int colormap);
+
+
+/**
+ * cv::FaceRecognizer is the abstract base class for all
+ * face recognition algorithms in OpenCV.
  */
 class FaceRecognizer : public Algorithm {
 
