@@ -11,16 +11,30 @@ I'll merge the most important bugfixes (such as numerical errors) back into the 
 Why am I doing this? Quoting from my website:
 
 ```
-During the next days I am going to synchronize the libfacerec implementation and the face recognition implementation I have contributed to OpenCV. I am going to tag the latest libfacerec version in github, because it is going to be the last version compatible to OpenCV 2.3. The new implementation is going to make use of the new cv::Algorithm base class, to wrap all non-trivial functionality (this class is available since OpenCV 2.4).
+During the next days I am going to synchronize the libfacerec implementation and 
+the face recognition implementation I have contributed to OpenCV. I am going to 
+tag the latest libfacerec version in github, because it is going to be the last 
+version compatible to OpenCV 2.3. The new implementation is going to make use of 
+the new cv::Algorithm base class, to wrap all non-trivial functionality (this class
+ is available since OpenCV 2.4).
 
 The big advantadge for you as user is:
 
     A simple, but rich interface, with access to all model internals.
     A thorough documentation, which the project is somewhat lacking right now.
 
-Once OpenCV 2.4+ is shipped with libfacerec - it actually is already! - there is no need for you to compile libfacerec anymore. You can directly use OpenCV, as both are going to be based on the same implementation. All this is going to clear a lot confusion on the user side, which the current implementations may have caused. For me as a developer, there are several advantadges of synchronizing both. The most important is, that I only need to maintain a single version of the code and I don't force myself anymore to support OpenCV versions as early as OpenCV 2.3.
+Once OpenCV 2.4+ is shipped with libfacerec - it actually is already! - there is no 
+need for you to compile libfacerec anymore. You can directly use OpenCV, as both are 
+going to be based on the same implementation. All this is going to clear a lot confusion 
+on the user side, which the current implementations may have caused. For me as a 
+developer, there are several advantadges of synchronizing both. The most important 
+is, that I only need to maintain a single version of the code and I don't force 
+myself anymore to support OpenCV versions as early as OpenCV 2.3.
 
-I'll need to make some minor modifications to the libfacerec API (the current OpenCV API is not going to change), but all this is only to make the algorithm even easier for you. The modifications are going to take some time, as I have to refactor the classes, the tests, the documentation and make sure everything's working as expected. 
+I'll need to make some minor modifications to the libfacerec API (the current OpenCV API 
+is not going to change), but all this is only to make the algorithm even easier for you. 
+The modifications are going to take some time, as I have to refactor the classes, the 
+tests, the documentation and make sure everything's working as expected. 
 ```
 
 # Issues and Feature Requests
