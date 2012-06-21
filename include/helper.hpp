@@ -16,6 +16,7 @@
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
 
+
 #ifndef __HELPER_HPP__
 #define __HELPER_HPP__
 
@@ -122,9 +123,6 @@ Mat asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha=1, double bet
 //
 // Equivalent to GNU Octave/MATLAB function "interp1".
 Mat interp1(InputArray x, InputArray Y, InputArray xi);
-
-// Turns a given matrix into its grayscale representation.
-Mat toGrayscale(InputArray src, int dtype = CV_8UC1);
 
 // Transposes a matrix.
 Mat transpose(InputArray src);

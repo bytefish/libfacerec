@@ -4,10 +4,15 @@
 
 #include <iostream>
 
+using std::map;
+using std::set;
+using std::cout;
+using std::endl;
+
 //------------------------------------------------------------------------------
 // cv::subspace::project
 //------------------------------------------------------------------------------
-Mat cv::subspace::project(InputArray _W, InputArray _mean, InputArray _src) {
+Mat cv::subspaceProject(InputArray _W, InputArray _mean, InputArray _src) {
     // get data matrices
     Mat W = _W.getMat();
     Mat mean = _mean.getMat();
@@ -45,7 +50,7 @@ Mat cv::subspace::project(InputArray _W, InputArray _mean, InputArray _src) {
 //------------------------------------------------------------------------------
 // cv::subspace::reconstruct
 //------------------------------------------------------------------------------
-Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) {
+Mat cv::subspaceReconstruct(InputArray _W, InputArray _mean, InputArray _src) {
     // get data matrices
     Mat W = _W.getMat();
     Mat mean = _mean.getMat();
@@ -82,7 +87,7 @@ Mat cv::subspace::reconstruct(InputArray _W, InputArray _mean, InputArray _src) 
 //------------------------------------------------------------------------------
 // Linear Discriminant Analysis implementation
 //------------------------------------------------------------------------------
-void cv::subspace::LDA::save(const string& filename) const {
+void cv::LDA::save(const string& filename) const {
     FileStorage fs(filename, FileStorage::WRITE);
     if (!fs.isOpened()) {
         CV_Error(CV_StsError, "File can't be opened for writing!");
@@ -92,7 +97,7 @@ void cv::subspace::LDA::save(const string& filename) const {
 }
 
 // Deserializes this object from a given filename.
-void cv::subspace::LDA::load(const string& filename) {
+void cv::LDA::load(const string& filename) {
     FileStorage fs(filename, FileStorage::READ);
     if (!fs.isOpened()) {
        CV_Error(CV_StsError, "File can't be opened for writing!");
@@ -102,7 +107,7 @@ void cv::subspace::LDA::load(const string& filename) {
 }
 
 // Serializes this object to a given cv::FileStorage.
-void cv::subspace::LDA::save(FileStorage& fs) const {
+void cv::LDA::save(FileStorage& fs) const {
     // write matrices
     fs << "num_components" << _num_components;
     fs << "eigenvalues" << _eigenvalues;
@@ -110,14 +115,14 @@ void cv::subspace::LDA::save(FileStorage& fs) const {
 }
 
 // Deserializes this object from a given cv::FileStorage.
-void cv::subspace::LDA::load(const FileStorage& fs) {
+void cv::LDA::load(const FileStorage& fs) {
     //read matrices
     fs["num_components"] >> _num_components;
     fs["eigenvalues"] >> _eigenvalues;
     fs["eigenvectors"] >> _eigenvectors;
 }
 
-void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
+void cv::LDA::lda(InputArray _src, InputArray _lbls) {
     // get data
     Mat src = _src.getMat();
     vector<int> labels = _lbls.getMat();
@@ -150,10 +155,11 @@ void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
         CV_Error(CV_StsBadArg, error_message);
     }
     // warn if within-classes scatter matrix becomes singular
-    if (N < D)
+    if (N < D) {
         cout << "Warning: Less observations than feature dimension given!"
         << "Computation will probably fail."
         << endl;
+    }
     // clip number of components to be a valid number
     if ((_num_components <= 0) || (_num_components > (C - 1)))
         _num_components = (C - 1);
@@ -218,7 +224,7 @@ void cv::subspace::LDA::lda(InputArray _src, InputArray _lbls) {
     _eigenvectors = Mat(_eigenvectors, Range::all(), Range(0, _num_components));
 }
 
-void cv::subspace::LDA::compute(InputArray _src, InputArray _lbls) {
+void cv::LDA::compute(InputArray _src, InputArray _lbls) {
     switch(_src.kind()) {
     case _InputArray::STD_VECTOR_MAT:
         lda(asRowMatrix(_src, CV_64FC1), _lbls);
@@ -227,17 +233,18 @@ void cv::subspace::LDA::compute(InputArray _src, InputArray _lbls) {
         lda(_src.getMat(), _lbls);
         break;
     default:
-        CV_Error(CV_StsNotImplemented, "This data type is not supported by cv::subspace::LDA::compute.");
+        string error_message = format("cv::LDA can only work cv::_InputArray::STD_VECTOR_MAT (a vector<cv::Mat>) or cv::_InputArray::MAT (a cv::Mat). But given: %d.", _src.kind());
+        CV_Error(CV_StsBadArg, error_message);
         break;
     }
 }
 
 // Projects samples into the LDA subspace.
-Mat cv::subspace::LDA::project(InputArray src) {
-   return cv::subspace::project(_eigenvectors, Mat(), _dataAsRow ? src : transpose(src));
+Mat cv::LDA::project(InputArray src) {
+   return cv::subspaceProject(_eigenvectors, Mat(), src);
 }
 
 // Reconstructs projections from the LDA subspace.
-Mat cv::subspace::LDA::reconstruct(InputArray src) {
-   return cv::subspace::reconstruct(_eigenvectors, Mat(), _dataAsRow ? src : transpose(src));
+Mat cv::LDA::reconstruct(InputArray src) {
+   return cv::subspaceReconstruct(_eigenvectors, Mat(), src);
 }

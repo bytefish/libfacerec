@@ -1,5 +1,5 @@
 
-#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
 #include "opencv2/ts/ts.hpp"
 
 // some helper methods for testing
@@ -41,9 +41,9 @@ class LDATest : public ::testing::Test {
   virtual void TearDown() {}
 
   // Objects declared here can be used by all tests in the test case.
-  subspace::LDA lda0_;
+  LDA lda0_;
   Mat X_;
-  subspace::LDA lda1_;
+  LDA lda1_;
 
 };
 

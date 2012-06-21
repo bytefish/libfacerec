@@ -24,22 +24,20 @@
 using namespace cv;
 using namespace std;
 
-namespace cv { namespace subspace {
+namespace cv {
 
 // Calculates the projection Y = (X - mean) * W.
-Mat project(InputArray W, InputArray mean, InputArray X);
+Mat subspaceProject(InputArray W, InputArray mean, InputArray X);
 
 // Calculates the reconstruction X = Y*W + mean.
-Mat reconstruct(InputArray W, InputArray mean, InputArray Y);
+Mat subspaceReconstruct(InputArray W, InputArray mean, InputArray Y);
 
 // This class performs a Linear Discriminant Analysis with the classic
 // Fisher's Optimization Criterion.
 //
-// TODO Use InputArray instead of Mat and vector<Mat> for data input.
 class LDA {
 
 private:
-    bool _dataAsRow;
     int _num_components;
     Mat _eigenvectors;
     Mat _eigenvalues;
@@ -52,17 +50,6 @@ public:
     // samples are aligned (default dataAsRow=true).
     LDA(int num_components = 0) :
         _num_components(num_components) {};
-
-    // Initializes and performs a Discriminant Analysis with Fisher's
-    // Optimization Criterion on given data in src and corresponding labels
-    // in labels. If 0 (or less) number of components are given, they are
-    // automatically determined for given data in computation.
-    LDA(const Mat& src, vector<int> labels,
-            int num_components = 0) :
-                _num_components(num_components)
-    {
-        this->compute(src, labels); //! compute eigenvectors and eigenvalues
-    }
 
     // Initializes and performs a Discriminant Analysis with Fisher's
     // Optimization Criterion on given data in src and corresponding labels
@@ -84,7 +71,7 @@ public:
     // Serializes this object to a given cv::FileStorage.
     void save(FileStorage& fs) const;
 
-        // Deserializes this object from a given cv::FileStorage.
+    // Deserializes this object from a given cv::FileStorage.
     void load(const FileStorage& node);
 
     // Destructor.
@@ -106,5 +93,5 @@ public:
     Mat eigenvalues() const { return _eigenvalues; }
 };
 
-}} // namespace
+}// namespace
 #endif

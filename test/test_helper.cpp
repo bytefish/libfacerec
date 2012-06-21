@@ -1,5 +1,5 @@
 
-#include "opencv2/opencv.hpp"
+#include "opencv2/core/core.hpp"
 #include "opencv2/ts/ts.hpp"
 
 // some helper methods for testing

@@ -15,9 +15,11 @@
  *
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
-#include "facerec.hpp"
+
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
+
+#include "facerec.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -25,6 +27,19 @@
 
 using namespace cv;
 using namespace std;
+
+static Mat toGrayscale(InputArray _src) {
+    Mat src = _src.getMat();
+    // only allow one channel
+     if(src.channels() != 1) {
+         string error_message = format("Only Matrices with one channel are supported. Expected 1, but was %d.", src.channels());
+         CV_Error(CV_StsBadArg, error_message);
+     }
+    // create and return normalized image
+    Mat dst;
+    cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+    return dst;
+}
 
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';') {
     std::ifstream file(filename.c_str(), ifstream::in);
@@ -90,23 +105,21 @@ int main(int argc, const char *argv[]) {
     // 10 principal components (read Eigenfaces), then call
     // the factory method like this:
     //
-    //      cv::Eigenfaces model(10);
+    //      cv::createEigenFaceRecognizer(10);
     //
     // If you want to create a FaceRecognizer with a
     // confidennce threshold, call it with:
     //
-    //      cv::Eigenfaces model(10, 123.0);
+    //      cv::createEigenFaceRecognizer(10, 123.0);
     //
-    Eigenfaces model;
-    // Learns the model on the dataset:
-    model.train(images, labels);
+    Ptr<FaceRecognizer> model = createFisherFaceRecognizer();
+    model->train(images, labels);
     // The following line predicts the label of a given
     // test image:
-    int predictedLabel = model.predict(testSample);
+    int predictedLabel = model->predict(testSample);
     //
-    // To get the confidence of a prediction call it with:
+    // To get the confidence of a prediction call the model with:
     //
-    // model with:
     //      int predictedLabel = -1;
     //      double confidence = 0.0;
     //      model->predict(testSample, predictedLabel, confidence);
@@ -122,16 +135,16 @@ int main(int argc, const char *argv[]) {
     // to 0.0 without retraining the model. This can be useful if
     // you are evaluating the model:
     //
-    model.setThreshold(0.0);
+    model->set("threshold", 0.0);
     // Now the threshold of this model is set to 0.0. A prediction
     // now returns -1, as it's impossible to have a distance below
     // it
-    predictedLabel = model.predict(testSample);
+    predictedLabel = model->predict(testSample);
     cout << "Predicted class = " << predictedLabel << endl;
     // Here is how to get the eigenvalues of this Eigenfaces model:
-    Mat eigenvalues = model.eigenvalues();
+    Mat eigenvalues = model->getMat("eigenvalues");
     // And we can do the same to display the Eigenvectors (read Eigenfaces):
-    Mat W = model.eigenvectors();
+    Mat W = model->getMat("eigenvectors");
     // From this we will display the (at most) first 10 Eigenfaces:
     for (int i = 0; i < min(10, W.cols); i++) {
         string msg = format("Eigenvalue #%d = %.5f", i, eigenvalues.at<double>(i));
@@ -141,7 +154,9 @@ int main(int argc, const char *argv[]) {
         // Reshape to original size & normalize to [0...255] for imshow.
         Mat grayscale = toGrayscale(ev.reshape(1, height));
         // Show the image & apply a Jet colormap for better sensing.
-        imshow(format("%d", i), grayscale, colormap::Jet());
+        //Mat cgrayscale;
+        //applyColorMap(grayscale, cgrayscale, COLORMAP_JET);
+        imshow(format("%d", i), grayscale);
     }
     waitKey(0);
 

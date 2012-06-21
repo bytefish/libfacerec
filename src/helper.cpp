@@ -353,22 +353,6 @@ Mat cv::linspace(float x0, float x1, int n) {
 }
 
 //------------------------------------------------------------------------------
-// cv::toGrayscale
-//------------------------------------------------------------------------------
-Mat cv::toGrayscale(InputArray _src, int dtype) {
-    Mat src = _src.getMat();
-    // only allow one channel
-    if(src.channels() != 1) {
-        string error_message = format("Only Matrices with one channel are supported. Expected 1, but was %d.", src.channels());
-        CV_Error(CV_StsBadArg, error_message);
-    }
-    // create and return normalized image
-    Mat dst;
-    cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
-    return dst;
-}
-
-//------------------------------------------------------------------------------
 // cv::transpose
 //------------------------------------------------------------------------------
 Mat cv::transpose(InputArray _src) {
