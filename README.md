@@ -4,11 +4,11 @@
 
 Right now I am in the process of synchronizing OpenCV 2.4 and libfacerec, so be careful with the current master branch. This code is only supported from OpenCV2.4 on. Note: if you are using OpenCV 2.3, then use the stable 0.04 release of libfacerec:
 
-  * [https://github.com/bytefish/libfacerec/zipball/v0.04](https://github.com/bytefish/libfacerec/zipball/v0.04)
+* [https://github.com/bytefish/libfacerec/zipball/v0.04](https://github.com/bytefish/libfacerec/zipball/v0.04)
 
-I'll merge the most important bugfixes (such as numerical errors) back into the 0.04 branch, so you are on the safe side. 
+I can't stress this enough, because with these changes I see myself reading through many, many mails already. *If you are using OpenCV 2.3, then please use libfacerec 0.04.* I'll merge the most important bugfixes (such as numerical errors) back into the 0.04 branch, so you are on the safe side. 
 
-Why am I doing this? Quoting from my website:
+Why am I doing all this? Quoting from my website:
 
 ```
 During the next days I am going to synchronize the libfacerec implementation and 
@@ -20,8 +20,8 @@ the new cv::Algorithm base class, to wrap all non-trivial functionality (this cl
 
 The big advantadge for you as user is:
 
-    A simple, but rich interface, with access to all model internals.
-    A thorough documentation, which the project is somewhat lacking right now.
+   * A simple, but rich interface, with access to all model internals.
+   * A thorough documentation, which the project is somewhat lacking right now.
 
 Once OpenCV 2.4+ is shipped with libfacerec - it actually is already! - there is no 
 need for you to compile libfacerec anymore. You can directly use OpenCV, as both are 
@@ -49,8 +49,12 @@ The documentation of the library comes with an extensive API description and car
 
 If you have problems with building libfacerec with Microsoft Visual Studio 2008/2010, then please read my blog post at:
 
-* [http://www.bytefish.de/blog/opencv_visual_studio_and_libfacerecs](http://www.bytefish.de/blog/opencv_visual_studio_and_libfacerec)
+* [http://www.bytefish.de/blog/opencv_visual_studio_and_libfacerec](http://www.bytefish.de/blog/opencv_visual_studio_and_libfacerec)
 
+This is based on version 0.04 of the libfacerec, available here:
+
+* [https://github.com/bytefish/libfacerec/zipball/v0.04](https://github.com/bytefish/libfacerec/zipball/v0.04)
+  
 # Literature
 
 * Eigenfaces (Turk, M., and Pentland, A. "Eigenfaces for recognition.". Journal of Cognitive Neuroscience 3 (1991), 71–86.)
