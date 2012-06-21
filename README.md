@@ -6,7 +6,7 @@ Right now I am in the process of synchronizing OpenCV 2.4 and libfacerec, so be 
 
 * [https://github.com/bytefish/libfacerec/zipball/v0.04](https://github.com/bytefish/libfacerec/zipball/v0.04)
 
-I can't stress this enough, because with these changes I see myself reading through many, many mails already. *If you are using OpenCV 2.3, then please use libfacerec 0.04.* I'll merge the most important bugfixes (such as numerical errors) back into the 0.04 branch, so you are on the safe side. 
+**I can't stress this enough, because with these changes I see myself reading through many, many mails already. If you are using OpenCV 2.3, then please use libfacerec 0.04.** I'll merge the most important bugfixes (such as numerical errors) back into the 0.04 branch, so you are on the safe side. 
 
 Why am I doing all this? Quoting from my website:
 
