@@ -1,6 +1,9 @@
 FaceRecognizer
 ==============
 
+Introduction
+------------
+
 This document explains the OpenCV API of the :ocv:class:`FaceRecognizer` and explains how to create a :ocv:class:`FaceRecognizer`, learn a model and get predictions from it. The available face recognition algorithms are:
 
     * Eigenfaces (see :ocv:func:`createEigenFaceRecognizer`)
@@ -9,17 +12,17 @@ This document explains the OpenCV API of the :ocv:class:`FaceRecognizer` and exp
     
 Although the code snippets in this document show how to use the functions, you should read through the tutorials to learn how to work with :ocv:class:`FaceRecognizer`. Each tutorial (1) explains the algorithm, (2) provides you with full sources and (3) works through examples with real data (no toy examples here!).  
   
-  * Face Recognition with Eigenfaces
-  * Face Recognition with Fisherfaces
-  * Face Recognition with Local Binary Patterns Histograms
+  * :doc:`Face Recognition with Eigenfaces </tutorial/facerecognizer_eigenfaces>`
+  * :doc:`Face Recognition with Fisherfaces </tutorial/facerecognizer_fisherfaces>`
+  * :doc:`Face Recognition with Local Binary Patterns Histograms </tutorial/facerecognizer_lbph>`
 
 Since it's a very, very popular request I decided to show how to do face recognition in video data (e.g. webcam, video streams). This combines OpenCV :ocv:class:`CascadeClassifier` with the :ocv:class:`FaceRecognizer`:
 
-  * Face Recognition in Videos
+  * :doc:`Face Recognition in Videos with OpenCV</tutorial/facerecognizer_video>`
 
 A lot of people want to know how to perform gender classification, so I'll also include an example. The sample code presented in the tutorial will also work for any other classification task, e.g. emotion detection:
 
-  * Gender Classification in OpenCV
+  * :doc:`Gender Classification with OpenCV </tutorial/facerecognizer_gender>`
 
 Please issue any feature requests and/or bugs on the official OpenCV bug tracker at:
 
