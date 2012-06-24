@@ -58,7 +58,7 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/samples AND ENABLE_SAMPLES)
 	target_link_libraries(facerec_demo ${the_library} opencv_core opencv_imgproc opencv_highgui)
 	
 	add_executable(facerec_video samples/facerec_video.cpp)
-	target_link_libraries(facerec_video ${the_library} opencv_core opencv_imgproc opencv_highgui)
+	target_link_libraries(facerec_video ${the_library} opencv_core opencv_imgproc opencv_highgui opencv_objdetect opencv_imgproc)
 	
 	add_executable(facerec_eigenfaces samples/facerec_eigenfaces.cpp)
 	target_link_libraries(facerec_eigenfaces ${the_library} opencv_core opencv_imgproc opencv_highgui)
