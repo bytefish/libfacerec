@@ -51,7 +51,7 @@ static void read_csv(const string& filename, vector<Mat>& images, vector<int>& l
 int main(int argc, const char *argv[]) {
     // Check for valid command line arguments, print usage
     // if no arguments were given.
-    if (argc != 3) {
+    if (argc != 4) {
         cout << "usage: " << argv[0] << " </path/to/haar_cascade> </path/to/csv.ext> </path/to/device id>" << endl;
         cout << "\t </path/to/haar_cascade> -- Path to the Haar Cascade for face detection." << endl;
         cout << "\t </path/to/csv.ext> -- Path to the CSV file with the face database." << endl;
@@ -131,15 +131,15 @@ int main(int argc, const char *argv[]) {
             int prediction = model->predict(face_resized);
             // And finally write all we've found out to the original image!
             // First of all draw a green rectangle around the detected face:
-            rectangle(original, face_i, CV_RGB(0, 255,0), 3);
+            rectangle(original, face_i, CV_RGB(0, 255,0), 1);
             // Create the text we will annotate the box with:
             string box_text = format("Prediction = %d", prediction);
             // Calculate the position for annotated text (make sure we don't
             // put illegal values in there):
-            int pos_x = std::max(face_i.tl().x - 15, 0);
-            int pos_y = std::max(face_i.tl().y - 15, 0);
-            // and now put it into the image:
-            putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 2.0, CV_RGB(0, 255,0), 3, 8, false);
+            int pos_x = std::max(face_i.tl().x - 10, 0);
+            int pos_y = std::max(face_i.tl().y - 10, 0);
+            // And now put it into the image:
+            putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0,255,0), 2.0);
         }
         // Show the result:
         imshow("face_recognizer", original);
