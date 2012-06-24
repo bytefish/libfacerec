@@ -117,9 +117,14 @@ int main(int argc, const char *argv[]) {
     //      cv::createEigenFaceRecognizer(10);
     //
     // If you want to create a FaceRecognizer with a
-    // confidennce threshold, call it with:
+    // confidence threshold (e.g. 123.0), call it with:
     //
     //      cv::createEigenFaceRecognizer(10, 123.0);
+    //
+    // If you want to use _all_ Eigenfaces and have a threshold,
+    // then call the method like this:
+    //
+    //      cv::createEigenFaceRecognizer(0, 123.0);
     //
     Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
     model->train(images, labels);
@@ -165,7 +170,6 @@ int main(int argc, const char *argv[]) {
             imwrite(format("%s/eigenface_%d.png", output_folder.c_str(), i), norm_0_255(cgrayscale));
         }
     }
-
     // Display or save the image reconstruction at some predefined steps:
     for(int num_components = 10; num_components < 300; num_components+=15) {
         // slice the eigenvectors from the model
@@ -176,11 +180,14 @@ int main(int argc, const char *argv[]) {
         reconstruction = norm_0_255(reconstruction.reshape(1, images[0].rows));
         // Display or save:
         if(argc == 2) {
-            imshow(format("pca_reconstruction_%d", num_components), reconstruction);
+            imshow(format("eigenface_reconstruction_%d", num_components), reconstruction);
         } else {
             imwrite(format("%s/eigenface_reconstruction_%d.png", output_folder.c_str(), num_components), reconstruction);
         }
     }
-    waitKey(0);
+    // Display if we are not writing to an output folder:
+    if(argc == 2) {
+        waitKey(0);
+    }
     return 0;
 }
