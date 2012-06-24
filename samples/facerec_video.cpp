@@ -18,6 +18,8 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/objdetect/objdetect.hpp"
 
 #include "facerec.hpp"
 
@@ -27,19 +29,6 @@
 
 using namespace cv;
 using namespace std;
-
-static Mat toGrayscale(InputArray _src) {
-    Mat src = _src.getMat();
-    // only allow one channel
-     if(src.channels() != 1) {
-         string error_message = format("Only Matrices with one channel are supported. Expected 1, but was %d.", src.channels());
-         CV_Error(CV_StsBadArg, error_message);
-     }
-    // create and return normalized image
-    Mat dst;
-    cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
-    return dst;
-}
 
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';') {
     std::ifstream file(filename.c_str(), ifstream::in);
@@ -62,17 +51,21 @@ static void read_csv(const string& filename, vector<Mat>& images, vector<int>& l
 int main(int argc, const char *argv[]) {
     // Check for valid command line arguments, print usage
     // if no arguments were given.
-    if (argc != 2) {
-        cout << "usage: " << argv[0] << " <csv.ext>" << endl;
+    if (argc != 3) {
+        cout << "usage: " << argv[0] << " </path/to/haar_cascade> </path/to/csv.ext> </path/to/device id>" << endl;
+        cout << "\t </path/to/haar_cascade> -- Path to the Haar Cascade for face detection." << endl;
+        cout << "\t </path/to/csv.ext> -- Path to the CSV file with the face database." << endl;
+        cout << "\t <device id> -- The webcam device id to grab frames from." << endl;
         exit(1);
     }
-    // Get the path to your CSV.
-    string fn_csv = string(argv[1]);
-    // These vectors hold the images and corresponding labels.
+    // Get the path to your CSV:
+    string fn_haar = string(argv[1]);
+    string fn_csv = string(argv[2]);
+    int deviceId = atoi(argv[3]);
+    // These vectors hold the images and corresponding labels:
     vector<Mat> images;
     vector<int> labels;
-    // Read in the data. This can fail if no valid
-    // input filename is given.
+    // Read in the data (fails if no valid input filename is given, but you'll get an error message):
     try {
         read_csv(fn_csv, images, labels);
     } catch (cv::Exception& e) {
@@ -80,85 +73,78 @@ int main(int argc, const char *argv[]) {
         // nothing more we can do
         exit(1);
     }
-    // Quit if there are not enough images for this demo.
-    if(images.size() <= 1) {
-        string error_message = "This demo needs at least 2 images to work. Please add more images to your data set!";
-        CV_Error(CV_StsError, error_message);
-    }
     // Get the height from the first image. We'll need this
     // later in code to reshape the images to their original
-    // size:
-    int height = images[0].rows;
-    // The following lines simply get the last images from
-    // your dataset and remove it from the vector. This is
-    // done, so that the training data (which we learn the
-    // cv::FaceRecognizer on) and the test data we test
-    // the model with, do not overlap.
-    Mat testSample = images[images.size() - 1];
-    int testLabel = labels[labels.size() - 1];
-    images.pop_back();
-    labels.pop_back();
-    // The following lines create an Eigenfaces model for
-    // face recognition and train it with the images and
-    // labels read from the given CSV file.
-    // This here is a full PCA, if you just want to keep
-    // 10 principal components (read Eigenfaces), then call
-    // the factory method like this:
-    //
-    //      cv::createEigenFaceRecognizer(10);
-    //
-    // If you want to create a FaceRecognizer with a
-    // confidennce threshold, call it with:
-    //
-    //      cv::createEigenFaceRecognizer(10, 123.0);
-    //
+    // size AND we need to reshape incoming faces to this size:
+    int im_width = images[0].cols;
+    int im_height = images[0].rows;
+    // Create a FaceRecognizer and train it on the given images:
     Ptr<FaceRecognizer> model = createFisherFaceRecognizer();
     model->train(images, labels);
-    // The following line predicts the label of a given
-    // test image:
-    int predictedLabel = model->predict(testSample);
+    // That's it for learning the Face Recognition model. You now
+    // need to create the classifier for the task of Face Detection.
+    // We are going to use the haar cascade you have specified in the
+    // command line arguments:
     //
-    // To get the confidence of a prediction call the model with:
-    //
-    //      int predictedLabel = -1;
-    //      double confidence = 0.0;
-    //      model->predict(testSample, predictedLabel, confidence);
-    //
-    string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testLabel);
-    cout << result_message << endl;
-    // Sometimes you'll need to get/set internal model data,
-    // which isn't exposed by the public cv::FaceRecognizer.
-    // Since each cv::FaceRecognizer is derived from a
-    // cv::Algorithm, you can query the data.
-    //
-    // First we'll use it to set the threshold of the FaceRecognizer
-    // to 0.0 without retraining the model. This can be useful if
-    // you are evaluating the model:
-    //
-    model->set("threshold", 0.0);
-    // Now the threshold of this model is set to 0.0. A prediction
-    // now returns -1, as it's impossible to have a distance below
-    // it
-    predictedLabel = model->predict(testSample);
-    cout << "Predicted class = " << predictedLabel << endl;
-    // Here is how to get the eigenvalues of this Eigenfaces model:
-    Mat eigenvalues = model->getMat("eigenvalues");
-    // And we can do the same to display the Eigenvectors (read Eigenfaces):
-    Mat W = model->getMat("eigenvectors");
-    // From this we will display the (at most) first 10 Eigenfaces:
-    for (int i = 0; i < min(10, W.cols); i++) {
-        string msg = format("Eigenvalue #%d = %.5f", i, eigenvalues.at<double>(i));
-        cout << msg << endl;
-        // get eigenvector #i
-        Mat ev = W.col(i).clone();
-        // Reshape to original size & normalize to [0...255] for imshow.
-        Mat grayscale = toGrayscale(ev.reshape(1, height));
-        // Show the image & apply a Jet colormap for better sensing.
-        Mat cgrayscale;
-        applyColorMap(grayscale, cgrayscale, COLORMAP_JET);
-        imshow(format("%d", i), cgrayscale);
+    CascadeClassifier haar_cascade;
+    haar_cascade.load(fn_haar);
+    // Get a handle to the Video device:
+    VideoCapture cap(deviceId);
+    // Check if we can use this device at all:
+    if(!cap.isOpened()) {
+        cerr << "Capture Device ID " << deviceId << "cannot be opened." << endl;
+        return -1;
     }
-    waitKey(0);
-
+    // Holds the current frame from the Video device:
+    Mat frame;
+    for(;;) {
+        cap >> frame;
+        // Clone the current frame:
+        Mat original = frame.clone();
+        // Convert the current frame to grayscale:
+        Mat gray;
+        cvtColor(original, gray, CV_BGR2GRAY);
+        // Find the faces in the frame:
+        vector< Rect_<int> > faces;
+        haar_cascade.detectMultiScale(gray, faces);
+        // At this point you have the position of the faces in
+        // faces. Now we'll get the faces, make a prediction and
+        // annotate it in the video. Cool or what?
+        for(int i = 0; i < faces.size(); i++) {
+            // Process face by face:
+            Rect face_i = faces[i];
+            // Crop the face from the image. So simple with OpenCV C++:
+            Mat face = gray(face_i);
+            // Resizing the face is necessary for Eigenfaces and Fisherfaces. You can easily
+            // verify this, by reading through the face recognition tutorial coming with OpenCV.
+            // Resizing IS NOT NEEDED for Local Binary Patterns Histograms, so preparing the
+            // input data really depends on the algorithm used.
+            //
+            // I strongly encourage you to play around with the algorithms. See which work best
+            // in your scenario, LBPH should always be a contender for robust face recognition.
+            //
+            // Since I am showing the Fisherfaces algorithm here, I also show how to resize the
+            // face you have just found:
+            Mat face_resized;
+            cv::resize(face, face_resized, Size(im_width, im_height), 1.0, 1.0, INTER_CUBIC);
+            // Now perform the prediction, see how easy that is:
+            int prediction = model->predict(face_resized);
+            // And finally write all we've found out to the original image!
+            // First of all draw a green rectangle around the detected face:
+            rectangle(original, face_i, CV_RGB(0, 255,0), 3);
+            // Create the text we will annotate the box with:
+            string box_text = format("Prediction = %d", prediction);
+            // Calculate the position for annotated text (make sure we don't
+            // put illegal values in there):
+            int pos_x = std::max(face_i.tl().x - 15, 0);
+            int pos_y = std::max(face_i.tl().y - 15, 0);
+            // and now put it into the image:
+            putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 2.0, CV_RGB(0, 255,0), 3, 8, false);
+        }
+        // Exit the loop on Escape:
+        char key = (char) waitKey(20);
+        if(key == 27)
+            break;
+    }
     return 0;
 }
