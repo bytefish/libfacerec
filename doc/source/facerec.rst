@@ -321,6 +321,8 @@ createLBPHFaceRecognizer
 
 Notes:
 ++++++
+
+    * The Circular Local Binary Patterns (used in training and prediction) expect the data given as grayscale images, use :ocv:func:`cvtColor` to convert between the color spaces.
     
 Model internal data:
 ++++++++++++++++++++

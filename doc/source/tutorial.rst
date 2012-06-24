@@ -5,9 +5,17 @@
 Introduction
 ============
 
-`OpenCV (Open Source Computer Vision) <http://opencv.willowgarage.com>`_ is a popular computer vision library started by `Intel <http://www.intel.com>`_ in 1999. The cross-platform library sets its focus on real-time image processing and includes patent-free implementations of the latest computer vision algorithms. In 2008 `Willow Garage <http://www.willowgarage.com>`_ took over support and OpenCV 2.3.1 now comes with a programming interface to C, C++, `Python <http://www.python.org>`_ and `Android <http://www.android.com>`_. OpenCV is released under a BSD license, so it is used in academic and commercial projects alike, such as `Google Streetview <http://www.google.com/streetview>`.
+`OpenCV (Open Source Computer Vision) <http://opencv.willowgarage.com>`_ is a popular computer vision library started by `Intel <http://www.intel.com>`_ in 1999. The cross-platform library sets its focus on real-time image processing and includes patent-free implementations of the latest computer vision algorithms. In 2008 `Willow Garage <http://www.willowgarage.com>`_ took over support and OpenCV 2.3.1 now comes with a programming interface to C, C++, `Python <http://www.python.org>`_ and `Android <http://www.android.com>`_. OpenCV is released under a BSD license so it is used in academic projects and commercial products alike.
 
-OpenCV 2.4 now comes with :ocv:class:`FaceRecognizer` for face recognition, so you can start experimenting right away! This document is the guide I've wished for, when I was working myself into face recognition. It gives you an introduction into the algorithms behind and shows you how to use them. You don't need to copy and paste from this page, because full source code listings available in the ``samples/cpp`` folder coming with OpenCV. Although it might be interesting for advanced users, I've decided to leave the implementation details out, as I am afraid they confuse new users.
+OpenCV 2.4 now comes with the very new :ocv:class:`FaceRecognizer` class for face recognition, so you can start experimenting right away. This document is the guide I've wished for, when I was working myself into face recognition. It shows you how to perform face recognition with :ocv:class:`FaceRecognizer` in OpenCV (with full source code listings) and gives you an introduction into the algorithms behind. I'll also show how to create the visualizations you can find in many publications, because a lot of people asked for.
+
+The currently available algorithms are:
+    
+* Eigenfaces
+* Fisherfaces
+* Local Binary Patterns Histograms
+
+You don't need to copy and paste the source code from this page, because they are available in the ``samples/cpp`` folder coming with OpenCV. If you have built OpenCV with the samples turned on, chances are good you have them compiled already! Although it might be interesting for very advanced users, I've decided to leave the implementation details out as I am afraid they confuse new users.
 
 All code in this document is released under the `BSD license <http://www.opensource.org/licenses/bsd-license>`, so feel free to use it for your projects.
 
@@ -18,14 +26,14 @@ Face recognition is an easy task for humans. Experiments in [Tu06]_ have shown, 
 
 Face recognition based on the geometric features of a face is probably the most intuitive approach to face recognition. One of the first automated face recognition systems was described in [Kanade73]_: marker points (position of eyes, ears, nose, ...) were used to build a feature vector (distance between the points, angle between them, ...). The recognition was performed by calculating the euclidean distance between feature vectors of a probe and reference image. Such a method is robust against changes in illumination by its nature, but has a huge drawback: the accurate registration of the marker points is complicated, even with state of the art algorithms. Some of the latest work on geometric face recognition was carried out in [Bru92]_. A 22-dimensional feature vector was used and experiments on large datasets have shown, that geometrical features alone my not carry enough information for face recognition.
 
-The Eigenfaces method described in [PT91]_ took a holistic approach to face recognition: A facial image is a point from a high-dimensional image space and a lower-dimensional representation is found, where classification becomes easy. The lower-dimensional subspace is found with Principal Component Analysis, which identifies the axes with maximum variance. While this kind of transformation is optimal from a reconstruction standpoint, it doesn't take any class labels into account. Imagine a situation where the variance is generated from external sources, let it be light. The axes with maximum variance do not necessarily contain any discriminative information at all, hence a classification becomes impossible. So a class-specific projection with a Linear Discriminant Analysis was applied to face recognition in [BHK97]_. The basic idea is to minimize the variance within a class, while maximizing the variance between the classes at the same time (see Figure :ref:scatter_matrices). 
+The Eigenfaces method described in [TP91]_ took a holistic approach to face recognition: A facial image is a point from a high-dimensional image space and a lower-dimensional representation is found, where classification becomes easy. The lower-dimensional subspace is found with Principal Component Analysis, which identifies the axes with maximum variance. While this kind of transformation is optimal from a reconstruction standpoint, it doesn't take any class labels into account. Imagine a situation where the variance is generated from external sources, let it be light. The axes with maximum variance do not necessarily contain any discriminative information at all, hence a classification becomes impossible. So a class-specific projection with a Linear Discriminant Analysis was applied to face recognition in [BHK97]_. The basic idea is to minimize the variance within a class, while maximizing the variance between the classes at the same time (see Figure :ref:scatter_matrices). 
 
-Recently various methods for a local feature extraction emerged. To avoid the high-dimensionality of the input data only local regions of an image are described, the extracted features are (hopefully) more robust against partial occlusion, illumation and small sample size. Algorithms used for a local feature extraction are Gabor Wavelets ([Wiskott97]_), Discrete Cosinus Transform ([Cardinaux2006]_) and Local Binary Patterns ([Ahonen04]_, [Maturana09]_, [Rodriguez2006]_). It's still an open research question how to preserve spatial information when applying a local feature extraction, because spatial information is potentially useful information.
+Recently various methods for a local feature extraction emerged. To avoid the high-dimensionality of the input data only local regions of an image are described, the extracted features are (hopefully) more robust against partial occlusion, illumation and small sample size. Algorithms used for a local feature extraction are Gabor Wavelets ([Wiskott97]_), Discrete Cosinus Transform ([Messer06]_) and Local Binary Patterns ([Ahonen04]_). It's still an open research question what's the best way to preserve spatial information when applying a local feature extraction, because spatial information is potentially useful information.
 
 Face Database
 ==============
 
-Let's get some data to experiment with first. I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own database or start with one of the available databases, `http://face-rec.org/databases/ <http://face-rec.org/databases>`_ gives an up-to-date overview. Three interesting databases are (parts of the description are quoted from `http://face-rec.org <http://face-rec.org>.`_:
+Let's get some data to experiment with first. I don't want to do a toy example here. We are doing face recognition, so you'll need some face images! You can either create your own dataset or start with one of the available face databases, `http://face-rec.org/databases/ <http://face-rec.org/databases>`_ gives you an up-to-date overview. Three interesting databases are (parts of the description are quoted from `http://face-rec.org <http://face-rec.org>.`_:
 
 * `AT&T Facedatabase <http://www.cl.cam.ac.uk/research/dtg/attarchive/facedatabase.html>`_ The AT&T Facedatabase, sometimes also referred to as *ORL Database of Faces*, contains ten different images of each of 40 distinct subjects. For some subjects, the images were taken at different times, varying the lighting, facial expressions (open / closed eyes, smiling / not smiling) and facial details (glasses / no glasses). All the images were taken against a dark homogeneous background with the subjects in an upright, frontal position (with tolerance for some side movement).
 	
@@ -140,7 +148,6 @@ Now it's time for the fun stuff.
 Training and Prediction
 +++++++++++++++++++++++
 
-	The Eigenfaces and Fisherfaces method both share common methods, so we'll define a base prediction model in Listing \ref{lst:eigenfaces_base_model}. I don't want to do a full k-Nearest Neighbor implementation here, because (1) the number of neighbors doesn't really matter for both methods and (2) it would confuse people. If you are implementing it in a language of your choice, you should really separate the feature extraction and classification from the model itself. A real generic approach is given in my \href{https://www.github.com/bytefish/facerec}{facerec} framework. However, feel free to extend these basic classes for your needs.
 
 Projection and Reconstruction
 ++++++++++++++++++++++++++++++
@@ -154,7 +161,7 @@ I've used the jet colormap, so you can see how the grayscale values are distribu
 
     [img eigenfaces]
 
-We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconstruct a face from its lower dimensional approximation. So let's see how many Eigenfaces are needed for a good reconstruction. I'll do a subplot with $10,30,\ldots,310$ Eigenfaces:
+We've already seen in Equation \ref{eqn:pca_reconstruction}, that we can reconstruct a face from its lower dimensional approximation. So let's see how many Eigenfaces are needed for a good reconstruction. I'll do a subplot with :math:`10,30,\ldots,310` Eigenfaces:
 
 .. code-block:
 
@@ -171,14 +178,11 @@ The Principal Component Analysis (PCA), which is the core of the Eigenfaces meth
 
 The Linear Discriminant Analysis performs a class-specific dimensionality reduction and was invented by the great statistician `Sir R. A. Fisher <http://en.wikipedia.org/wiki/Ronald_Fisher>`_. He successfully used it for classifying flowers in his 1936 paper *The use of multiple measurements in taxonomic problems* [Fisher36]_. In order to find the combination of features that separates best between classes the Linear Discriminant Analysis maximizes the ratio of between-classes to within-classes scatter, instead of maximizing the overall scatter. The idea is simple: same classes should cluster tightly together, while different classes are as far away as possible from each other in the lower-dimensional representation. This was also recognized by `Belhumeur <http://www.cs.columbia.edu/~belhumeur/>`_, `Hespanha <http://www.ece.ucsb.edu/~hespanha/>`_ and `Kriegman <http://cseweb.ucsd.edu/~kriegman/>`_ and so they applied a Discriminant Analysis to face recognition in [BHK97]_. 
 
+.. image:: /img/
 
-\begin{figure}
-	\begin{center}
+
 		\includegraphics[scale=1.70]{img/fisherfaces/multiclasslda}
-		\captionof{figure}{This figure shows the scatter matrices $S_{B}$ and $S_{W}$ for a 3 class problem. $\mu$ represents the total mean and $[\mu_{1},\mu_{2},\mu_{3}]$ are the class means.}
-		\label{fig:scatter_matrices}
-	\end{center}
-\end{figure}
+
 
 Algorithmic Description
 -----------------------
@@ -188,42 +192,55 @@ Let :math:`X` be a random vector with samples drawn from :math:`c` classes:
 
 .. math::
 
-    X & = & \{X_1,X_2,\ldots,X_c\} \\
-    X_i & = & \{x_1, x_2, \ldots, x_n\}
+    \begin{eqnarray}
+        X & = & \{X_1,X_2,\ldots,X_c\} \\
+        X_i & = & \{x_1, x_2, \ldots, x_n\}
+    \end{eqnarray}
+
 
 The scatter matrices :math:`S_{B}` and `S_{W}` are calculated as:
 
 .. math::
 
-    S_{B} & = & \sum_{i=1}^{c} N_{i} (\mu_i - \mu)(\mu_i - \mu)^{T} \\
-    S_{W} & = & \sum_{i=1}^{c} \sum_{x_{j} \in X_{i}} (x_j - \mu_i)(x_j - \mu_i)^{T}
+    \begin{eqnarray}
+        S_{B} & = & \sum_{i=1}^{c} N_{i} (\mu_i - \mu)(\mu_i - \mu)^{T} \\
+        S_{W} & = & \sum_{i=1}^{c} \sum_{x_{j} \in X_{i}} (x_j - \mu_i)(x_j - \mu_i)^{T}
+    \end{eqnarray}
 
 , where :math:`\mu` is the total mean:
 
 ..math::
 
-    \mu = \frac{1}{N} \sum_{i=1}^{N} x_i
+    \begin{equation}
+        \mu = \frac{1}{N} \sum_{i=1}^{N} x_i
+    \end{equation}
 
 
 And :math:`\mu_i` is the mean of class :math:`i \in \{1,\ldots,c\}`:
 
 .. math::
  
-    \mu_i = \frac{1}{|X_i|} \sum_{x_j \in X_i} x_j
+    \begin{equation}
+        \mu_i = \frac{1}{|X_i|} \sum_{x_j \in X_i} x_j
+    \end{equation}
 
 Fisher's classic algorithm now looks for a projection :math:`W`, that maximizes the class separability criterion:
 
 .. math::
 
-    W_{opt} = \operatorname{arg\,max}_{W} \frac{|W^T S_B W|}{|W^T S_W W|}
+    \begin{equation}
+        W_{opt} = \operatorname{arg\,max}_{W} \frac{|W^T S_B W|}{|W^T S_W W|}
+    \end{equation}
 
 
 Following [BHK97]_, a solution for this optimization problem is given by solving the General Eigenvalue Problem:
 
 .. math::
-
-    S_{B} v_{i} & = & \lambda_{i} S_w v_{i} \nonumber \\
-    S_{W}^{-1} S_{B} v_{i} & = & \lambda_{i} v_{i}
+    
+    \begin{eqnarray}
+        S_{B} v_{i} & = & \lambda_{i} S_w v_{i} \nonumber \\
+        S_{W}^{-1} S_{B} v_{i} & = & \lambda_{i} v_{i}
+    \end{eqnarray}
 
 There's one problem left to solve: The rank of :math:`S_{W}` is at most :math:`(N-c)`, with :math:`N` samples and :math:`c` classes. In pattern recognition problems the number of samples :math:`N` is almost always samller than the dimension of the input data (the number of pixels), so the scatter matrix :math:`S_{W}` becomes singular (see [Raudys1991]_). In [BHK97]_ this was solved by performing a Principal Component Analysis on the data and projecting the samples into the :math:`(N-c)`-dimensional space. A Linear Discriminant Analysis was then performed on the reduced data, because :math:`S_{W}` isn't singular anymore.
 
@@ -231,14 +248,18 @@ The optimization problem can then be rewritten as:
 
 .. math::
 
-    W_{pca} & = & \operatorname{arg\,max}_{W} |W^T S_T W| \\
-    W_{fld} & = & \operatorname{arg\,max}_{W} \frac{|W^T W_{pca}^T S_{B} W_{pca} W|}{|W^T W_{pca}^T S_{W} W_{pca} W|}
+    \begin{eqnarray}
+        W_{pca} & = & \operatorname{arg\,max}_{W} |W^T S_T W| \\
+        W_{fld} & = & \operatorname{arg\,max}_{W} \frac{|W^T W_{pca}^T S_{B} W_{pca} W|}{|W^T W_{pca}^T S_{W} W_{pca} W|}
+    \end{eqnarray}
 
 The transformation matrix :math:`W`, that projects a sample into the :math:`(c-1)`-dimensional space is then given by:
 
 .. math::
     
-    W = W_{fld}^{T} W_{pca}^{T}
+    \begin{equation}
+        W = W_{fld}^{T} W_{pca}^{T}
+    \end{equation}
 
 Fisherfaces in OpenCV
 ---------------------
@@ -251,39 +272,151 @@ Projection and Reconstruction
 
 For this example I am going to use the Yale Facedatabase A, just because the plots are nicer. Each Fisherface has the same length as an original image, thus it can be displayed as an image. We'll again load the data, learn the Fisherfaces and make a subplot of the first 16 Fisherfaces.
 
-\ifx\python\undefined
-	\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_fisherfaces}}, language=matlab, linerange={1-23}]{src/m/example_fisherfaces.m}
-\else
-	\lstinputlisting[caption={\href{src/py/scripts/example\_fisherfaces.py}{src/py/scripts/example\_fisherfaces.py} \label{lst:example_fisherfaces_fisherfaces}}, language=python, linerange={1-23}]{src/py/scripts/example_fisherfaces.py}
-\fi
-
 The Fisherfaces method learns a class-specific transformation matrix, so the they do not capture illumination as obviously as the Eigenfaces method. The Discriminant Analysis instead finds the facial features to discriminate between the persons. It's important to mention, that the performance of the Fisherfaces heavily depends on the input data as well. Practically said: if you learn the Fisherfaces for well-illuminated pictures only and you try to recognize faces in bad-illuminated scenes, then method is likely to find the wrong components (just because those features may not be predominant on bad illuminated images). This is somewhat logical, since the method had no chance to learn the illumination.
 
-\ifx\python\undefined
-	\begin{center}
-		\includegraphics[scale=0.6]{img/fisherfaces/octave_fisherfaces_fisherfaces}
-	\end{center}
-\else
-	\begin{center}
-		\includegraphics[scale=0.6]{img/fisherfaces/python_fisherfaces_fisherfaces}
-	\end{center}
-\fi
 
 The Fisherfaces allow a reconstruction of the projected image, just like the Eigenfaces did. But since we only identified the features to distinguish between subjects, you can't expect a nice reconstruction of the original image. For the Fisherfaces method we'll project the sample image onto each of the Fisherfaces instead. So you'll have a nice visualization, which feature each of the Fisherfaces describes.
 
-\ifx\python\undefined
-	\lstinputlisting[caption={\href{src/m/example\_fisherfaces.m}{src/m/example\_fisherfaces.m} \label{lst:example_fisherfaces_reconstruction}}, language=matlab, linerange={28-40}]{src/m/example_fisherfaces.m}
-\else
-	\lstinputlisting[caption={\href{src/py/scripts/example\_fisherfaces.py}{src/py/scripts/example\_fisherfaces.py} \label{lst:example_fisherfaces_reconstruction}}, language=python, linerange={25-36}]{src/py/scripts/example_fisherfaces.py}
-\fi
 
 The differences may be subtle for the human eyes, but you should be able to see some differences:
 
 .. image:: /img/tutorial/eigenfaces_at.png
-
-
   
 Local Binary Patterns Histograms
 ================================
 
+Eigenfaces and Fisherfaces take a somewhat holistic approach to face recognition. You treat your data as a vector somewhere in a high-dimensional image space. We all know high-dimensionality is bad, so a lower-dimensional subspace is identified, where (probably) useful information is preserved. The Eigenfaces approach maximizes the total scatter, which can lead to problems if the variance is generated by an external source, because components with a maximum variance over all classes aren't necessarily useful for classification. So to preserve some discriminative information we applied a Linear Discriminant Analysis and optimized as described in the Fisherfaces method. The Fisherfaces method worked great... at least for the constrained scenario we've assumed in our model.
+
+Now real life isn't perfect. You simply can't guarantee perfect light settings in your images or 10 different images of a person. So what if there's only one image for each person? Our covariance estimates for the subspace will be horribly wrong, something also known as the Small Sample Size Problem. Remember the Eigenfaces method had a 96% recognition rate on the AT&T Facedatabase? How many images do we actually need to get such useful estimates? Here are the Rank-1 recognition rates of the Eigenfaces and Fisherfaces method on the AT&T Facedatabase, which is a fairly easy image database: 
+
+.. image:: /img/at_database_small_sample_size.png
+
+So in order to get good recognition rates you'll need at least 8(+-1) images for each person and the Fisherfaces method doesn't really help here. The experiment was carried out with the facerec framework at: `https://github.com/bytefish/facerec <https://github.com/bytefish/facerec>`_. This is not a publication, so I won't back these figures with a mathematical analysis. Please have a look into [KM01]_ for a detailed analysis of both methods, when it comes to small training datasets.
+
+So some research concentrated on extracting local features from images. The idea is to not look at the whole image as a high-dimensional vector, but describe only local features of an object. The features you extract this way will have a low-dimensionality implicitly. A fine idea! But you'll soon observe the image representation we are given doesn't only suffer from illumination variations. Think of things like scale, translation or rotation in images - your local description has to be at least a bit robust against those things. Just like :ocv:class:`SIFT`, the Local Binary Patterns methodology has its roots in 2D texture analysis. The basic idea of Local Binary Patterns is to summarize the local structure in an image by comparing each pixel with its neighborhood. Take a pixel as center and threshold its neighbors against. If the intensity of the center pixel is greater-equal its neighbor, then denote it with 1 and 0 if not. You'll end up with a binary number for each pixel, just like 11001111. So with 8 surrounding pixels you'll end up with 2^8 possible combinations, called *Local Binary Patterns* or sometimes referred to as *LBP codes*. The first LBP operator described in literature actually used a fixed 3 x 3 neighborhood just like this: 
+
+.. image:: /img/lbp/lbp.png
+
+Algorithmic Description
+-----------------------
+
+A more formal description of the LBP operator can be given as:
+
+.. math::
+
+    LBP(x_c, y_c) = \sum_{p=0}^{P-1} 2^p s(i_p - i_c)
+
+, with :math:`(x_c, y_c)` as central pixel with intensity :math:`i_c`; and :math:`i_n` being the intensity of the the neighbor pixel. :math:`s` is the sign function defined as:
+
+.. math::
+
+    \begin{equation}
+    s(x) = 
+    \begin{cases} 
+    1 & \text{if $x \geq 0$}\\
+    0 & \text{else}
+    \end{cases}
+    \end{equation}
+
+This description enables you to capture very fine grained details in images. In fact the authors were able to compete with state of the art results for texture classification. Soon after the operator was published it was noted, that a fixed neighborhood fails to encode details differing in scale. So the operator was extended to use a variable neighborhood in [AHP04]_. The idea is to align an abritrary number of neighbors on a circle with a variable radius, which enables to capture the following neighborhoods: 
+
+.. image:: /img/lbp/patterns.png
+
+For a given Point :math:`(x_c,y_c)` the position of the neighbor :math:`(x_p,y_p), p \in P` can be calculated by:
+
+.. math::
+
+    \begin{eqnarray}
+    x_{p} & = & x_c + R \cos({\frac{2\pi p}{P}})\\
+    y_{p} & = & y_c - R \sin({\frac{2\pi p}{P}})
+    \end{eqnarray}
+
+Where :math:`R` is the radius of the circle and :math:`P` is the number of sample points.
+
+The operator is an extension to the original LBP codes, so it's sometimes called *Extended LBP* (also referred to as *Circular LBP*) . If a points coordinate on the circle doesn't correspond to image coordinates, the point get's interpolated. Computer science has a bunch of clever interpolation schemes, the OpenCV implementation does a bilinear interpolation:
+
+.. math::
+
+    \begin{eqnarray}
+    f(x,y) \approx \begin{bmatrix}
+	    1-x & x \end{bmatrix} \begin{bmatrix}
+	    f(0,0) & f(0,1) \\
+	    f(1,0) & f(1,1) \end{bmatrix} \begin{bmatrix}
+	    1-y \\
+	    y \end{bmatrix}.
+    \end{eqnarray}
+
+Training and Prediction
+++++++++++++++++++++++++
+
+Credits
+=======
+
+This document wouldn't be possible without the kind permission to use the face images of the *AT&T Database of Faces* and the *Yale Facedatabase A/B*.  
+
+The Database of Faces
+---------------------
+
+** Important: when using these images, please give credit to "AT&T Laboratories, Cambridge." **
+
+The Database of Faces, formerly *The ORL Database of Faces*, contains a set of face images taken between April 1992 and April 1994. The database was used in the context of a face recognition project carried out in collaboration with the Speech, Vision and Robotics Group of the Cambridge University Engineering Department.
+
+There are ten different images of each of 40 distinct subjects. For some subjects, the images were taken at different times, varying the lighting, facial expressions (open / closed eyes, smiling / not smiling) and facial details (glasses / no glasses). All the images were taken against a dark homogeneous background with the subjects in an upright, frontal position (with tolerance for some side movement).
+
+The files are in PGM format. The size of each image is 92x112 pixels, with 256 grey levels per pixel. The images are organised in 40 directories (one for each subject), which have names of the form sX, where X indicates the subject number (between 1 and 40). In each of these directories, there are ten different images of that subject, which have names of the form Y.pgm, where Y is the image number for that subject (between 1 and 10).
+
+A copy of the database can be retrieved from: `http://www.cl.cam.ac.uk/research/dtg/attarchive/pub/data/att_faces.zip <http://www.cl.cam.ac.uk/research/dtg/attarchive/pub/data/att_faces.zip>`_.
+
+Yale Facedatabase A
+-------------------
+
+*With the permission of the authors I am allowed to show a small number of images (say subject 1 and all the variations) and all images such as Fisherfaces and Eigenfaces from either Yale Facedatabase A or the Yale Facedatabase B.*
+
+The Yale Face Database A (size 6.4MB) contains 165 grayscale images in GIF format of 15 individuals. There are 11 images per subject, one per different facial expression or configuration: center-light, w/glasses, happy, left-light, w/no glasses, normal, right-light, sad, sleepy, surprised, and wink. (Source: `http://cvc.yale.edu/projects/yalefaces/yalefaces.html <http://cvc.yale.edu/projects/yalefaces/yalefaces.html>`_)
+
+Yale Facedatabase B
+--------------------
+
+*With the permission of the authors I am allowed to show a small number of images (say subject 1 and all the variations) and all images such as Fisherfaces and Eigenfaces from either Yale Facedatabase A or the Yale Facedatabase B.*
+
+The extended Yale Face Database B contains 16128 images of 28 human subjects under 9 poses and 64 illumination conditions. The data format of this database is the same as the Yale Face Database B. Please refer to the homepage of the Yale Face Database B (or one copy of this page) for more detailed information of the data format.
+
+You are free to use the extended Yale Face Database B for research purposes. All publications which use this database should acknowledge the use of "the Exteded Yale Face Database B" and reference Athinodoros Georghiades, Peter Belhumeur, and David Kriegman's paper, "From Few to Many: Illumination Cone Models for Face Recognition under Variable Lighting and Pose", PAMI, 2001, `[bibtex] <http://vision.ucsd.edu/~leekc/ExtYaleDatabase/athosref.html>`_. 
+
+The extended database as opposed to the original Yale Face Database B with 10 subjects was first reported by Kuang-Chih Lee, Jeffrey Ho, and David Kriegman in "Acquiring Linear Subspaces for Face Recognition under Variable Lighting, PAMI, May, 2005 `[pdf] <http://vision.ucsd.edu/~leekc/papers/9pltsIEEE.pdf>`_." All test image data used in the experiments are manually aligned, cropped, and then re-sized to 168x192 images. If you publish your experimental results with the cropped images, please reference the PAMI2005 paper as well. (Source: `http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html <http://vision.ucsd.edu/~leekc/ExtYaleDatabase/ExtYaleB.html>`_)
+
+Literature
+==========
+
+.. [AHP04] Ahonen, T., Hadid, A., and Pietikainen, M. *Face Recognition with Local Binary Patterns.* Computer Vision - ECCV 2004 (2004), 469–481.
+
+.. [BHK97] Belhumeur, P. N., Hespanha, J., and Kriegman, D. *Eigenfaces vs. Fisherfaces: Recognition Using Class Specific Linear Projection.* IEEE Transactions on Pattern Analysis and Machine Intelligence 19, 7 (1997), 711–720.
+
+.. [Bru92] Brunelli, R., Poggio, T. *Face Recognition through Geometrical Features.* European Conference on Computer Vision (ECCV) 1992, S. 792–800.
+
+.. [Fisher36] Fisher, R. A. *The use of multiple measurements in taxonomic problems.* Annals Eugen. 7 (1936), 179–188.
+
+.. [GBK01] Georghiades, A.S. and Belhumeur, P.N. and Kriegman, D.J., *From Few to Many: Illumination Cone Models for Face Recognition under Variable Lighting and Pose* IEEE Transactions on Pattern Analysis and Machine Intelligence 23, 6 (2001), 643-660.
+
+.. [Kanade73] Kanade, T. *Picture processing system by computer complex and recognition of human faces.* PhD thesis, Kyoto University, November 1973
+
+.. [Messer06] Messer, K. et al. *Performance Characterisation of Face Recognition Algorithms and Their Sensitivity to Severe Illumination Changes.* In: In: ICB, 2006, S. 1–11.
+
+.. [RJ91] S. Raudys and  A.K. Jain.  *Small  sample  size  effects in statistical  pattern  recognition: Recommendations for  practitioneers.* - IEEE Transactions on Pattern Analysis and Machine Intelligence 13, 3 (1991), 252-264.
+
+.. [Tan10] Tan, X., and Triggs, B. *Enhanced local texture feature sets for face recognition under difficult lighting conditions.* IEEE Transactions on Image Processing 19 (2010), 1635–650.
+
+.. [TP91] Turk, M., and Pentland, A. *Eigenfaces for recognition.* Journal of Cognitive Neuroscience 3 (1991), 71–86.
+
+.. [Tu06] Chiara Turati, Viola Macchi Cassia, F. S., and Leo, I. *Newborns face recognition: Role of inner and outer facial features. Child Development* 77, 2 (2006), 297–311.
+
+.. [Wiskott97] Wiskott, L., Fellous, J., Krüger, N., Malsburg, C. *Face Recognition By Elastic Bunch Graph Matching.* IEEE Transactions on Pattern Analysis and Machine Intelligence 19 (1997), S. 775–779
+
+.. [Zhao03] Zhao, W., Chellappa, R., Phillips, P., and Rosenfeld, A. Face recognition: A literature survey. ACM Computing Surveys (CSUR) 35, 4 (2003), 399–458.
+
+
+
+
+
+.. [KM01] Martinez, A and Kak, A. *PCA versus LDA* IEEE Transactions on Pattern Analysis and Machine Intelligence, Vol. 23, No.2, pp. 228-233, 2001.
 
