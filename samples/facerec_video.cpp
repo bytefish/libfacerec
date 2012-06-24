@@ -141,6 +141,7 @@ int main(int argc, const char *argv[]) {
             // and now put it into the image:
             putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 2.0, CV_RGB(0, 255,0), 3, 8, false);
         }
+        imshow("face_recognizer", original);
         // Exit the loop on Escape:
         char key = (char) waitKey(20);
         if(key == 27)
