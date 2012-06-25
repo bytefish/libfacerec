@@ -7,10 +7,10 @@ libfacerec documentation
 .. toctree::
    :maxdepth: 2
    
-   api/api.rst
-   api/examples.rst
-   changelog/changelog.rst
-   bib/literature.rst
+   facerec_api.rst
+   
+   facerec_changelog.rst
+   
    
 Indices and tables
 ==================
