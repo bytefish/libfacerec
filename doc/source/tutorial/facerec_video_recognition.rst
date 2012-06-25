@@ -1,5 +1,5 @@
-Gender Classification with OpenCV (and libfacerec)
-==================================================
+Face Recognition in Videos with OpenCV
+=======================================
 
 .. contents:: Table of Contents
    :depth: 3
@@ -7,65 +7,165 @@ Gender Classification with OpenCV (and libfacerec)
 Introduction
 ------------
 
-A lot of people interested in face recognition, also want to know how to perform image classification tasks like:
-    
-    * Gender Classification (Gender Detection)
-    * Emotion Classification (Emotion Detection)
-    * Glasses Classification (Glasses Detection)
-    * ...
+Whenever you hear the term *face recognition*, you instantly think of surveillance in videos. So performing face recognition in videos (e.g. webcam) is one of the most requested features I got. I have heard your cries, so here it is. For face detection we'll use the awesome :ocv:class:`CascadeClassifier`, and we'll use :ocv:class:`FaceRecognizer` for face recognition. This example uses the Fisherfaces method for face recognition, because it is robust against large changes in illumination.
 
-This is has become very, very easy with the new :ocv:class:`FaceRecognizer` class. In this tutorial I'll show you how to perform gender classification with OpenCV on a set of face images. You'll also learn how to align your images to enhance the recognition results. If you want to do emotion classification instead of gender classification, all you need to do is to update is your training data and the configuration you pass to the demo.
+Here is what the final application looks like, as you can see I am only writing the id of the recognized person (by the way this id is Arnold Schwarzenegger for my data set) above the detected face. 
+
+.. image:: /img/tutorial/facerec_video.png
+    :align: center
+    :scale: 70%
+
+This demo is a basis for your research, and it shows you how to implement face recognition in videos. You probably want to extend the application and make it more sophisticated: You could combine the id with the name, show the confidence of the prediction, recognize the emotion... and and and. But before you send mails, asking what these Haar-Cascade thing is or what a CSV is... Make sure you have read the entire tutorial. It's all explained in here. If you just want to scroll down to the code, please note:
+  
+* The available Haar-Cascades are located in the ``data`` folder of your OpenCV installation! One of the available Haar-Cascades for face detection is for example ``data/haarcascades/haarcascade_frontalface_default.xml``.
+
+I encourage you to experiment with the application. Play around with the available :ocv:class:`FaceRecognizer`, try the available cascades in OpenCV and see if you can improve your results!
 
 Prerequisites
 --------------
 
-For gender classification of faces, you'll need some images of male and female faces first. I've decided to search faces of celebrities using `Google Images <http://www.google.com/images>`_ with the faces filter turned on (my god, they have great algorithms at `Google <http://www.google.com>`_!). My database has 8 male and 5 female subjects, each with 10 images. Here are the names, if you don't know who to search:
+You want to do face recognition, so you need some face images to learn a :ocv:class:`FaceRecognizer` on. I have decided to reuse the images from the gender classification example: :doc:`../facerec_gender_classification`.
+
+I have the following celebrities in my training data set:
 
 * Angelina Jolie
 * Arnold Schwarzenegger
 * Brad Pitt
-* Emma Watson
 * George Clooney
-* Jennifer Lopez
 * Johnny Depp
 * Justin Timberlake
 * Katy Perry
 * Keanu Reeves
-* Naomi Watts
 * Patrick Stewart
 * Tom Cruise
 
-Once you have acquired some images, you'll need to read them. In the demo I have decided to read the images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
+In the demo I have decided to read the images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
 
 .. code-block:: none
 
     /path/to/image.ext;0
     
-Let's dissect the line. ``/path/to/image.ext`` is the path to an image, probably something like this if you are in Windows: ``C:/faces/person0/image0.jpg``. Then there is the separator ``;`` and finally we assign a label ``0`` to the image. Think of the label as the subject (the person, the gender or whatever comes to your mind). In the gender classification scenario, the label is the gender the person has. I'll give the label ``0`` to *male* persons and the label ``1`` is for *female* subjects. So my CSV file looks like this:
+Let's dissect the line. ``/path/to/image.ext`` is the path to an image, probably something like this if you are in Windows: ``C:/faces/person0/image0.jpg``. Then there is the separator ``;`` and finally we assign a label ``0`` to the image. Think of the label as the subject (the person, the gender or whatever comes to your mind). In the face recognition scenario, the label is the person this image belongs to. In the gender classification scenario, the label is the gender the person has. So my CSV file looks like this:
 
 .. code-block:: none
 
-  /home/philipp/facerec/data/gender/male/keanu_reeves/keanu_reeves_01.jpg;0
-  /home/philipp/facerec/data/gender/male/keanu_reeves/keanu_reeves_02.jpg;0
-  /home/philipp/facerec/data/gender/male/keanu_reeves/keanu_reeves_03.jpg;0
-  ...
-  /home/philipp/facerec/data/gender/female/katy_perry/katy_perry_01.jpg;1
-  /home/philipp/facerec/data/gender/female/katy_perry/katy_perry_02.jpg;1
-  /home/philipp/facerec/data/gender/female/katy_perry/katy_perry_03.jpg;1
-  ...
-  /home/philipp/facerec/data/gender/male/brad_pitt/brad_pitt_01.jpg;0
-  /home/philipp/facerec/data/gender/male/brad_pitt/brad_pitt_02.jpg;0
-  /home/philipp/facerec/data/gender/male/brad_pitt/brad_pitt_03.jpg;0
-  ...
-  /home/philipp/facerec/data/gender/female/emma_watson/emma_watson_08.jpg;1
-  /home/philipp/facerec/data/gender/female/emma_watson/emma_watson_02.jpg;1
-  /home/philipp/facerec/data/gender/female/emma_watson/emma_watson_03.jpg;1
-
+    /home/philipp/facerec/data/c/keanu_reeves/keanu_reeves_01.jpg;0
+    /home/philipp/facerec/data/c/keanu_reeves/keanu_reeves_02.jpg;0
+    /home/philipp/facerec/data/c/keanu_reeves/keanu_reeves_03.jpg;0
+    ...
+    /home/philipp/facerec/data/c/katy_perry/katy_perry_01.jpg;1
+    /home/philipp/facerec/data/c/katy_perry/katy_perry_02.jpg;1
+    /home/philipp/facerec/data/c/katy_perry/katy_perry_03.jpg;1
+    ...
+    /home/philipp/facerec/data/c/brad_pitt/brad_pitt_01.jpg;2
+    /home/philipp/facerec/data/c/brad_pitt/brad_pitt_02.jpg;2
+    /home/philipp/facerec/data/c/brad_pitt/brad_pitt_03.jpg;2
+    ...
+    /home/philipp/facerec/data/c1/crop_arnold_schwarzenegger/crop_08.jpg;6
+    /home/philipp/facerec/data/c1/crop_arnold_schwarzenegger/crop_05.jpg;6
+    /home/philipp/facerec/data/c1/crop_arnold_schwarzenegger/crop_02.jpg;6
+    /home/philipp/facerec/data/c1/crop_arnold_schwarzenegger/crop_03.jpg;6
+    
 All images for this example were chosen to have a frontal face perspective. They have been cropped, scaled and rotated to be aligned at the eyes, just like this set of George Clooney images:
 
 .. image:: /img/tutorial/gender_classification/clooney_set.png
     :align: center
 
+Face Recongition from Videos
+-----------------------------
+
+The source code for the demo is available in the ``samples/cpp`` folder of your OpenCV installation. If you have built OpenCV with samples turned on, chances are good you have the executable already. This demo uses the :ocv:class:`CascadeClassifier`:
+
+.. literalinclude:: /src/facerec_video.cpp
+   :language: cpp
+   :linenos:
+
+Running the Demo
+----------------
+
+You'll need:
+
+* The path to a valid Haar-Cascade for detecting a face with a :ocv:class:`CascadeClassifier`.    
+* The path to a valid CSV File for learning a :ocv:class:`FaceRecognizer`.
+* A webcam and its device id (you don't know the device id? Simply start from 0 on and see what happens).
+
+If you are in Windows, then simply start the demo by running (from command line):
+
+.. code-block:: none
+
+    facerec_video.exe <C:/path/to/your/haar_cascade.xml> <C:/path/to/your/csv.ext> <video device>
+    
+If you are in Linux, then simply start the demo by running:
+
+.. code-block:: none
+
+    ./facerec_video </path/to/your/haar_cascade.xml> <C:/path/to/your/csv.ext> <video device>
+
+So if the haar-cascade is at ``C:/opencv/data/haarcascades/haarcascade_frontalface_default.xml``, the CSV file at ``C:/facerec/data/celebrities.txt`` and i have a webcam with deviceId ``1``, then I would call the demo with:
+
+    facerec_video.exe C:/opencv/data/haarcascades/haarcascade_frontalface_default.xml C:/facerec/data/celebrities.txt 1
+
+Results
+-------
+
+Enjoy!
+
+Appendix
+========
+
+Creating the CSV File
++++++++++++++++++++++
+
+You don't really want to create the CSV file by hand. I have prepared you a little Python script ``create_csv.py`` (you find it at ``/src/create_csv.py`` coming with this tutorial) that automatically creates you a CSV file. If you have your images in hierarchie like this (``/basepath/<subject>/<image.ext>``):
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data/at$ tree
+    .
+    |-- s1
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    |-- s2
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    ...
+    |-- s40
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    
+    
+Then simply call ``create_csv.py`` with the path to the folder, just like this and you could save the output:
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data$ python create_csv.py
+    at/s13/2.pgm;0
+    at/s13/7.pgm;0
+    at/s13/6.pgm;0
+    at/s13/9.pgm;0
+    at/s13/5.pgm;0
+    at/s13/3.pgm;0
+    at/s13/4.pgm;0
+    at/s13/10.pgm;0
+    at/s13/8.pgm;0
+    at/s13/1.pgm;0
+    at/s17/2.pgm;1
+    at/s17/7.pgm;1
+    at/s17/6.pgm;1
+    at/s17/9.pgm;1
+    at/s17/5.pgm;1
+    at/s17/3.pgm;1
+    [...]
+
+Here is the script, if you can't find it:
+
+.. literalinclude:: /src/create_csv.py
+   :language: python
+   :linenos:
+   
 Aligning Face Images
 ++++++++++++++++++++
 
@@ -98,74 +198,4 @@ Here are some examples:
 | 0.2 (20%), 0.2 (20%), (70,70)   | .. image:: /img/tutorial/gender_classification/arnie_20_20_70_70.jpg     |
 +---------------------------------+--------------------------------------------------------------------------+
 
-Fisherfaces for Gender Classification
---------------------------------------
-
-If you want to decide wether a person is *male* or *female*, you have to learn the discriminative features of both classes. The Eigenfaces method is based on the Principal Component Analysis, which is an unsupervised statistical model and not suitable for this task. Please see the Face Recognition tutorial for insights into the algorithms. The Fisherfaces instead yields a class-specific linear projection, so it is much better suited for the gender classification task. `http://www.bytefish.de/blog/gender_classification <http://www.bytefish.de/blog/gender_classification>`_  shows the recongition rate of the Fisherfaces method for gender classification.
-
-The Fisherfaces method achieves a 98% recognition rate in a subject-independent cross-validation. A subject-independent cross-validation means *images of the person under test are never used for learning the model*. And could you believe it: you can simply use the facerec_fisherfaces demo, that's inlcuded in OpenCV. 
-
-Fisherfaces in OpenCV
----------------------
-
-The source code for the demo is available in the ``samples/cpp`` folder of your OpenCV installation. If you have built OpenCV with samples turned on, chances are good you have the executable already.
-
-.. literalinclude:: /src/facerec_fisherfaces.cpp
-   :language: cpp
-   :linenos:
-
-Running the Demo
-----------------
-
-If you are in Windows, then simply start the demo by running (from command line):
-
-.. code-block:: none
-
-    facerec_fisherfaces.exe C:/path/to/your/csv.ext
-    
-If you are in Linux, then simply start the demo by running:
-
-.. code-block:: none
-
-    ./facerec_fisherfaces /path/to/your/csv.ext
-
-If you don't want to display the images, but save them, then pass the desired path to the demo. It works like this in Windows:
-
-.. code-block:: none
-
-    facerec_fisherfaces.exe C:/path/to/your/csv.ext C:/path/to/store/results/at
-
-And in Linux:
-
-.. code-block:: none
-
-    ./facerec_fisherfaces /path/to/your/csv.ext /path/to/store/results/at
-
-Results
--------
-
-If you run the program with your CSV file as parameter, you'll see the Fisherface that separates between male and female images. I've decided to apply a Jet colormap in this demo, so you can see which features the method identifies:
-
-.. image:: /img/tutorial/gender_classification/fisherface_0.png
-
-The demo also shows the average face of the male and female training images you have passed:
-
-.. image:: /img/tutorial/gender_classification/mean.png
-
-Moreover it the demo should yield the prediction for the correct gender:
-
-.. code-block:: none
-
-    Predicted class = 1 / Actual class = 1.
-
-And for advanced users I have also shown the Eigenvalue for the Fisherface:
-
-.. code-block:: none
-
-    Eigenvalue #0 = 152.49493
-
-And the Fisherfaces reconstruction:
-
-.. image:: /img/tutorial/gender_classification/fisherface_reconstruction_0.png
-  
-I hope this gives you an idea how to approach gender classification and the other image classification tasks. 
+ 
