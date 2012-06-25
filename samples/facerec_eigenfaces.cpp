@@ -16,9 +16,10 @@
  *   See <http://www.opensource.org/licenses/bsd-license>
  */
 
-#include "opencv2/contrib/contrib.hpp"
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
+
+#include "facerec.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -125,19 +126,11 @@ int main(int argc, const char *argv[]) {
     //
     //      cv::createEigenFaceRecognizer(0, 123.0);
     //
-    Ptr<FaceRecognizer> model0 = createEigenFaceRecognizer();
-    model0->train(images, labels);
-    // save the model to eigenfaces_at.yaml
-    model0->save("eigenfaces_at.yml");
-    //
-    //
-    // Now create a new Eigenfaces Recognizer
-    //
-    Ptr<FaceRecognizer> model1 = createEigenFaceRecognizer();
-    model1->load("eigenfaces_at.yml");
+    Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
+    model->train(images, labels);
     // The following line predicts the label of a given
     // test image:
-    int predictedLabel = model1->predict(testSample);
+    int predictedLabel = model->predict(testSample);
     //
     // To get the confidence of a prediction call the model with:
     //
@@ -148,11 +141,11 @@ int main(int argc, const char *argv[]) {
     string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testLabel);
     cout << result_message << endl;
     // Here is how to get the eigenvalues of this Eigenfaces model:
-    Mat eigenvalues = model1->getMat("eigenvalues");
+    Mat eigenvalues = model->getMat("eigenvalues");
     // And we can do the same to display the Eigenvectors (read Eigenfaces):
-    Mat W = model1->getMat("eigenvectors");
+    Mat W = model->getMat("eigenvectors");
     // Get the sample mean from the training data
-    Mat mean = model1->getMat("mean");
+    Mat mean = model->getMat("mean");
     // Display or save:
     if(argc == 2) {
         imshow("mean", norm_0_255(mean.reshape(1, images[0].rows)));
