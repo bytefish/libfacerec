@@ -1,5 +1,5 @@
-Gender Classification with OpenCV (and libfacerec)
-==================================================
+Gender Classification with OpenCV 
+=================================
 
 .. contents:: Table of Contents
    :depth: 3
@@ -65,6 +65,53 @@ All images for this example were chosen to have a frontal face perspective. They
 
 .. image:: /img/tutorial/gender_classification/clooney_set.png
     :align: center
+
+Creating the CSV File
++++++++++++++++++++++
+
+You don't really want to create the CSV file by hand. I have prepared you a little Python script ``create_csv.py`` (you find it at ``src/create_csv.py`` coming with this tutorial) that automatically creates you a CSV file. If you have your images in hierarchie like this (``/basepath/<subject>/<image.ext>``):
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data/at$ tree
+    .
+    |-- s1
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    |-- s2
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    ...
+    |-- s40
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    
+    
+Then simply call create_csv.py with the path to the folder, just like this and you could save the output:
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data$ python create_csv.py
+    at/s13/2.pgm;0
+    at/s13/7.pgm;0
+    at/s13/6.pgm;0
+    at/s13/9.pgm;0
+    at/s13/5.pgm;0
+    at/s13/3.pgm;0
+    at/s13/4.pgm;0
+    at/s13/10.pgm;0
+    at/s13/8.pgm;0
+    at/s13/1.pgm;0
+    at/s17/2.pgm;1
+    at/s17/7.pgm;1
+    at/s17/6.pgm;1
+    at/s17/9.pgm;1
+    at/s17/5.pgm;1
+    at/s17/3.pgm;1
+    [...]
 
 Aligning Face Images
 ++++++++++++++++++++

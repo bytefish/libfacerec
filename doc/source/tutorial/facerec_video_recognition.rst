@@ -11,7 +11,7 @@ Whenever you hear the term *face recognition*, you instantly think of surveillan
 
 Here is what the final application looks like, as you can see I am only writing the id of the recognized person (by the way this id is Arnold Schwarzenegger for my data set) above the detected face. 
 
-.. image:: /img/tutorial/facerec_video.png
+.. image:: /img/tutorial/facerec_video/facerec_video.png
     :align: center
     :scale: 70%
 
@@ -111,7 +111,7 @@ Results
 Enjoy!
 
 Appendix
-========
+--------
 
 Creating the CSV File
 +++++++++++++++++++++
