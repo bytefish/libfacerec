@@ -74,6 +74,54 @@ Imagine I have extracted the files to ``D:/data/at`` and have downloaded the CSV
 .. code-block:: none
 
     facerec_demo.exe D:/data/at.txt
+    
+Creating the CSV File
++++++++++++++++++++++
+
+You don't really want to create the CSV file by hand. I have prepared you a little Python script ``create_csv.py`` (you find it at ``src/create_csv.py`` coming with this tutorial) that automatically creates you a CSV file. If you have your images in hierarchie like this (``/basepath/<subject>/<image.ext>``):
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data/at$ tree
+    .
+    |-- s1
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    |-- s2
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    ...
+    |-- s40
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    
+    
+Then simply call create_csv.py with the path to the folder, just like this and you could save the output:
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data$ python create_csv.py
+    at/s13/2.pgm;0
+    at/s13/7.pgm;0
+    at/s13/6.pgm;0
+    at/s13/9.pgm;0
+    at/s13/5.pgm;0
+    at/s13/3.pgm;0
+    at/s13/4.pgm;0
+    at/s13/10.pgm;0
+    at/s13/8.pgm;0
+    at/s13/1.pgm;0
+    at/s17/2.pgm;1
+    at/s17/7.pgm;1
+    at/s17/6.pgm;1
+    at/s17/9.pgm;1
+    at/s17/5.pgm;1
+    at/s17/3.pgm;1
+    [...]
+
 
 Eigenfaces
 ==========
@@ -152,25 +200,6 @@ For the first source code example, I'll go through it with you. I am first givin
 .. literalinclude:: /src/facerec_eigenfaces.cpp
    :language: cpp
    :linenos:
-
-
-
-
-.. code-block:: cpp
-
-    Mat norm_0_255(InputArray _src);
-
-.. code-block:: cpp
-
-    void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';');
-
-Learning a :ocv:class:`FaceRecognizer` ...
-    
-.. code-block:: cpp
-
-    Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
-    model->train(images, labels);
-
 
 I've used the jet colormap, so you can see how the grayscale values are distributed within the specific Eigenfaces. You can see, that the Eigenfaces do not only encode facial features, but also the illumination in the images (see the left light in Eigenface \#4, right light in Eigenfaces \#5):
 

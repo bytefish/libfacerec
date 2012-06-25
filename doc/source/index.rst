@@ -1,14 +1,19 @@
-########################
-libfacerec documentation
-########################
+Face Recognition with OpenCV
+#############################
 
-`libfacerec <http://www.github.com/bytefish/libfacerec>`_  is a face recognition library for the `OpenCV2 <http://www.opencv.org>`_ C++ API.
+Please issue any feature requests and/or bugs on the official OpenCV bug tracker at:
+
+  * http://code.opencv.org/projects/opencv/issues
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    
    facerec_api.rst
-   
+   facerec_tutorial.rst
+   tutorial/facerec_gender_classification.rst
+   tutorial/facerec_video_recognition.rst
+   tutorial/facerec_save_load.rst
+   colormaps.rst
    facerec_changelog.rst
    
    

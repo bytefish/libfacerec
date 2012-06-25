@@ -103,6 +103,8 @@ If you are in Linux, then simply start the demo by running:
 
 So if the haar-cascade is at ``C:/opencv/data/haarcascades/haarcascade_frontalface_default.xml``, the CSV file at ``C:/facerec/data/celebrities.txt`` and i have a webcam with deviceId ``1``, then I would call the demo with:
 
+.. code-block:: none
+
     facerec_video.exe C:/opencv/data/haarcascades/haarcascade_frontalface_default.xml C:/facerec/data/celebrities.txt 1
 
 Results
