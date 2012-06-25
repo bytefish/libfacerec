@@ -1,15 +1,25 @@
 Gender Classification with OpenCV (and libfacerec)
 ==================================================
 
+.. contents:: Table of Contents
+   :depth: 3
+
 Introduction
 ------------
 
-You want to decide wether a given face is *male* or *female*. In this tutorial you'll learn how to perform a gender classification with OpenCV and libfacerec. 
+A lot of people interested in face recognition, also want to know how to perform image classification tasks like:
+    
+    * Gender Classification (Gender Detection)
+    * Emotion Classification (Emotion Detection)
+    * Glasses Classification (Glasses Detection)
+    * ...
+
+This is has become very, very easy with the new :ocv:class:`FaceRecognizer` class. In this tutorial I'll show you how to perform gender classification with OpenCV on a set of face images. You'll also learn how to align your images to enhance the recognition results. If you want to do emotion classification instead of gender classification, all you need to do is to update is your training data and the configuration you pass to the demo.
 
 Prerequisites
--------------
+--------------
 
-First of all you'll need some sample images of male and female faces. I've decided to search faces of celebrities using `Google Images <http://www.google.com/images>`_ with the faces filter turned on (my god, they have great algorithms at `Google <http://www.google.com>`_!). My database has 8 male and 5 female subjects, each with 10 images. Here are the names, if you don't know who to search:
+For gender classification of faces, you'll need some images of male and female faces first. I've decided to search faces of celebrities using `Google Images <http://www.google.com/images>`_ with the faces filter turned on (my god, they have great algorithms at `Google <http://www.google.com>`_!). My database has 8 male and 5 female subjects, each with 10 images. Here are the names, if you don't know who to search:
 
 * Angelina Jolie
 * Arnold Schwarzenegger
@@ -25,150 +35,137 @@ First of all you'll need some sample images of male and female faces. I've decid
 * Patrick Stewart
 * Tom Cruise
 
-All images were chosen to have a frontal face perspective, were aligned at the eyes and have been cropped to equal size, just like this set of George Clooney images:
+Once you have acquired some images, you'll need to read them. In the demo I have decided to read the images from a very simple CSV file. Why? Because it's the simplest platform-independent approach I can think of. However, if you know a simpler solution please ping me about it. Basically all the CSV file needs to contain are lines composed of a ``filename`` followed by a ``;`` followed by the ``label`` (as *integer number*), making up a line like this: 
+
+.. code-block:: none
+
+    /path/to/image.ext;0
+    
+Let's dissect the line. ``/path/to/image.ext`` is the path to an image, probably something like this if you are in Windows: ``C:/faces/person0/image0.jpg``. Then there is the separator ``;`` and finally we assign a label ``0`` to the image. Think of the label as the subject (the person, the gender or whatever comes to your mind). In the gender classification scenario, the label is the gender the person has. I'll give the label ``0`` to *male* persons and the label ``1`` is for *female* subjects. So my CSV file looks like this:
+
+.. code-block:: none
+
+  /home/philipp/facerec/data/gender/male/keanu_reeves/keanu_reeves_01.jpg;0
+  /home/philipp/facerec/data/gender/male/keanu_reeves/keanu_reeves_02.jpg;0
+  /home/philipp/facerec/data/gender/male/keanu_reeves/keanu_reeves_03.jpg;0
+  ...
+  /home/philipp/facerec/data/gender/female/katy_perry/katy_perry_01.jpg;1
+  /home/philipp/facerec/data/gender/female/katy_perry/katy_perry_02.jpg;1
+  /home/philipp/facerec/data/gender/female/katy_perry/katy_perry_03.jpg;1
+  ...
+  /home/philipp/facerec/data/gender/male/brad_pitt/brad_pitt_01.jpg;0
+  /home/philipp/facerec/data/gender/male/brad_pitt/brad_pitt_02.jpg;0
+  /home/philipp/facerec/data/gender/male/brad_pitt/brad_pitt_03.jpg;0
+  ...
+  /home/philipp/facerec/data/gender/female/emma_watson/emma_watson_08.jpg;1
+  /home/philipp/facerec/data/gender/female/emma_watson/emma_watson_02.jpg;1
+  /home/philipp/facerec/data/gender/female/emma_watson/emma_watson_03.jpg;1
+
+All images for this example were chosen to have a frontal face perspective. They have been cropped, scaled and rotated to be aligned at the eyes, just like this set of George Clooney images:
 
 .. image:: /img/tutorial/gender_classification/clooney.png
+    :align: center
 
-Choice of Algorithm
--------------------
+Aligning Face Images
+++++++++++++++++++++
 
-If we want to decide wether a person is *male* or *female*, we must use a class-specific method to learn the discriminative features of both classes. The Eigenfaces method is based on the Principal ComponentAnalysis, an unsupervised statistical model not suitable for this task. The Fisherfaces method yields a class-specific linear projection, so it is much better suited for a gender classification task. A detailed writeup on gender classification with the Fisherfaces method is given at `<http://www.bytefish.de/blog/gender_classification>`_. For a subject-dependent cross-validation the Fisherfaces method achieves a 99% recognition rate on my preprocessed dataset. A subject-dependent cross-validation simply means, images of the subject under test were also included in the training set (different images of the same person). 
+An accurate alignment of your image data is especially important in tasks like emotion detection, were you need as much detail as possible. Believe me... You don't want to do this by hand. So I've prepared you a tiny Python script. The code is really easy to use. To scale, rotate and crop the face image you just need to call *CropFace(image, eye_left, eye_right, offset_pct, dest_sz)*, where:
 
-Have a look at the way a cross-validation splits a Dataset *D* with 3 classes (*c0*,*c1*,*c2*) each with 3 observations (*o0*,*o1*,*o2*) into a (non-overlapping) Test Subset *A* and Training Subset *B*: 
+* *eye_left* is the position of the left eye
+* *eye_right* is the position of the right eye
+* *offset_pct* is the percent of the image you want to keep next to the eyes (horizontal, vertical direction)
+* *dest_sz* is the size of the output image
+
+If you are using the same *offset_pct* and *dest_sz* for your images, they are all aligned at the eyes.
+
+.. literalinclude:: /src/crop_face.py
+   :language: python
+   :linenos:
+
+Imagine we are given `this photo of Arnold Schwarzenegger <http://en.wikipedia.org/wiki/File:Arnold_Schwarzenegger_edit%28ws%29.jpg>`_, which is under a Public Domain license. The (x,y)-position of the eyes is approximately *(252,364)* for the left and *(420,366)* for the right eye. Now you only need to define the horizontal offset, vertical offset and the size your scaled, rotated & cropped face should have. 
+
+Here are some examples: 
+
++---------------------------------+--------------------------------------------------------------------------+
+| Configuration                   | Cropped, Scaled, Rotated Face                                            |
++=================================+==========================================================================+
+| 0.1 (10%), 0.1 (10%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_10_10_200_200.jpg   |
++---------------------------------+--------------------------------------------------------------------------+
+| 0.2 (20%), 0.2 (20%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_20_20_200_200.jpg   |
++---------------------------------+--------------------------------------------------------------------------+
+| 0.3 (30%), 0.3 (30%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_30_30_200_200.jpg   |
++---------------------------------+--------------------------------------------------------------------------+
+| 0.2 (20%), 0.2 (20%), (70,70)   | .. image:: /img/tutorial/gender_classification/arnie_20_20_70_70.jpg     |
++---------------------------------+--------------------------------------------------------------------------+
+
+Fisherfaces for Gender Classification
+--------------------------------------
+
+If you want to decide wether a person is *male* or *female*, you have to learn the discriminative features of both classes. The Eigenfaces method is based on the Principal Component Analysis, which is an unsupervised statistical model and not suitable for this task. Please see the Face Recognition tutorial for insights into the algorithms. The Fisherfaces instead yields a class-specific linear projection, so it is much better suited for the gender classification task. `http://www.bytefish.de/blog/gender_classification <http://www.bytefish.de/blog/gender_classification>`_  shows the recongition rate of the Fisherfaces method for gender classification.
+
+The Fisherfaces method achieves a 98% recognition rate in a subject-independent cross-validation. A subject-independent cross-validation means *images of the person under test are never used for learning the model*. And could you believe it: you can simply use the facerec_fisherfaces demo, that's inlcuded in OpenCV. 
+
+Fisherfaces in OpenCV
+---------------------
+
+The source code for the demo is available in the ``samples/cpp`` folder of your OpenCV installation. If you have built OpenCV with samples turned on, chances are good you have the executable already.
+
+.. literalinclude:: /src/facerec_fisherfaces.cpp
+   :language: cpp
+   :linenos:
+
+Running the Demo
+----------------
+
+If you are in Windows, then simply start the demo by running (from command line):
 
 .. code-block:: none
 
-      o0 o1 o2        o0 o1 o2        o0 o1 o2  
-  c0 | A  B  B |  c0 | B  A  B |  c0 | B  B  A |
-  c1 | A  B  B |  c1 | B  A  B |  c1 | B  B  A |
-  c2 | A  B  B |  c2 | B  A  B |  c2 | B  B  A |
-
-Allthough the folds are not overlapping (training data is *never* used for testing) the training set contains images of persons we want to know the gender from. So the prediction may depend on the subject and the method finds the closest match to a persons image, but not the gender. What we aim for is a split by class:
+    facerec_fisherfaces.exe C:/path/to/your/csv.ext
+    
+If you are in Linux, then simply start the demo by running:
 
 .. code-block:: none
 
-      o0 o1 o2        o0 o1 o2        o0 o1 o2  
-  c0 | A  A  A |  c0 | B  B  B |  c0 | B  B  B |
-  c1 | B  B  B |  c1 | A  A  A |  c1 | B  B  B |
-  c2 | B  B  B |  c2 | B  B  B |  c2 | A  A  A |
+    ./facerec_fisherfaces /path/to/your/csv.ext
 
-With this strategy the cross-validation becomes subject-independent, because *images of a subject are never used for learning the model*. The Fisherfaces Method achieves a 98% recognition rate for a subject-independent cross-validation, so it works great... as long as your data is correctly aligned.
-
-gender.txt
-----------
-
-In the sample code I will read filenames to images from a CSV file *gender.txt*, which looks like this for my sample images:
+If you don't want to display the images, but save them, then pass the desired path to the demo. It works like this in Windows:
 
 .. code-block:: none
 
-  /home/philipp/facerec/data/gender/male/crop_keanu_reeves/keanu_reeves_01.jpg;0
-  /home/philipp/facerec/data/gender/male/crop_keanu_reeves/keanu_reeves_02.jpg;0
-  /home/philipp/facerec/data/gender/male/crop_keanu_reeves/keanu_reeves_03.jpg;0
-  ...
-  /home/philipp/facerec/data/gender/female/crop_katy_perry/katy_perry_01.jpg;1
-  /home/philipp/facerec/data/gender/female/crop_katy_perry/katy_perry_02.jpg;1
-  /home/philipp/facerec/data/gender/female/crop_katy_perry/katy_perry_03.jpg;1
-  ...
-  /home/philipp/facerec/data/gender/male/crop_brad_pitt/brad_pitt_01.jpg;0
-  /home/philipp/facerec/data/gender/male/crop_brad_pitt/brad_pitt_02.jpg;0
-  /home/philipp/facerec/data/gender/male/crop_brad_pitt/brad_pitt_03.jpg;0
-  ...
-  /home/philipp/facerec/data/gender/female/crop_emma_watson/emma_watson_08.jpg;1
-  /home/philipp/facerec/data/gender/female/crop_emma_watson/emma_watson_02.jpg;1
-  /home/philipp/facerec/data/gender/female/crop_emma_watson/emma_watson_03.jpg;1
+    facerec_fisherfaces.exe C:/path/to/your/csv.ext C:/path/to/store/results/at
 
+And in Linux:
 
-You see were this leads to: label ``0`` is for class *male* and label ``1`` is for *female* subjects.
+.. code-block:: none
 
-Source Code
------------
+    ./facerec_fisherfaces /path/to/your/csv.ext /path/to/store/results/at
 
-.. code-block:: cpp
-
-  #include "opencv2/opencv.hpp"
-  #include "opencv2/highgui/highgui.hpp"
-
-  #include <iostream>
-  #include <fstream>
-  #include <sstream>
-
-  #include "facerec.hpp"
-
-  using namespace cv;
-  using namespace std;
-
-  void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';') {
-      std::ifstream file(filename.c_str(), ifstream::in);
-      if (!file)
-          throw std::exception();
-      string line, path, classlabel;
-      while (getline(file, line)) {
-          stringstream liness(line);
-          getline(liness, path, separator);
-          getline(liness, classlabel);
-          images.push_back(imread(path,0));
-          labels.push_back(atoi(classlabel.c_str()));
-      }
-  }
-
-  int main(int argc, const char *argv[]) {
-      // check for command line arguments
-      if (argc != 2) {
-          cout << "usage: " << argv[0] << " <csv.ext>" << endl;
-          exit(1);
-      }
-      // path to your CSV
-      string fn_csv = string(argv[1]);
-      // images and corresponding labels
-      vector<Mat> images;
-      vector<int> labels;
-      // read in the data
-      try {
-          read_csv(fn_csv, images, labels);
-      } catch (exception& e) {
-          cerr << "Error opening file \"" << fn_csv << "\"." << endl;
-          exit(1);
-      }
-      // get width and height
-      int width = images[0].cols;
-      int height = images[0].rows;
-      // get test instances
-      Mat testSample = images[images.size() - 1];
-      int testLabel = labels[labels.size() - 1];
-      // ... and delete last element
-      images.pop_back();
-      labels.pop_back();
-      // build the Fisherfaces model
-      Fisherfaces model(images, labels);
-      // test model
-      int predicted = model.predict(testSample);
-      cout << "predicted class = " << predicted << endl;
-      cout << "actual class = " << testLabel << endl;
-      // get the eigenvectors
-      Mat W = model.eigenvectors();
-      // show first 10 fisherfaces
-      for (int i = 0; i < min(10, W.cols); i++) {
-          // get eigenvector #i
-          Mat ev = W.col(i).clone();
-          // reshape to original site
-          Mat grayscale = toGrayscale(ev.reshape(1, height));
-          // show image (with Jet colormap)
-          imshow(num2str(i), grayscale, colormap::Jet());
-      }
-      waitKey(0);
-      return 0;
-  }
-  
 Results
 -------
 
-If you run the program with your *gender.txt*, you'll see the Fisherface that best separates male and female images:
+If you run the program with your CSV file as parameter, you'll see the Fisherface that separates between male and female images:
 
 .. image:: /img/tutorial/gender_classification/fisherface_0.png
 
-And the prediction should yield the correct gender:
+The demo also shows the average face of the male and female training images you have passed:
+
+.. image:: /img/tutorial/gender_classification/mean.png
+
+Moreover it the demo should yield the prediction for the correct gender:
 
 .. code-block:: none
 
-  predicted class = 1
-  actual class = 1
+    Predicted class = 1 / Actual class = 1.
+
+And for advanced users I have also shown the Eigenvalue for the Fisherface:
+
+.. code-block:: none
+
+    Eigenvalue #0 = 152.49493
+
+And the Fisherfaces reconstruction:
+
+.. image:: /img/tutorial/gender_classification/fisherface_reconstruction_0.png
+  
+I hope this gives you an idea how to approach gender classification and the other image classification tasks. 

@@ -36,7 +36,7 @@ FaceRecognizer
 .. ocv:class:: FaceRecognizer
 
 All face recognition models in OpenCV are derived from the abstract base class :ocv:class:`FaceRecognizer`, which provides 
-a unified access to all face recongition algorithms in OpenCV.
+a unified access to all face recongition algorithms in OpenCV. ::
 
   class FaceRecognizer : public Algorithm
   {
@@ -67,9 +67,9 @@ a unified access to all face recongition algorithms in OpenCV.
   };
 
 
-I'll go a bit more into detail explaining :ocv:class:`FaceRecognizer`, because it doesn't look like a powerful interface at first sight. But: Every :ocv:class:`FaceRecognizer` is a :ocv:class:`Algorithm`, so you can easily get/set all model internals (if allowed by the implementation). :ocv:class:`Algorithm` is a relatively new OpenCV concept, which is available since the 2.4 release. I suggest you take a look at its description. 
+I'll go a bit more into detail explaining :ocv:class:`FaceRecognizer`, because it doesn't look like a powerful interface at first sight. But: Every :ocv:class:`FaceRecognizer` is an :ocv:class:`Algorithm`, so you can easily get/set all model internals (if allowed by the implementation). :ocv:class:`Algorithm` is a relatively new OpenCV concept, which is available since the 2.4 release. I suggest you take a look at its description. 
 
-Quoting from the :ocv:class:`Algorithm` description. :ocv:class:`Algorithm` provides the following features for all derived classes:
+:ocv:class:`Algorithm` provides the following features for all derived classes:
 
     * So called “virtual constructor”. That is, each Algorithm derivative is registered at program start and you can get the list of registered algorithms and create instance of a particular algorithm by its name (see :ocv:func:`Algorithm::create`). If you plan to add your own algorithms, it is good practice to add a unique prefix to your algorithms to distinguish them from other algorithms.
 
@@ -77,13 +77,13 @@ Quoting from the :ocv:class:`Algorithm` description. :ocv:class:`Algorithm` prov
 
     * Reading and writing parameters from/to XML or YAML files. Every Algorithm derivative can store all its parameters and then read them back. There is no need to re-implement it each time.
 
-Every :ocv:class:`FaceRecognizer` supports the: 
+Moreover every :ocv:class:`FaceRecognizer` supports the: 
 
-    * **Training** of a :ocv:class:`FaceRecognizer` with :ocv:func:`FaceRecognizer::train` on a given set of images (your face database!). The images should be given as a ``std::vector<Mat>``, so the model can 
+    * **Training** of a :ocv:class:`FaceRecognizer` with :ocv:func:`FaceRecognizer::train` on a given set of images (your face database!).
 
-    * **Prediction** of a given sample image, that means a face. The image is given as a :ocv:class:`Mat`
+    * **Prediction** of a given sample image, that means a face. The image is given as a :ocv:class:`Mat`.
 
-    * **Loading/Saving** the model state from/to a given XML or YAML 
+    * **Loading/Saving** the model state from/to a given XML or YAML.
 
 Sometimes you run into the situation, when you want to apply a threshold on the prediction. A common scenario in face recognition is to tell, wether a face belongs to the training dataset or if it is unknown. You might wonder, why there's no public API in :ocv:class:`FaceRecognizer` to set the threshold for the prediction, but rest assured: It's supported. It just means there's no generic way in an abstract class to provide an interface for setting/getting the thresholds of *every possible* :ocv:class:`FaceRecognizer` algorithm. The appropriate place to set the thresholds is in the constructor of the specific :ocv:class:`FaceRecognizer` and since every :ocv:class:`FaceRecognizer` is a :ocv:class:`Algorithm` (see above), you can get/set the thresholds at runtime!
 

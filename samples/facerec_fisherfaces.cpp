@@ -162,7 +162,7 @@ int main(int argc, const char *argv[]) {
         // Show the image & apply a Bone colormap for better sensing.
         Mat cgrayscale;
         applyColorMap(grayscale, cgrayscale, COLORMAP_JET);
-        // Display or save:
+        // Display or save:error
         if(argc == 2) {
             imshow(format("fisherface_%d", i), cgrayscale);
         } else {

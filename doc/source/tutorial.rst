@@ -147,9 +147,30 @@ The resulting eigenvectors are orthogonal, to get orthonormal eigenvectors they 
 Eigenfaces in OpenCV
 --------------------
 
-.. literalinclude:: /samples/facerec_eigenfaces.cpp
+For the first source code example, I'll go through it with you. I am first giving you the whole source code listing, and after this we'll look at the most important lines in detail. Please note: every source code listing is commented in detail, so you should have no problems following it.
+
+.. literalinclude:: /src/facerec_eigenfaces.cpp
    :language: cpp
    :linenos:
+
+
+
+
+.. code-block:: cpp
+
+    Mat norm_0_255(InputArray _src);
+
+.. code-block:: cpp
+
+    void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';');
+
+Learning a :ocv:class:`FaceRecognizer` ...
+    
+.. code-block:: cpp
+
+    Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
+    model->train(images, labels);
+
 
 I've used the jet colormap, so you can see how the grayscale values are distributed within the specific Eigenfaces. You can see, that the Eigenfaces do not only encode facial features, but also the illumination in the images (see the left light in Eigenface \#4, right light in Eigenfaces \#5):
 
@@ -264,7 +285,7 @@ The transformation matrix :math:`W`, that projects a sample into the :math:`(c-1
 Fisherfaces in OpenCV
 ---------------------
 
-.. literalinclude:: /samples/facerec_fisherfaces.cpp
+.. literalinclude:: /src/facerec_fisherfaces.cpp
    :language: cpp
    :linenos:
 
@@ -385,7 +406,7 @@ So what's left to do is how to incorporate the spatial information in the face r
 Local Binary Patterns Histograms in OpenCV
 ------------------------------------------
 
-.. literalinclude:: /samples/facerec_lbph.cpp
+.. literalinclude:: /src/facerec_lbph.cpp
    :language: cpp
    :linenos:
 
@@ -469,6 +490,6 @@ Appendix
 CSV for the AT&T Facedatabase
 ------------------------------
 
-.. literalinclude:: /samples/at.txt
+.. literalinclude:: /etc/at.txt
    :language: none
    :linenos:
