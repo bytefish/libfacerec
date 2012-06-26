@@ -66,84 +66,7 @@ All images for this example were chosen to have a frontal face perspective. They
 .. image:: /img/tutorial/gender_classification/clooney_set.png
     :align: center
 
-Creating the CSV File
-+++++++++++++++++++++
-
-You don't really want to create the CSV file by hand. I have prepared you a little Python script ``create_csv.py`` (you find it at ``src/create_csv.py`` coming with this tutorial) that automatically creates you a CSV file. If you have your images in hierarchie like this (``/basepath/<subject>/<image.ext>``):
-
-.. code-block:: none
-
-    philipp@mango:~/facerec/data/at$ tree
-    .
-    |-- s1
-    |   |-- 1.pgm
-    |   |-- ...
-    |   |-- 10.pgm
-    |-- s2
-    |   |-- 1.pgm
-    |   |-- ...
-    |   |-- 10.pgm
-    ...
-    |-- s40
-    |   |-- 1.pgm
-    |   |-- ...
-    |   |-- 10.pgm
-    
-    
-Then simply call create_csv.py with the path to the folder, just like this and you could save the output:
-
-.. code-block:: none
-
-    philipp@mango:~/facerec/data$ python create_csv.py
-    at/s13/2.pgm;0
-    at/s13/7.pgm;0
-    at/s13/6.pgm;0
-    at/s13/9.pgm;0
-    at/s13/5.pgm;0
-    at/s13/3.pgm;0
-    at/s13/4.pgm;0
-    at/s13/10.pgm;0
-    at/s13/8.pgm;0
-    at/s13/1.pgm;0
-    at/s17/2.pgm;1
-    at/s17/7.pgm;1
-    at/s17/6.pgm;1
-    at/s17/9.pgm;1
-    at/s17/5.pgm;1
-    at/s17/3.pgm;1
-    [...]
-
-Aligning Face Images
-++++++++++++++++++++
-
-An accurate alignment of your image data is especially important in tasks like emotion detection, were you need as much detail as possible. Believe me... You don't want to do this by hand. So I've prepared you a tiny Python script. The code is really easy to use. To scale, rotate and crop the face image you just need to call *CropFace(image, eye_left, eye_right, offset_pct, dest_sz)*, where:
-
-* *eye_left* is the position of the left eye
-* *eye_right* is the position of the right eye
-* *offset_pct* is the percent of the image you want to keep next to the eyes (horizontal, vertical direction)
-* *dest_sz* is the size of the output image
-
-If you are using the same *offset_pct* and *dest_sz* for your images, they are all aligned at the eyes.
-
-.. literalinclude:: /src/crop_face.py
-   :language: python
-   :linenos:
-
-Imagine we are given `this photo of Arnold Schwarzenegger <http://en.wikipedia.org/wiki/File:Arnold_Schwarzenegger_edit%28ws%29.jpg>`_, which is under a Public Domain license. The (x,y)-position of the eyes is approximately *(252,364)* for the left and *(420,366)* for the right eye. Now you only need to define the horizontal offset, vertical offset and the size your scaled, rotated & cropped face should have. 
-
-Here are some examples: 
-
-+---------------------------------+--------------------------------------------------------------------------+
-| Configuration                   | Cropped, Scaled, Rotated Face                                            |
-+=================================+==========================================================================+
-| 0.1 (10%), 0.1 (10%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_10_10_200_200.jpg   |
-+---------------------------------+--------------------------------------------------------------------------+
-| 0.2 (20%), 0.2 (20%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_20_20_200_200.jpg   |
-+---------------------------------+--------------------------------------------------------------------------+
-| 0.3 (30%), 0.3 (30%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_30_30_200_200.jpg   |
-+---------------------------------+--------------------------------------------------------------------------+
-| 0.2 (20%), 0.2 (20%), (70,70)   | .. image:: /img/tutorial/gender_classification/arnie_20_20_70_70.jpg     |
-+---------------------------------+--------------------------------------------------------------------------+
+You really don't want to create the CSV file by hand. And you really don't want scale, rotate & translate the images manually. I have prepared you two Python scripts ``create_csv.py`` and ``crop_face.py``, you can find them in the ``src`` folder coming with this documentation. You'll see how to use them in the :ref:`appendix`. 
 
 Fisherfaces for Gender Classification
 --------------------------------------
@@ -216,3 +139,95 @@ And the Fisherfaces reconstruction:
 .. image:: /img/tutorial/gender_classification/fisherface_reconstruction_0.png
   
 I hope this gives you an idea how to approach gender classification and the other image classification tasks. 
+
+.. _appendix:
+
+Appendix
+--------
+
+Creating the CSV File
++++++++++++++++++++++
+
+You don't really want to create the CSV file by hand. I have prepared you a little Python script ``create_csv.py`` (you find it at ``/src/create_csv.py`` coming with this tutorial) that automatically creates you a CSV file. If you have your images in hierarchie like this (``/basepath/<subject>/<image.ext>``):
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data/at$ tree
+    .
+    |-- s1
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    |-- s2
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    ...
+    |-- s40
+    |   |-- 1.pgm
+    |   |-- ...
+    |   |-- 10.pgm
+    
+    
+Then simply call ``create_csv.py`` with the path to the folder, just like this and you could save the output:
+
+.. code-block:: none
+
+    philipp@mango:~/facerec/data$ python create_csv.py
+    at/s13/2.pgm;0
+    at/s13/7.pgm;0
+    at/s13/6.pgm;0
+    at/s13/9.pgm;0
+    at/s13/5.pgm;0
+    at/s13/3.pgm;0
+    at/s13/4.pgm;0
+    at/s13/10.pgm;0
+    at/s13/8.pgm;0
+    at/s13/1.pgm;0
+    at/s17/2.pgm;1
+    at/s17/7.pgm;1
+    at/s17/6.pgm;1
+    at/s17/9.pgm;1
+    at/s17/5.pgm;1
+    at/s17/3.pgm;1
+    [...]
+
+Here is the script, if you can't find it:
+
+.. literalinclude:: /src/create_csv.py
+   :language: python
+   :linenos:
+   
+Aligning Face Images
+++++++++++++++++++++
+
+An accurate alignment of your image data is especially important in tasks like emotion detection, were you need as much detail as possible. Believe me... You don't want to do this by hand. So I've prepared you a tiny Python script. The code is really easy to use. To scale, rotate and crop the face image you just need to call *CropFace(image, eye_left, eye_right, offset_pct, dest_sz)*, where:
+
+* *eye_left* is the position of the left eye
+* *eye_right* is the position of the right eye
+* *offset_pct* is the percent of the image you want to keep next to the eyes (horizontal, vertical direction)
+* *dest_sz* is the size of the output image
+
+If you are using the same *offset_pct* and *dest_sz* for your images, they are all aligned at the eyes.
+
+.. literalinclude:: /src/crop_face.py
+   :language: python
+   :linenos:
+
+Imagine we are given `this photo of Arnold Schwarzenegger <http://en.wikipedia.org/wiki/File:Arnold_Schwarzenegger_edit%28ws%29.jpg>`_, which is under a Public Domain license. The (x,y)-position of the eyes is approximately *(252,364)* for the left and *(420,366)* for the right eye. Now you only need to define the horizontal offset, vertical offset and the size your scaled, rotated & cropped face should have. 
+
+Here are some examples: 
+
++---------------------------------+--------------------------------------------------------------------------+
+| Configuration                   | Cropped, Scaled, Rotated Face                                            |
++=================================+==========================================================================+
+| 0.1 (10%), 0.1 (10%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_10_10_200_200.jpg   |
++---------------------------------+--------------------------------------------------------------------------+
+| 0.2 (20%), 0.2 (20%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_20_20_200_200.jpg   |
++---------------------------------+--------------------------------------------------------------------------+
+| 0.3 (30%), 0.3 (30%), (200,200) | .. image:: /img/tutorial/gender_classification/arnie_30_30_200_200.jpg   |
++---------------------------------+--------------------------------------------------------------------------+
+| 0.2 (20%), 0.2 (20%), (70,70)   | .. image:: /img/tutorial/gender_classification/arnie_20_20_70_70.jpg     |
++---------------------------------+--------------------------------------------------------------------------+
+
+ 

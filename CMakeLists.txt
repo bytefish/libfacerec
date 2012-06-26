@@ -65,7 +65,7 @@ if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/samples AND ENABLE_SAMPLES)
 	
 	add_executable(facerec_fisherfaces samples/facerec_fisherfaces.cpp)
 	target_link_libraries(facerec_fisherfaces ${the_library} opencv_core opencv_imgproc opencv_highgui)
-	
+
 	add_executable(facerec_lbph samples/facerec_lbph.cpp)
 	target_link_libraries(facerec_lbph ${the_library} opencv_core opencv_imgproc opencv_highgui)
 endif()
