@@ -1,6 +1,6 @@
 # Description
 
-[libfacerec](http://www.github.com/bytefish/libfacerec) is a library for face recognition in OpenCV. It has been merged into OpenCV 2.4 (contrib module) and both implementations are synchronized. So if you are in (a recent) OpenCV 2.4: There is no need to compile libfacerec yourself, you have everything to get started. Note: Make sure to work on a later OpenCV revision, if you want to be compatible with the latest libfacerec version.
+[libfacerec](http://www.github.com/bytefish/libfacerec) is a library for face recognition in OpenCV. It has been merged into OpenCV 2.4 (contrib module) and both implementations are synchronized. So if you are in (a recent) OpenCV 2.4: There is no need to compile libfacerec yourself, you have everything to get started. Note: Make sure to work on a recent OpenCV revision, if you want to be compatible with the very latest libfacerec version.
 
 The library comes with an extensive documentation, which can be found at
 
