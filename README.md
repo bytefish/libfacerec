@@ -5,8 +5,8 @@
 <table>
 <tr>
     <td><img src="https://github.com/bytefish/libfacerec/raw/master/doc/source/img/eigenfaces_opencv.png" width="200"></td>
-    <td><img src="https://github.com/bytefish/libfacerec/blob/master/doc/source/img/fisherface_reconstruction_opencv.png" width="200"></td>
-    <td><img src="https://github.com/bytefish/libfacerec/blob/master/doc/source/img/tutorial/facerec_video/facerec_video.png" width="200"></td>
+    <td><img src="https://github.com/bytefish/libfacerec/raw/master/doc/source/img/fisherface_reconstruction_opencv.png" width="200"></td>
+    <td><img src="https://github.com/bytefish/libfacerec/raw/master/doc/source/img/tutorial/facerec_video/facerec_video.png" width="200"></td>
 </tr>
 </table>
 
