@@ -96,6 +96,10 @@ public:
     // in labels.
     void train(InputArray src, InputArray labels);
 
+    // Adds new images to this
+    // in labels.
+    void add(InputArray src, InputArray labels);
+
     // Predicts the label of a query image in src.
     int predict(InputArray src) const;
 
@@ -299,11 +303,13 @@ void Eigenfaces::train(InputArray _src, InputArray _local_labels) {
         string error_message = format("The number of samples (src) must equal the number of labels (labels)! len(src)=%d, len(labels)=%d.", n, labels.total());
         CV_Error(CV_StsBadArg, error_message);
     }
+    // clear existing model data
+    _labels.release();
+    _projections.clear();
     // clip number of components to be valid
     if((_num_components <= 0) || (_num_components > n))
         _num_components = n;
     // perform the PCA
-
     PCA pca(data, Mat(), CV_PCA_DATA_AS_ROW, _num_components);
     // copy the PCA results
     _mean = pca.mean.reshape(1,1); // store the mean vector
@@ -430,7 +436,10 @@ void Fisherfaces::train(InputArray src, InputArray _lbls) {
         string error_message = format("Expected the labels in a matrix with one row or column! Given dimensions are rows=%s, cols=%d.", labels.rows, labels.cols);
        CV_Error(CV_StsBadArg, error_message);
     }
-    // Get the number of unique classes (provide a cv::Mat overloaded version?)
+    // clear existing model data
+    _labels.release();
+    _projections.clear();
+    // get the number of unique classes (provide a cv::Mat overloaded version?)
     vector<int> ll;
     labels.copyTo(ll);
     int C = (int) remove_dups(ll).size();
@@ -528,11 +537,16 @@ void LBPH::train(InputArray _src, InputArray _lbls) {
     // get the vector of matrices
     vector<Mat> src;
     _src.getMatVector(src);
-    // turn the label matrix into a vector
-    _lbls.getMat().copyTo(_labels);
-    if(_labels.total() != src.size()) {
+    // get the label matrix
+    Mat labels = _lbls.getMat();
+    // check if data is well- aligned
+    if(labels.total() != src.size()) {
         string error_message = format("The number of samples (src) must equal the number of labels (labels). Was len(samples)=%d, len(labels)=%d.", src.size(), _labels.total());
         CV_Error(CV_StsBadArg, error_message);
+    }
+    // append labels to _labels matrix
+    for(int labelIdx = 0; labelIdx < labels.total(); labelIdx++) {
+        _labels.push_back(labels.at<int>(labelIdx));
     }
     // store the spatial histograms of the original data
     for(int sampleIdx = 0; sampleIdx < src.size(); sampleIdx++) {
@@ -551,6 +565,11 @@ void LBPH::train(InputArray _src, InputArray _lbls) {
 }
 
 void LBPH::predict(InputArray _src, int &minClass, double &minDist) const {
+    if(_histograms.empty()) {
+        // throw error if no data (or simply return -1?)
+        string error_message = "This LBPH model is not computed yet. Did you call the train method?";
+        CV_Error(CV_StsBadArg, error_message);
+    }
     Mat src = _src.getMat();
     // get the spatial histogram from input image
     Mat lbp_image = elbp(src, _radius, _neighbors);
