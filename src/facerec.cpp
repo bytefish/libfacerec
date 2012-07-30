@@ -188,6 +188,11 @@ private:
     vector<Mat> _histograms;
     Mat _labels;
 
+    // Computes a LBPH model with images in src and
+    // corresponding labels in labels, possibly preserving
+    // old model data.
+    void train(InputArrayOfArrays src, InputArray labels, bool preserveData);
+
 public:
     using FaceRecognizer::save;
     using FaceRecognizer::load;
@@ -211,7 +216,7 @@ public:
     //
     // (radius=1), (neighbors=8) are used in the local binary patterns creation.
     // (grid_x=8), (grid_y=8) controls the grid size of the spatial histograms.
-    LBPH(InputArray src,
+    LBPH(InputArrayOfArrays src,
             InputArray labels,
             int radius_=1, int neighbors_=8,
             int gridx=8, int gridy=8,
@@ -228,7 +233,11 @@ public:
 
     // Computes a LBPH model with images in src and
     // corresponding labels in labels.
-    void train(InputArray src, InputArray labels);
+    void train(InputArrayOfArrays src, InputArray labels);
+
+    // Updates this LBPH model with images in src and
+    // corresponding labels in labels.
+    void update(InputArrayOfArrays src, InputArray labels);
 
     // Predicts the label of a query image in src.
     int predict(InputArray src) const;
@@ -255,6 +264,11 @@ public:
 //------------------------------------------------------------------------------
 // FaceRecognizer
 //------------------------------------------------------------------------------
+void FaceRecognizer::update(InputArrayOfArrays, InputArray) {
+    string error_msg = format("This FaceRecognizer (%s) does not support updating, you have to use FaceRecognizer::train to update it.", this->name().c_str());
+    CV_Error(CV_StsNotImplemented, error_msg);
+}
+
 void FaceRecognizer::save(const string& filename) const {
     FileStorage fs(filename, FileStorage::WRITE);
     if (!fs.isOpened())
@@ -522,34 +536,51 @@ void LBPH::save(FileStorage& fs) const {
     fs << "labels" << _labels;
 }
 
-void LBPH::train(InputArray _src, InputArray _lbls) {
-    if(_src.kind() != _InputArray::STD_VECTOR_MAT && _src.kind() != _InputArray::STD_VECTOR_VECTOR) {
+void LBPH::train(InputArrayOfArrays _in_src, InputArray _in_labels) {
+    this->train(_in_src, _in_labels, false);
+}
+
+void LBPH::update(InputArrayOfArrays _in_src, InputArray _in_labels) {
+    // got no data, just return
+    if(_in_src.total() == 0)
+        return;
+    // train
+    this->train(_in_src, _in_labels, true);
+}
+
+void LBPH::train(InputArrayOfArrays _in_src, InputArray _in_labels, bool preserveData) {
+    if(_in_src.kind() != _InputArray::STD_VECTOR_MAT && _in_src.kind() != _InputArray::STD_VECTOR_VECTOR) {
         string error_message = "The images are expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).";
         CV_Error(CV_StsBadArg, error_message);
     }
-    if(_src.total() == 0) {
+    if(_in_src.total() == 0) {
         string error_message = format("Empty training data was given. You'll need more than one sample to learn a model.");
         CV_Error(CV_StsUnsupportedFormat, error_message);
-    } else if(_lbls.getMat().type() != CV_32SC1) {
-        string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _lbls.type());
+    } else if(_in_labels.getMat().type() != CV_32SC1) {
+        string error_message = format("Labels must be given as integer (CV_32SC1). Expected %d, but was %d.", CV_32SC1, _in_labels.type());
         CV_Error(CV_StsUnsupportedFormat, error_message);
     }
     // get the vector of matrices
     vector<Mat> src;
-    _src.getMatVector(src);
+    _in_src.getMatVector(src);
     // get the label matrix
-    Mat labels = _lbls.getMat();
+    Mat labels = _in_labels.getMat();
     // check if data is well- aligned
     if(labels.total() != src.size()) {
         string error_message = format("The number of samples (src) must equal the number of labels (labels). Was len(samples)=%d, len(labels)=%d.", src.size(), _labels.total());
         CV_Error(CV_StsBadArg, error_message);
     }
+    // if this model should be trained without preserving old data, delete old model data
+    if(!preserveData) {
+        _labels.release();
+        _histograms.clear();
+    }
     // append labels to _labels matrix
-    for(int labelIdx = 0; labelIdx < labels.total(); labelIdx++) {
-        _labels.push_back(labels.at<int>(labelIdx));
+    for(size_t labelIdx = 0; labelIdx < labels.total(); labelIdx++) {
+        _labels.push_back(labels.at<int>((int)labelIdx));
     }
     // store the spatial histograms of the original data
-    for(int sampleIdx = 0; sampleIdx < src.size(); sampleIdx++) {
+    for(size_t sampleIdx = 0; sampleIdx < src.size(); sampleIdx++) {
         // calculate lbp image
         Mat lbp_image = elbp(src[sampleIdx], _radius, _neighbors);
         // get spatial histogram from this lbp image

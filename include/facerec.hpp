@@ -80,6 +80,9 @@ public:
     // Trains a FaceRecognizer.
     virtual void train(InputArray src, InputArray labels) = 0;
 
+    // Updates a FaceRecognizer.
+    virtual void update(InputArrayOfArrays src, InputArray labels);
+
     // Gets a prediction from a FaceRecognizer.
     virtual int predict(InputArray src) const = 0;
 
