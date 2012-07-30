@@ -13,104 +13,157 @@
  *     may be used to endorse or promote products derived from this software
  *     without specific prior written permission.
  *
- *   See <http:www.opensource.org/licenses/bsd-license>
+ *   See <http://www.opensource.org/licenses/bsd-license>
  */
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/highgui/highgui.hpp>
+#include "facerec.hpp"
+
+#include "opencv2/core/core.hpp"
+#include "opencv2/highgui/highgui.hpp"
+
+
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace cv;
+using namespace std;
 
-using std::cout;
-using std::endl;
-
-bool R1(int R, int G, int B) {
-    bool e1 = (R>95) && (G>40) && (B>20) && ((max(R,max(G,B)) - min(R, min(G,B)))>15) && (abs(R-G)>15) && (R>G) && (R>B);
-    bool e2 = (R>220) && (G>210) && (B>170) && (abs(R-G)<=15) && (R>B) && (G>B);
-    return (e1||e2);
-}
-
-bool R2(float Y, float Cr, float Cb) {
-    bool eq1 = Cr > 140 && Cr < 165;
-    bool eq2 = Cb > 105 && Cb < 135;
-    return eq1 && eq2;
-}
-
-bool R3(float H, float S, float V) {
-    return (H<25) || (H > 230);
-}
-
-Mat GetSkin(Mat const &src) {
-    // allocate the result matrix
-    Mat dst = Mat::zeros(src.rows, src.cols, CV_8UC1);
-
-    Mat src_ycrcb, src_hsv;
-    // OpenCV scales the YCrCb components, so that they
-    // cover the whole value range of [0,255], so there's
-    // no need to scale the values:
-    cvtColor(src, src_ycrcb, CV_BGR2YCrCb);
-    // OpenCV scales the Hue Channel to [0,180] for
-    // 8bit images, so make sure we are operating on
-    // the full spectrum from [0,360] by using floating
-    // point precision:
-    src.convertTo(src_hsv, CV_32FC3);
-    cvtColor(src_hsv, src_hsv, CV_BGR2HSV);
-    // Now scale the values between [0,255]:
-    normalize(src_hsv, src_hsv, 0.0, 255.0, NORM_MINMAX, CV_32FC3);
-
-    for(int i = 0; i < src.rows; i++) {
-        for(int j = 0; j < src.cols; j++) {
-
-            Vec3b pix_bgr = src.ptr<Vec3b>(i)[j];
-            int B = pix_bgr.val[0];
-            int G = pix_bgr.val[1];
-            int R = pix_bgr.val[2];
-            // apply rgb rule
-            bool a = R1(R,G,B);
-
-            Vec3b pix_ycrcb = src_ycrcb.ptr<Vec3b>(i)[j];
-            int Y = pix_ycrcb.val[0];
-            int Cr = pix_ycrcb.val[1];
-            int Cb = pix_ycrcb.val[2];
-            // apply ycrcb rule
-            bool b = R2(Y,Cr,Cb);
-
-            Vec3f pix_hsv = src_hsv.ptr<Vec3f>(i)[j];
-            float H = pix_hsv.val[0];
-            float S = pix_hsv.val[1];
-            float V = pix_hsv.val[2];
-            // apply hsv rule
-            bool c = R3(H,S,V);
-            // If it passes all thresholds, it's probably skin:
-            if((a&&b&&c))
-                dst.at<unsigned char>(i,j) = 255;
-        }
+static Mat norm_0_255(InputArray _src) {
+    Mat src = _src.getMat();
+    // Create and return normalized image:
+    Mat dst;
+    switch(src.channels()) {
+    case 1:
+        cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC1);
+        break;
+    case 3:
+        cv::normalize(_src, dst, 0, 255, NORM_MINMAX, CV_8UC3);
+        break;
+    default:
+        src.copyTo(dst);
+        break;
     }
     return dst;
 }
 
+static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';') {
+    std::ifstream file(filename.c_str(), ifstream::in);
+    if (!file) {
+        string error_message = "No valid input file was given, please check the given filename.";
+        CV_Error(CV_StsBadArg, error_message);
+    }
+    string line, path, classlabel;
+    while (getline(file, line)) {
+        stringstream liness(line);
+        getline(liness, path, separator);
+        getline(liness, classlabel);
+        if(!path.empty() && !classlabel.empty()) {
+            images.push_back(imread(path, 0));
+            labels.push_back(atoi(classlabel.c_str()));
+        }
+    }
+}
 
 int main(int argc, const char *argv[]) {
-    // Get filename to the source image:
+    // Check for valid command line arguments, print usage
+    // if no arguments were given.
     if (argc != 2) {
-        cout << "usage: " << argv[0] << " <image.ext>" << endl;
+        cout << "usage: " << argv[0] << " <csv.ext>" << endl;
         exit(1);
     }
-    // Load image & get skin proportions:
-    Mat image = imread(argv[1]);
-    // Apply a Gaussian Blur:
-    GaussianBlur(image, image, Size(3,3), 3.0, 1.0);
-    // Get the Skin pixels:
-    Mat skin = GetSkin(image);
-    // Show the results:
-    namedWindow("original");
-    namedWindow("skin");
-
-    imshow("original", image);
-    imshow("skin", skin);
-
+    // Get the path to your CSV.
+    string fn_csv = string(argv[1]);
+    // These vectors hold the images and corresponding labels.
+    vector<Mat> images;
+    vector<int> labels;
+    // Read in the data. This can fail if no valid
+    // input filename is given.
+    try {
+        read_csv(fn_csv, images, labels);
+    } catch (cv::Exception& e) {
+        cerr << "Error opening file \"" << fn_csv << "\". Reason: " << e.msg << endl;
+        // nothing more we can do
+        exit(1);
+    }
+    // Quit if there are not enough images for this demo.
+    if(images.size() <= 1) {
+        string error_message = "This demo needs at least 2 images to work. Please add more images to your data set!";
+        CV_Error(CV_StsError, error_message);
+    }
+    // Get the height from the first image. We'll need this
+    // later in code to reshape the images to their original
+    // size:
+    int height = images[0].rows;
+    // The following lines simply get the last images from
+    // your dataset and remove it from the vector. This is
+    // done, so that the training data (which we learn the
+    // cv::FaceRecognizer on) and the test data we test
+    // the model with, do not overlap.
+    Mat testSample = images[images.size() - 1];
+    int testLabel = labels[labels.size() - 1];
+    images.pop_back();
+    labels.pop_back();
+    // The following lines create an Eigenfaces model for
+    // face recognition and train it with the images and
+    // labels read from the given CSV file.
+    // This here is a full PCA, if you just want to keep
+    // 10 principal components (read Eigenfaces), then call
+    // the factory method like this:
+    //
+    //      cv::createEigenFaceRecognizer(10);
+    //
+    // If you want to create a FaceRecognizer with a
+    // confidennce threshold, call it with:
+    //
+    //      cv::createEigenFaceRecognizer(10, 123.0);
+    //
+    Ptr<FaceRecognizer> model = createFisherFaceRecognizer();
+    model->train(images, labels);
+    // The following line predicts the label of a given
+    // test image:
+    int predictedLabel = model->predict(testSample);
+    //
+    // To get the confidence of a prediction call the model with:
+    //
+    //      int predictedLabel = -1;
+    //      double confidence = 0.0;
+    //      model->predict(testSample, predictedLabel, confidence);
+    //
+    string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testLabel);
+    cout << result_message << endl;
+    // Sometimes you'll need to get/set internal model data,
+    // which isn't exposed by the public cv::FaceRecognizer.
+    // Since each cv::FaceRecognizer is derived from a
+    // cv::Algorithm, you can query the data.
+    //
+    // First we'll use it to set the threshold of the FaceRecognizer
+    // to 0.0 without retraining the model. This can be useful if
+    // you are evaluating the model:
+    //
+    model->set("threshold", 0.0);
+    // Now the threshold of this model is set to 0.0. A prediction
+    // now returns -1, as it's impossible to have a distance below
+    // it
+    predictedLabel = model->predict(testSample);
+    cout << "Predicted class = " << predictedLabel << endl;
+    // Here is how to get the eigenvalues of this Eigenfaces model:
+    Mat eigenvalues = model->getMat("eigenvalues");
+    // And we can do the same to display the Eigenvectors (read Eigenfaces):
+    Mat W = model->getMat("eigenvectors");
+    // From this we will display the (at most) first 10 Eigenfaces:
+    for (int i = 0; i < min(10, W.cols); i++) {
+        string msg = format("Eigenvalue #%d = %.5f", i, eigenvalues.at<double>(i));
+        cout << msg << endl;
+        // get eigenvector #i
+        Mat ev = W.col(i).clone();
+        // Reshape to original size & normalize to [0...255] for imshow.
+        Mat grayscale = norm_0_255(ev.reshape(1, height));
+        // Show the image & apply a Jet colormap for better sensing.
+        Mat cgrayscale;
+        applyColorMap(grayscale, cgrayscale, COLORMAP_JET);
+        imshow(format("%d", i), cgrayscale);
+    }
     waitKey(0);
 
     return 0;
