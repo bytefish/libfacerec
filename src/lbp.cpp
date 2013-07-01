@@ -89,7 +89,7 @@ inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors
         // iterate through your data
         for(int i=radius; i < src.rows-radius;i++) {
             for(int j=radius;j < src.cols-radius;j++) {
-                float t = w1*src.at<_Tp>(i+fy,j+fx) + w2*src.at<_Tp>(i+fy,j+cx) + w3*src.at<_Tp>(i+cy,j+fx) + w4*src.at<_Tp>(i+cy,j+cx);
+                float t = static_cast<float>(w1*src.at<_Tp>(i+fy,j+fx) + w2*src.at<_Tp>(i+fy,j+cx) + w3*src.at<_Tp>(i+cy,j+fx) + w4*src.at<_Tp>(i+cy,j+cx));
                 _delta.at<float>(i,j) = t - _mean.at<float>(i,j);
                 _mean.at<float>(i,j) = (_mean.at<float>(i,j) + (_delta.at<float>(i,j) / (1.0f*(n+1)))); // i am a bit paranoid
                 _m2.at<float>(i,j) = _m2.at<float>(i,j) + _delta.at<float>(i,j) * (t - _mean.at<float>(i,j));
