@@ -218,18 +218,18 @@ Mat cv::spatial_histogram(InputArray _src, int numPatterns, int grid_x, int grid
 //------------------------------------------------------------------------------
 Mat cv::olbp(InputArray src, bool uniform, std::vector<int> lookup) {
     Mat dst;
-    olbp(src, dst);
+    olbp(src, dst, uniform, lookup);
     return dst;
 }
 
 Mat cv::elbp(InputArray src, int radius, int neighbors, bool uniform, std::vector<int> lookup) {
     Mat dst;
-    elbp(src, dst, radius, neighbors);
+    elbp(src, dst, radius, neighbors, uniform, lookup);
     return dst;
 }
 
 Mat cv::varlbp(InputArray src, int radius, int neighbors, bool uniform, std::vector<int> lookup) {
     Mat dst;
-    varlbp(src, dst, radius, neighbors);
+    varlbp(src, dst, radius, neighbors, uniform, lookup);
     return dst;
 }
