@@ -71,8 +71,8 @@ inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors
     Mat _m2 = Mat::zeros(src.rows, src.cols, CV_32FC1);
     for(int n=0; n<neighbors; n++) {
         // sample points
-        float x = static_cast<float>(radius) * cos(2.0*CV_PI*n/static_cast<float>(neighbors));
-        float y = static_cast<float>(radius) * -sin(2.0*CV_PI*n/static_cast<float>(neighbors));
+        float x = static_cast<float>(radius) * cos(2.0f*CV_PI*n/static_cast<float>(neighbors));
+        float y = static_cast<float>(radius) * -sin(2.0f*CV_PI*n/static_cast<float>(neighbors));
         // relative indices
         int fx = static_cast<int>(floor(x));
         int fy = static_cast<int>(floor(y));
@@ -91,7 +91,7 @@ inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors
             for(int j=radius;j < src.cols-radius;j++) {
                 float t = w1*src.at<_Tp>(i+fy,j+fx) + w2*src.at<_Tp>(i+fy,j+cx) + w3*src.at<_Tp>(i+cy,j+fx) + w4*src.at<_Tp>(i+cy,j+cx);
                 _delta.at<float>(i,j) = t - _mean.at<float>(i,j);
-                _mean.at<float>(i,j) = (_mean.at<float>(i,j) + (_delta.at<float>(i,j) / (1.0*(n+1)))); // i am a bit paranoid
+                _mean.at<float>(i,j) = (_mean.at<float>(i,j) + (_delta.at<float>(i,j) / (1.0f*(n+1)))); // i am a bit paranoid
                 _m2.at<float>(i,j) = _m2.at<float>(i,j) + _delta.at<float>(i,j) * (t - _mean.at<float>(i,j));
             }
         }
@@ -99,9 +99,9 @@ inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors
     // calculate result
     for(int i = radius; i < src.rows-radius; i++) {
         for(int j = radius; j < src.cols-radius; j++) {
-            float dstv = _m2.at<float>(i,j) / (1.0*(neighbors-1));
+            float dstv = _m2.at<float>(i,j) / (1.0f*(neighbors-1));
             if ( uniform ) {
-                dstv = lookup[dstv];
+                dstv = float(lookup[int(dstv)]);
             }
             dst.at<float>(i-radius, j-radius) = dstv;
         }
