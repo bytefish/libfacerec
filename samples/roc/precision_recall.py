@@ -20,24 +20,24 @@ def main():
         return
 
     results = sys.argv[1]
-		
-	# load data
-	data = np.loadtxt(open(results), delimiter=',', skiprows=1)
-	precision = data[:,4]
-	recall = data[:,5]
-	
-	# plot
-	fig = plt.figure()
-	ax = fig.add_subplot(111)
-	plt.xlabel("Recall")
-	plt.xlim([0,1.1])
-	plt.ylabel("Precision")
-	plt.ylim([0,1.1])
-	plt.title("Precision Recall") 
-	plt.grid(True)
-	plt.plot(recall,precision,'r')
-	plt.savefig("PrecisionRecall.png")
-		    	
+
+    # load data
+    data = np.loadtxt(open(results), delimiter=',', skiprows=1)
+    precision = data[:,4]
+    recall = data[:,5]
+
+    # plot
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    plt.xlabel("Recall")
+    plt.xlim([0,1.1])
+    plt.ylabel("Precision")
+    plt.ylim([0,1.1])
+    plt.title("Precision Recall") 
+    plt.grid(True)
+    plt.plot(recall,precision,'r')
+    plt.savefig("PrecisionRecall.png")
+
     return
 
 if __name__ == "__main__":

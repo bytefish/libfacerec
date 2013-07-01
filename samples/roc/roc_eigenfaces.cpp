@@ -76,44 +76,44 @@ int main(int argc, const char *argv[]) {
         string error_message = "This demo needs at least 4 images to work. Please add more images to your data set!";
         CV_Error(CV_StsError, error_message);
     }
-	// The following code shuffles the input data, this 
-	// is done so that when we create the test set
-	// that is separate from the training set
-	// there is a good variety of faces    
-	vector<int> idx;
-	for(int i = 0; i < images.size(); i++)
-		idx.push_back(i);
-	std::random_shuffle(idx.begin(), idx.end());
-	for(int i = 0; i < idx.size(); i++)
-	{
-		std::swap( images[i], images[idx[i]] );
-		std::swap( labels[i], labels[idx[i]] );
-	}
-	// The following lines split the data into two
-	// data sets, one for training and one for testing
-	// This is done, so that the training data (which 
-	// we learn the cv::FaceRecognizer on) and the test 
-	// data we test the model with, do not overlap.
-	vector<Mat> training_images;
+    // The following code shuffles the input data, this 
+    // is done so that when we create the test set
+    // that is separate from the training set
+    // there is a good variety of faces    
+    vector<int> idx;
+    for(int i = 0; i < images.size(); i++)
+        idx.push_back(i);
+    std::random_shuffle(idx.begin(), idx.end());
+    for(int i = 0; i < idx.size(); i++)
+    {
+        std::swap( images[i], images[idx[i]] );
+        std::swap( labels[i], labels[idx[i]] );
+    }
+    // The following lines split the data into two
+    // data sets, one for training and one for testing
+    // This is done, so that the training data (which 
+    // we learn the cv::FaceRecognizer on) and the test 
+    // data we test the model with, do not overlap.
+    vector<Mat> training_images;
     vector<int> training_labels;
-	vector<Mat> testing_images;
+    vector<Mat> testing_images;
     vector<int> testing_labels;
-	// default split is 80/20
-	for(int i = 0; i < images.size(); i++)
-	{
-		// training set		
-		if( i < images.size() * 0.8 )
-		{
-			training_images.push_back( images[i] );
-			training_labels.push_back( labels[i] );
-		}
-		// test set
-		else
-		{
-			testing_images.push_back( images[i] );
-			testing_labels.push_back( labels[i] );
-		}	
-	}
+    // default split is 80/20
+    for(int i = 0; i < images.size(); i++)
+    {
+        // training set		
+        if( i < images.size() * 0.8 )
+        {
+            training_images.push_back( images[i] );
+            training_labels.push_back( labels[i] );
+        }
+        // test set
+        else
+        {
+             testing_images.push_back( images[i] );
+             testing_labels.push_back( labels[i] );
+        }
+    }
     // The following lines create an Eigenfaces model for
     // face recognition and train it with the images and
     // labels read from the given CSV file.
@@ -136,23 +136,23 @@ int main(int argc, const char *argv[]) {
     Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
     model->train(training_images, training_labels);
 
-	// Loop threshold here
+    // Loop threshold here
 
-		// Testing
-		for(int i = 0; i < testing_images.size(); i++)
-		{	
-			// To get the confidence of a prediction call the model with:
-			//
-			//      int predictedLabel = -1;
-			//      double confidence = 0.0;
-			//      model->predict(testSample, predictedLabel, confidence);
-			//    	
-			int predictedLabel = model->predict(testing_images[i]);
-			string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testing_labels[i]);
-			cout << result_message << endl;
-		}
+        // Testing
+        for(int i = 0; i < testing_images.size(); i++)
+        {
+            // To get the confidence of a prediction call the model with:
+            //
+            //      int predictedLabel = -1;
+            //      double confidence = 0.0;
+            //      model->predict(testSample, predictedLabel, confidence);
+            //
+            int predictedLabel = model->predict(testing_images[i]);
+            string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testing_labels[i]);
+            cout << result_message << endl;
+        }
 
-	// save overall results for this threshold to file
+    // save overall results for this threshold to file
 
     return 0;
 }
