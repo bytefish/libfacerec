@@ -15,7 +15,7 @@ namespace cv {
 //  patterns: Application to face recognition." IEEE Transactions on Pattern
 //  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
-void olbp(InputArray src, OutputArray dst);
+void olbp(InputArray src, OutputArray dst, bool uniform=false, std::vector<int> lookup=std::vector<int>());
 
 // Calculates the Extended Local Binary Patterns.
 //
@@ -23,14 +23,14 @@ void olbp(InputArray src, OutputArray dst);
 //  patterns: Application to face recognition." IEEE Transactions on Pattern
 //  Analysis and Machine Intelligence, 28(12):2037-2041.
 //
-void elbp(InputArray src, OutputArray dst, int radius=1, int neighbors=8);
+void elbp(InputArray src, OutputArray dst, int radius=1, int neighbors=8, bool uniform=false, std::vector<int> lookup=std::vector<int>());
 
 // Calculates the Variance-based Local Binary Patterns (without Quantization).
 //
 //  Pietikäinen, M., Hadid, A., Zhao, G. and Ahonen, T. (2011), "Computer
 //  Vision Using Local Binary Patterns", Springer.
 //
-void varlbp(InputArray src, OutputArray dst, int radius=1, int neighbors=8);
+void varlbp(InputArray src, OutputArray dst, int radius=1, int neighbors=8, bool uniform=false, std::vector<int> lookup=std::vector<int>());
 
 // Calculates the Spatial Histogram for a given LBP image.
 //
@@ -44,13 +44,13 @@ void varlbp(InputArray src, OutputArray dst, int radius=1, int neighbors=8);
 Mat spatial_histogram(InputArray src, int numPatterns, int grid_x=8, int grid_y=8, bool normed=true);
 
 // see cv::olbp(InputArray, OutputArray)
-Mat olbp(InputArray src);
+Mat olbp(InputArray src, bool uniform=false, std::vector<int> lookup=std::vector<int>());
 
 // see cv::elbp(InputArray, OutputArray, int, int)
-Mat elbp(InputArray src, int radius=1, int neighbors=8);
+Mat elbp(InputArray src, int radius=1, int neighbors=8, bool uniform=false, std::vector<int> lookup=std::vector<int>());
 
 // see cv::varlbp(InputArray, OutputArray, int, int)
-Mat varlbp(InputArray src, int radius=1, int neighbors=8);
+Mat varlbp(InputArray src, int radius=1, int neighbors=8, bool uniform=false, std::vector<int> lookup=std::vector<int>());
 
 }
 
