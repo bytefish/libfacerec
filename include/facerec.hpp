@@ -108,7 +108,8 @@ CV_EXPORTS Ptr<FaceRecognizer> createFisherFaceRecognizer(int num_components = 0
 
 CV_EXPORTS Ptr<FaceRecognizer> createLBPHFaceRecognizer(int radius=1, int neighbors=8,
                                                             int grid_x=8, int grid_y=8,
-                                                            double threshold = DBL_MAX);
+                                                            double threshold = DBL_MAX,
+                                                            bool uniform=false);
 
 CV_EXPORTS bool initModule_contrib();
 
