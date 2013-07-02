@@ -188,6 +188,12 @@ private:
     vector<Mat> _histograms;
     Mat _labels;
 
+    bool _uniform;
+    int  _num_uniforms;
+    std::vector<int> _uniform_lookup;
+
+    void initUniformLookup();
+
     // Computes a LBPH model with images in src and
     // corresponding labels in labels, possibly preserving
     // old model data.
@@ -204,12 +210,19 @@ public:
     // grid_x, grid_y control the grid size of the spatial histograms.
     LBPH(int radius_=1, int neighbors_=8,
             int gridx=8, int gridy=8,
-            double threshold = DBL_MAX) :
+            double threshold = DBL_MAX,
+            bool uniform = false) :
         _grid_x(gridx),
         _grid_y(gridy),
         _radius(radius_),
         _neighbors(neighbors_),
-        _threshold(threshold) {}
+        _threshold(threshold),
+        _num_uniforms(0),
+        _uniform(uniform) {
+        if (uniform) {
+            initUniformLookup();
+        }
+    }
 
     // Initializes and computes this LBPH Model. The current implementation is
     // rather fixed as it uses the Extended Local Binary Patterns per default.
@@ -220,12 +233,18 @@ public:
             InputArray labels,
             int radius_=1, int neighbors_=8,
             int gridx=8, int gridy=8,
-            double threshold = DBL_MAX) :
+            double threshold = DBL_MAX,
+            bool uniform=false) :
                 _grid_x(gridx),
                 _grid_y(gridy),
                 _radius(radius_),
                 _neighbors(neighbors_),
-                _threshold(threshold) {
+                _threshold(threshold),
+                _num_uniforms(0),
+                _uniform(uniform) {
+        if (uniform) {
+            initUniformLookup();
+        }
         train(src, labels);
     }
 
@@ -455,7 +474,7 @@ void Fisherfaces::train(InputArray src, InputArray _lbls) {
     _projections.clear();
     // safely copy from cv::Mat to std::vector
     vector<int> ll;
-    for(int i = 0; i < labels.total(); i++) {
+    for(size_t i = 0; i < labels.total(); i++) {
         ll.push_back(labels.at<int>(i));
     }
     // get the number of unique classes
@@ -518,6 +537,59 @@ int Fisherfaces::predict(InputArray _src) const {
 //------------------------------------------------------------------------------
 // cv::LBPH
 //------------------------------------------------------------------------------
+
+
+//
+// a bitmask is 'uniform' if the number of transitions <= 2.
+// 
+// we precompute the possible values to a lookup(index) table for 
+// all possible lbp combinations of n bits(neighbours). 
+//
+// check, if the 1st bit eq 2nd, 2nd eq 3rd, ..., last eq 1st, 
+//   else add a transition for each bit.
+//
+//   if there's no transition, it's solid
+//   1 transition: we've found a solid edge.
+//   2 transitions: we've found a line.
+//
+//   since the radius of the lbp operator is quite small, 
+//   we consider any larger number of transitions as noise, 
+//   and 'discard' them from our histogram, by assinging all of them 
+//   to a single noise bin
+//
+//   this way, using uniform lbp features boils down to indexing into the lut
+//   instead of the original value, and adjusting the sizes for the histograms.
+//
+bool bit(unsigned b, unsigned i) {
+    return ((b & (1 << i)) != 0);
+}
+void LBPH::initUniformLookup() {
+    int numSlots  = 1 << _neighbors;  // 2 ** _neighbours
+    _num_uniforms = 0;
+    _uniform_lookup = std::vector<int>(numSlots);
+    for ( int i=0; i<numSlots; i++ ) {
+        int transitions = 0;
+        for ( int j=0; j<_neighbors-1; j++ ) {
+            transitions += (bit(i,j) != bit(i,j+1));
+        }
+        transitions += (bit(i,_neighbors-1) != bit(i,0));
+
+        if ( transitions <= 2 ) {
+            _uniform_lookup[i] = _num_uniforms++;
+        } else {
+            _uniform_lookup[i] = -1; // mark all non-uniforms as noise channel
+        }
+    }
+
+    // now run again through the lut, replace -1 with the 'noise' slot (numUniforms)
+    for ( int i=0; i<numSlots; i++ ) {
+        if ( _uniform_lookup[i] == -1 ) {
+            _uniform_lookup[i] = _num_uniforms;
+        }
+    }
+}
+
+
 void LBPH::load(const FileStorage& fs) {
     fs["radius"] >> _radius;
     fs["neighbors"] >> _neighbors;
@@ -525,10 +597,14 @@ void LBPH::load(const FileStorage& fs) {
     fs["grid_y"] >> _grid_y;
     //read matrices
     readFileNodeList(fs["histograms"], _histograms);
-   fs["labels"] >> _labels;
+    fs["labels"] >> _labels;
+    fs["uniform"] >> _uniform;
+    if (_uniform) {
+        initUniformLookup();
+    }
 }
 
-// See cv::FaceRecognizer::save.
+// See FaceRecognizer::save.
 void LBPH::save(FileStorage& fs) const {
     fs << "radius" << _radius;
     fs << "neighbors" << _neighbors;
@@ -537,6 +613,7 @@ void LBPH::save(FileStorage& fs) const {
     // write matrices
     writeFileNodeList(fs, "histograms", _histograms);
     fs << "labels" << _labels;
+    fs << "uniform" << _uniform;
 }
 
 void LBPH::train(InputArrayOfArrays _in_src, InputArray _in_labels) {
@@ -585,11 +662,17 @@ void LBPH::train(InputArrayOfArrays _in_src, InputArray _in_labels, bool preserv
     // store the spatial histograms of the original data
     for(size_t sampleIdx = 0; sampleIdx < src.size(); sampleIdx++) {
         // calculate lbp image
-        Mat lbp_image = elbp(src[sampleIdx], _radius, _neighbors);
+        Mat lbp_image = elbp(src[sampleIdx], _radius, _neighbors, _uniform, _uniform_lookup);
+
+        // check number of possible patterns ( this is different in the uniform case )
+        int numPatterns = static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors)));
+        if ( _uniform ) {
+            numPatterns = _num_uniforms;
+        }
         // get spatial histogram from this lbp image
         Mat p = spatial_histogram(
                 lbp_image, /* lbp_image */
-                static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors))), /* number of possible patterns */
+                numPatterns, /* number of possible patterns */
                 _grid_x, /* grid size x */
                 _grid_y, /* grid size y */
                 true);
@@ -605,18 +688,24 @@ void LBPH::predict(InputArray _src, int &minClass, double &minDist) const {
         CV_Error(CV_StsBadArg, error_message);
     }
     Mat src = _src.getMat();
+
+    int numPatterns = 1 << _neighbors ; 
+    if ( _uniform ) {
+        numPatterns = _num_uniforms;
+    }
+
     // get the spatial histogram from input image
-    Mat lbp_image = elbp(src, _radius, _neighbors);
+    Mat lbp_image = elbp(src, _radius, _neighbors,_uniform,_uniform_lookup);
     Mat query = spatial_histogram(
             lbp_image, /* lbp_image */
-            static_cast<int>(std::pow(2.0, static_cast<double>(_neighbors))), /* number of possible patterns */
+            numPatterns, /* number of possible patterns */
             _grid_x, /* grid size x */
             _grid_y, /* grid size y */
             true /* normed histograms */);
     // find 1-nearest neighbor
     minDist = DBL_MAX;
     minClass = -1;
-    for(int sampleIdx = 0; sampleIdx < _histograms.size(); sampleIdx++) {
+    for(size_t sampleIdx = 0; sampleIdx < _histograms.size(); sampleIdx++) {
         double dist = compareHist(_histograms[sampleIdx], query, CV_COMP_CHISQR);
         if((dist < minDist) && (dist < _threshold)) {
             minDist = dist;
@@ -643,9 +732,9 @@ Ptr<FaceRecognizer> createFisherFaceRecognizer(int num_components, double thresh
 }
 
 Ptr<FaceRecognizer> createLBPHFaceRecognizer(int radius, int neighbors,
-                                             int grid_x, int grid_y, double threshold)
+                                             int grid_x, int grid_y, double threshold, bool uniform)
 {
-    return new LBPH(radius, neighbors, grid_x, grid_y, threshold);
+    return new LBPH(radius, neighbors, grid_x, grid_y, threshold, uniform);
 }
 
 CV_INIT_ALGORITHM(Eigenfaces, "FaceRecognizer.Eigenfaces",
@@ -672,6 +761,7 @@ CV_INIT_ALGORITHM(LBPH, "FaceRecognizer.LBPH",
                   obj.info()->addParam(obj, "grid_x", obj._grid_x);
                   obj.info()->addParam(obj, "grid_y", obj._grid_y);
                   obj.info()->addParam(obj, "threshold", obj._threshold);
+                  obj.info()->addParam(obj, "uniform", obj._uniform);
                   obj.info()->addParam(obj, "histograms", obj._histograms, true);
                   obj.info()->addParam(obj, "labels", obj._labels, true));
 
