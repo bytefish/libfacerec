@@ -1,5 +1,6 @@
 #include "lbp.hpp"
 #include "helper.hpp"
+#include <limits>
 
 //------------------------------------------------------------------------------
 // cv::olbp

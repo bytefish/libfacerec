@@ -20,7 +20,7 @@
 
 #include "opencv2/core/core.hpp"
 #include "opencv2/highgui/highgui.hpp"
-
+#include "opencv2/core/utility.hpp"
 
 #include <iostream>
 #include <fstream>
@@ -50,8 +50,8 @@ static Mat norm_0_255(InputArray _src) {
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';') {
     std::ifstream file(filename.c_str(), ifstream::in);
     if (!file) {
-        string error_message = "No valid input file was given, please check the given filename.";
-        CV_Error(CV_StsBadArg, error_message);
+        String error_message = "No valid input file was given, please check the given filename.";
+        CV_Error(Error::StsBadArg, error_message);
     }
     string line, path, classlabel;
     while (getline(file, line)) {
@@ -88,8 +88,8 @@ int main(int argc, const char *argv[]) {
     }
     // Quit if there are not enough images for this demo.
     if(images.size() <= 1) {
-        string error_message = "This demo needs at least 2 images to work. Please add more images to your data set!";
-        CV_Error(CV_StsError, error_message);
+        String error_message = "This demo needs at least 2 images to work. Please add more images to your data set!";
+        CV_Error(Error::StsError, error_message);
     }
     // Get the height from the first image. We'll need this
     // later in code to reshape the images to their original

@@ -2,7 +2,12 @@
 #include "decomposition.hpp"
 #include "helper.hpp"
 
+#include "opencv2/core/utility.hpp"
+
 #include <iostream>
+#include <map>
+#include <set>
+#include <vector>
 
 using std::map;
 using std::set;
@@ -22,13 +27,13 @@ Mat cv::subspaceProject(InputArray _W, InputArray _mean, InputArray _src) {
     int d = src.cols;
     // make sure the data has the correct shape
     if(W.rows != d) {
-        string error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
-        CV_Error(CV_StsBadArg, error_message);
+        String error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
+        CV_Error(Error::StsBadArg, error_message);
     }
     // make sure mean is correct if not empty
-    if(!mean.empty() && (mean.total() != d)) {
-        string error_message = format("Wrong mean shape for the given data matrix. Expected %d, but was %d.", d, mean.total());
-        CV_Error(CV_StsBadArg, error_message);
+    if(!mean.empty() && (mean.total() != (size_t) d)) {
+        String error_message = format("Wrong mean shape for the given data matrix. Expected %d, but was %d.", d, mean.total());
+        CV_Error(Error::StsBadArg, error_message);
     }
     // create temporary matrices
     Mat X, Y;
@@ -61,12 +66,12 @@ Mat cv::subspaceReconstruct(InputArray _W, InputArray _mean, InputArray _src) {
     // make sure the data has the correct shape
     if(W.cols != d) {
         string error_message = format("Wrong shapes for given matrices. Was size(src) = (%d,%d), size(W) = (%d,%d).", src.rows, src.cols, W.rows, W.cols);
-        CV_Error(CV_StsBadArg, error_message);
+        CV_Error(Error::StsBadArg, error_message);
     }
     // make sure mean is correct if not empty
     if(!mean.empty() && (mean.total() != W.rows)) {
         string error_message = format("Wrong mean shape for the given eigenvector matrix. Expected %d, but was %d.", W.cols, mean.total());
-        CV_Error(CV_StsBadArg, error_message);
+        CV_Error(Error::StsBadArg, error_message);
     }
     // initalize temporary matrices
     Mat X, Y;
@@ -90,7 +95,7 @@ Mat cv::subspaceReconstruct(InputArray _W, InputArray _mean, InputArray _src) {
 void cv::LDA::save(const string& filename) const {
     FileStorage fs(filename, FileStorage::WRITE);
     if (!fs.isOpened()) {
-        CV_Error(CV_StsError, "File can't be opened for writing!");
+        CV_Error(Error::StsError, "File can't be opened for writing!");
     }
     this->save(fs);
     fs.release();
@@ -100,7 +105,7 @@ void cv::LDA::save(const string& filename) const {
 void cv::LDA::load(const string& filename) {
     FileStorage fs(filename, FileStorage::READ);
     if (!fs.isOpened()) {
-       CV_Error(CV_StsError, "File can't be opened for writing!");
+       CV_Error(Error::StsError, "File can't be opened for writing!");
     }
     this->load(fs);
     fs.release();
@@ -147,12 +152,12 @@ void cv::LDA::lda(InputArray _src, InputArray _lbls) {
     // want to separate from each other then?
     if(C == 1) {
         string error_message = "At least two classes are needed to perform a LDA. Reason: Only one class was given!";
-        CV_Error(CV_StsBadArg, error_message);
+        CV_Error(Error::StsBadArg, error_message);
     }
     // throw error if less labels, than samples
     if (labels.size() != N) {
         string error_message = format("The number of samples must equal the number of labels. Given %d labels, %d samples. ",labels.size(), N);
-        CV_Error(CV_StsBadArg, error_message);
+        CV_Error(Error::StsBadArg, error_message);
     }
     // warn if within-classes scatter matrix becomes singular
     if (N < D) {
@@ -234,7 +239,7 @@ void cv::LDA::compute(InputArray _src, InputArray _lbls) {
         break;
     default:
         string error_message = format("cv::LDA can only work cv::_InputArray::STD_VECTOR_MAT (a vector<cv::Mat>) or cv::_InputArray::MAT (a cv::Mat). But given: %d.", _src.kind());
-        CV_Error(CV_StsBadArg, error_message);
+        CV_Error(Error::StsBadArg, error_message);
         break;
     }
 }

@@ -17,6 +17,7 @@
  */
 #include "facerec.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/core/utility.hpp"
 
 #ifdef _MSC_VER
 #pragma warning( disable: 4305 )
@@ -82,8 +83,8 @@ static Mat interp1(InputArray _x, InputArray _Y, InputArray _xi)
     Mat Y = _Y.getMat();
     Mat xi = _xi.getMat();
     // check types & alignment
-    assert((x.type() == Y.type()) && (Y.type() == xi.type()));
-    assert((x.cols == 1) && (x.rows == Y.rows) && (x.cols == Y.cols));
+    CV_Assert((x.type() == Y.type()) && (Y.type() == xi.type()));
+    CV_Assert((x.cols == 1) && (x.rows == Y.rows) && (x.cols == Y.cols));
     // call templated interp1
     switch(x.type()) {
         case CV_8SC1: return interp1_<char>(x,Y,xi); break;
@@ -93,7 +94,7 @@ static Mat interp1(InputArray _x, InputArray _Y, InputArray _xi)
         case CV_32SC1: return interp1_<int>(x,Y,xi); break;
         case CV_32FC1: return interp1_<float>(x,Y,xi); break;
         case CV_64FC1: return interp1_<double>(x,Y,xi); break;
-        default: CV_Error(CV_StsUnsupportedFormat, ""); break;
+        default: CV_Error(Error::StsUnsupportedFormat, ""); break;
     }
     return Mat();
 }
@@ -439,7 +440,7 @@ namespace colormap
     void ColorMap::operator()(InputArray _src, OutputArray _dst) const
     {
         if(_lut.total() != 256)
-            CV_Error(CV_StsAssert, "cv::LUT only supports tables of size 256.");
+            CV_Error(Error::StsAssert, "cv::LUT only supports tables of size 256.");
         Mat src = _src.getMat();
         // Return original matrix if wrong type is given (is fail loud better here?)
         if(src.type() != CV_8UC1 && src.type() != CV_8UC3)
@@ -449,8 +450,8 @@ namespace colormap
         }
         // Turn into a BGR matrix into its grayscale representation.
         if(src.type() == CV_8UC3)
-            cvtColor(src.clone(), src, CV_BGR2GRAY);
-        cvtColor(src.clone(), src, CV_GRAY2BGR);
+            cvtColor(src.clone(), src, COLOR_BGR2GRAY);
+        cvtColor(src.clone(), src, COLOR_GRAY2BGR);
         // Apply the ColorMap.
         LUT(src, _lut, _dst);
     }
@@ -488,7 +489,7 @@ namespace colormap
 
 
         if( !cm ) {
-            CV_Error( CV_StsBadArg, "Unknown colormap id; use one of COLORMAP_*");
+            CV_Error(Error::StsBadArg, "Unknown colormap id; use one of COLORMAP_*");
         }
 
         (*cm)(src, dst);

@@ -20,6 +20,7 @@
 #include "opencv2/highgui/highgui.hpp"
 #include "opencv2/imgproc/imgproc.hpp"
 #include "opencv2/objdetect/objdetect.hpp"
+#include "opencv2/core/utility.hpp"
 
 #include "facerec.hpp"
 
@@ -34,7 +35,7 @@ static void read_csv(const string& filename, vector<Mat>& images, vector<int>& l
     std::ifstream file(filename.c_str(), ifstream::in);
     if (!file) {
         string error_message = "No valid input file was given, please check the given filename.";
-        CV_Error(CV_StsBadArg, error_message);
+        CV_Error(Error::StsBadArg, error_message);
     }
     string line, path, classlabel;
     while (getline(file, line)) {
@@ -103,7 +104,7 @@ int main(int argc, const char *argv[]) {
         Mat original = frame.clone();
         // Convert the current frame to grayscale:
         Mat gray;
-        cvtColor(original, gray, CV_BGR2GRAY);
+        cvtColor(original, gray, COLOR_BGR2GRAY);
         // Find the faces in the frame:
         vector< Rect_<int> > faces;
         haar_cascade.detectMultiScale(gray, faces);
@@ -131,7 +132,7 @@ int main(int argc, const char *argv[]) {
             int prediction = model->predict(face_resized);
             // And finally write all we've found out to the original image!
             // First of all draw a green rectangle around the detected face:
-            rectangle(original, face_i, CV_RGB(0, 255,0), 1);
+            rectangle(original, face_i, Scalar(0, 255,0), 1);
             // Create the text we will annotate the box with:
             string box_text = format("Prediction = %d", prediction);
             // Calculate the position for annotated text (make sure we don't
@@ -139,7 +140,7 @@ int main(int argc, const char *argv[]) {
             int pos_x = std::max(face_i.tl().x - 10, 0);
             int pos_y = std::max(face_i.tl().y - 10, 0);
             // And now put it into the image:
-            putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 1.0, CV_RGB(0,255,0), 2.0);
+            putText(original, box_text, Point(pos_x, pos_y), FONT_HERSHEY_PLAIN, 1.0, Scalar(0,255,0), 2.0);
         }
         // Show the result:
         imshow("face_recognizer", original);

@@ -1,6 +1,5 @@
-
 #include "opencv2/core/core.hpp"
-#include "opencv2/ts/ts.hpp"
+#include "opencv2/ts.hpp"
 
 // some helper methods for testing
 #include "test_funs.hpp"
