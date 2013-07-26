@@ -81,10 +81,10 @@ int main(int argc, const char *argv[]) {
     // that is separate from the training set
     // there is a good variety of faces    
     vector<int> idx;
-    for(int i = 0; i < images.size(); i++)
+    for(int i = 0; i < (int)images.size(); i++)
         idx.push_back(i);
     std::random_shuffle(idx.begin(), idx.end());
-    for(int i = 0; i < idx.size(); i++)
+    for(int i = 0; i < (int)idx.size(); i++)
     {
         std::swap( images[i], images[idx[i]] );
         std::swap( labels[i], labels[idx[i]] );
@@ -99,10 +99,10 @@ int main(int argc, const char *argv[]) {
     vector<Mat> testing_images;
     vector<int> testing_labels;
     // default split is 80/20
-    for(int i = 0; i < images.size(); i++)
+    for(int i = 0; i < (int)images.size(); i++)
     {
         // training set		
-        if( i < images.size() * 0.8 )
+        if( i < images.size() * 0.5 )
         {
             training_images.push_back( images[i] );
             training_labels.push_back( labels[i] );
@@ -114,45 +114,66 @@ int main(int argc, const char *argv[]) {
              testing_labels.push_back( labels[i] );
         }
     }
-    // The following lines create an Eigenfaces model for
-    // face recognition and train it with the images and
-    // labels read from the given CSV file.
-    // This here is a full PCA, if you just want to keep
-    // 10 principal components (read Eigenfaces), then call
-    // the factory method like this:
-    //
-    //      cv::createEigenFaceRecognizer(10);
-    //
-    // If you want to create a FaceRecognizer with a
-    // confidence threshold (e.g. 123.0), call it with:
-    //
-    //      cv::createEigenFaceRecognizer(10, 123.0);
-    //
-    // If you want to use _all_ Eigenfaces and have a threshold,
-    // then call the method like this:
-    //
-    //      cv::createEigenFaceRecognizer(0, 123.0);
-    //
+    // The following lines create an Eigenfaces model
+    // with the default object parameters and trains 
+    // it with the images and labels read from the 
+    // given CSV file.
     Ptr<FaceRecognizer> model = createEigenFaceRecognizer();
     model->train(training_images, training_labels);
 
-    // Loop threshold here
+    // Vary the threshold from low to high to
+    // generate the data for an ROC curve and
+    // to find the optimal threshold value
+    //
+    // Proper ROC curvers only apply to 
+    // binary classifiers and not multiclass
+    // classifiers so the theory here is simply
+    // adapted from ROC analysis but the outcome
+    // provides data of the same utility.
+    //
+    // See https://en.wikipedia.org/wiki/Receiver_operating_characteristic
+    // for more details
+    //
+    std::ofstream out;
+    out.open(output_file.c_str());
+    out << "TP,FN,FP,TN,P,R,F1" << std::endl; // csv header
+    for(int thresh = 1000; thresh < 4000; thresh = thresh + 100)
+    {
+        std::cout << "testing thresh: " << thresh << std::endl;
 
-        // Testing
-        for(int i = 0; i < testing_images.size(); i++)
+        int TruePositive=0, FalsePositive=0,
+            TrueNegative=0, FalseNegative=0;
+        
+        for(int i = 0; i < (int)testing_images.size(); i++)
         {
-            // To get the confidence of a prediction call the model with:
-            //
-            //      int predictedLabel = -1;
-            //      double confidence = 0.0;
-            //      model->predict(testSample, predictedLabel, confidence);
-            //
-            int predictedLabel = model->predict(testing_images[i]);
-            string result_message = format("Predicted class = %d / Actual class = %d.", predictedLabel, testing_labels[i]);
-            cout << result_message << endl;
+            // Predict            
+            int predictedLabel = -1;
+            double confidence = 0.0;
+            model->predict(testing_images[i], predictedLabel, confidence);
+
+            if(confidence < thresh)
+                predictedLabel = -1;
+            
+            // Analysis
+            if( predictedLabel == testing_labels[i] )
+                TruePositive++;
+            else if( predictedLabel == -1 )
+                FalseNegative++;
+            else // predictedLabel != testing_labels[i]
+                FalsePositive++;
         }
 
-    // save overall results for this threshold to file
+        double recall = (float)TruePositive / (float)(TruePositive+FalsePositive);
+        double precision = (float)TruePositive / (float)(TruePositive+FalseNegative);
+        double F1 = 2.0 *(precision*recall / (precision+recall));
 
+        // save to file        
+        out << TruePositive << "," << FalseNegative << "," << FalsePositive << ","
+            << TrueNegative << "," << precision << "," << recall << "," << F1 << std::endl;
+    }
+    
+    // close the file
+    out.close();
+    
     return 0;
 }
