@@ -22,7 +22,9 @@
 #pragma warning( disable: 4305 )
 #endif
 
-namespace cv
+using namespace cv;
+
+namespace libfacerec
 {
 
 //------------------------------------------------------------------------------

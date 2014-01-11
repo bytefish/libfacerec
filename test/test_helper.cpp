@@ -7,14 +7,15 @@
 #include "helper.hpp"
 
 using namespace cv;
+using namespace libfacerec;
 using namespace std;
 
 //------------------------------------------------------------------------------
-// cv::histogram
+// libfacerec::histogram
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-// cv::argsort
+// libfacerec::argsort
 //------------------------------------------------------------------------------
 TEST(HelperTest, checkArgsort) {
 
@@ -27,10 +28,10 @@ TEST(HelperTest, checkArgsort) {
     expected_ascending.push_back(0);
     expected_ascending.push_back(2);
 
-    Mat x = cv::argsort(mNotSorted, true);
+    Mat x = libfacerec::argsort(mNotSorted, true);
 
-    vector<int> actual_ascending = cv::argsort(mNotSorted, true);
-    vector<int> actual_descending = cv::argsort(mNotSorted, false);
+    vector<int> actual_ascending = libfacerec::argsort(mNotSorted, true);
+    vector<int> actual_descending = libfacerec::argsort(mNotSorted, false);
 
     // check if actual_ascending is sorted correctly
     for(int i=0; i < expected_ascending.size(); i++)
@@ -47,8 +48,8 @@ TEST(HelperTest, checkArgsortOneElement) {
     vector<int> expected_ascending;
     expected_ascending.push_back(0);
 
-    vector<int> actual_ascending = cv::argsort(mNotSorted, true);
-    vector<int> actual_descending = cv::argsort(mNotSorted, false);
+    vector<int> actual_ascending = libfacerec::argsort(mNotSorted, true);
+    vector<int> actual_descending = libfacerec::argsort(mNotSorted, false);
 
     ASSERT_EQ(expected_ascending[0], actual_ascending[0]);
     ASSERT_EQ(expected_ascending[0], actual_descending[0]);
@@ -58,11 +59,11 @@ TEST(HelperTest, checkArgsortThrow) {
     Mat mEmpty = (Mat_<double>());
     Mat m2by2 = (Mat_<double>(2,2));
 
-    ASSERT_ANY_THROW(cv::argsort(mEmpty, true));
-    ASSERT_ANY_THROW(cv::argsort(m2by2, true));
+    ASSERT_ANY_THROW(libfacerec::argsort(mEmpty, true));
+    ASSERT_ANY_THROW(libfacerec::argsort(m2by2, true));
 
-    ASSERT_ANY_THROW(cv::argsort(mEmpty, false));
-    ASSERT_ANY_THROW(cv::argsort(m2by2, false));
+    ASSERT_ANY_THROW(libfacerec::argsort(mEmpty, false));
+    ASSERT_ANY_THROW(libfacerec::argsort(m2by2, false));
 }
 
 //------------------------------------------------------------------------------
@@ -131,7 +132,7 @@ TEST(HelperTest, checkSortByColumn) {
     //  {4.0, 3.0}};
     Mat expected = (Mat_<double>(2,2) << 2.0, 1.0, 4.0, 3.0);
 
-    Mat actual = cv::sortMatrixColumnsByIndices(mUnsorted, indices);
+    Mat actual = libfacerec::sortMatrixColumnsByIndices(mUnsorted, indices);
 
     ASSERT_TRUE(isEqual(expected, actual));
 }
@@ -151,7 +152,7 @@ TEST(HelperTest, checkSortByRow) {
     //  {1.0, 2.0}};
     Mat expected = (Mat_<double>(2,2) << 3.0, 4.0, 1.0, 2.0);
 
-    Mat actual = cv::sortMatrixRowsByIndices(mUnsorted, indices);
+    Mat actual = libfacerec::sortMatrixRowsByIndices(mUnsorted, indices);
 
     ASSERT_TRUE(isEqual(expected, actual));
 }
@@ -299,8 +300,8 @@ TEST(HelperTest, checkReadWriteIntegerList) {
 
     // open for writing
     FileStorage fs("test.yml", FileStorage::WRITE);
-    cv::writeFileNodeList(fs, "IntList", IntList0);
-    cv::writeFileNodeList(fs, "MatList", MatList0);
+    libfacerec::writeFileNodeList(fs, "IntList", IntList0);
+    libfacerec::writeFileNodeList(fs, "MatList", MatList0);
     fs.release();
 
     vector<int> IntList1;
@@ -308,8 +309,8 @@ TEST(HelperTest, checkReadWriteIntegerList) {
 
     // open for reading
     fs.open("test.yml", FileStorage::READ);
-    cv::readFileNodeList(fs["IntList"], IntList1);
-    cv::readFileNodeList(fs["MatList"], MatList1);
+    libfacerec::readFileNodeList(fs["IntList"], IntList1);
+    libfacerec::readFileNodeList(fs["MatList"], MatList1);
     fs.release();
 
     // assert size

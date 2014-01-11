@@ -1,8 +1,8 @@
 #include "decomposition.hpp"
 #include "helper.hpp"
 
-void EigenvalueDecomposition::compute(InputArray src) {
-    if(cv::isSymmetric(src)) {
+void libfacerec::EigenvalueDecomposition::compute(InputArray src) {
+    if(libfacerec::isSymmetric(src)) {
         // Fall back to OpenCV for a symmetric matrix!
         cv::eigen(src, _eigenvalues, _eigenvectors);
     } else {

@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2012. Philipp Wagner <bytefish[at]gmx[dot]de>.
- * Released to public domain under terms of the BSD Simplified license.
+ * Released under terms of the BSD Simplified license.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -40,7 +40,7 @@ using namespace std;
  *
  */
 
-namespace cv {
+namespace libfacerec {
 
 class EigenvalueDecomposition {
 private:
@@ -682,7 +682,7 @@ private:
 
 public:
     EigenvalueDecomposition()
-    : n(0) { }
+    : n(0), d(0), H(0), ort(0), e(0), cdivi(0), cdivr(0), V(0) { }
 
     // Initializes & computes the Eigenvalue Decomposition for a general matrix
     // given in src. This function is a port of the EigenvalueSolver in JAMA,

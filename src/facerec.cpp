@@ -21,6 +21,7 @@
 #include "opencv2/core/internal.hpp"
 
 #include "facerec.hpp"
+#include "spatial.hpp"
 #include "helper.hpp"
 
 using std::set;
@@ -55,10 +56,8 @@ using std::set;
     }
 #endif
 
-namespace cv
+namespace libfacerec
 {
-
-
 
 // Turk, M., and Pentland, A. "Eigenfaces for recognition.". Journal of
 // Cognitive Neuroscience 3 (1991), 71–86.
@@ -260,6 +259,94 @@ public:
     AlgorithmInfo* info() const;
 };
 
+//
+// A Robust Descriptor based on Weber’s Law
+//
+// (there are 2 papers, the other is called:
+// WLD: A Robust Local Image Descriptor.
+// the formula numbers here are from the former. )
+//
+class WLD : public SpatialHistogramRecognizer
+{
+    protected:
+    
+      virtual void oper(const Mat & src, Mat & hist) const;
+      
+      virtual double distance(const Mat & hist_a, Mat & hist_b) const {
+            return cv::norm(hist_a,hist_b,NORM_L1); // L1 norm is great for uchar histograms!
+        }
+      
+public:
+
+    // My histograms looks like this:
+    //  [32 bins for zeta][2*64 bins for theta][16 bins for center intensity]
+    //
+    // Since the patches are pretty small(12x12), i can even get away using uchar for the historam bins
+    // all those are heuristic/empirical, i.e, i found it works better with only the 1st 2 orientations
+    // configurable, yet hardcoded values
+    //
+    enum {
+        size_center = 4, // num bits from the center
+        size_theta_n = 2, // orientation channels used
+        size_theta_w = 8, // each theta orientation channel is 8*w
+        size_zeta = 32, // bins for zeta
+
+        size_theta = 8*size_theta_w,
+        size_all = (1<<size_center) + size_zeta + size_theta_n * size_theta
+        
+        // 176 bytes per patch, * 8 * 8 = 11264 bytes per image.
+    };
+   
+    WLD(int gridx=8, int gridy=8, double threshold = DBL_MAX)
+        : SpatialHistogramRecognizer(gridx,gridy,threshold,size_all,CV_8U)
+    {}
+    
+    ~WLD() {}
+    
+    AlgorithmInfo* info() const;
+};
+
+
+void WLD::oper(const Mat & src, Mat & hist) const {
+    int radius = 1;
+    for(int i=radius;i<src.rows-radius;i++) {
+        for(int j=radius;j<src.cols-radius;j++) {
+            // 7 0 1
+            // 6 c 2
+            // 5 4 3
+            uchar c = src.at<uchar>(i,j);
+            uchar n[8]= {
+                src.at<uchar>(i-1,j),
+                src.at<uchar>(i-1,j+1),
+                src.at<uchar>(i,j+1),
+                src.at<uchar>(i+1,j+1),
+                src.at<uchar>(i+1,j),
+                src.at<uchar>(i+1,j-1),
+                src.at<uchar>(i,j-1),
+                src.at<uchar>(i-1,j-1)
+            };
+
+            int p = n[0]+n[1]+n[2]+n[3]+n[4]+n[5]+n[6]+n[7];
+            p -= c*8;
+            
+            // (7), projected from [-pi/2,pi/2] to [0,size_zeta]
+            double zeta = 0;
+            if (p!=0) zeta = double(size_zeta) * (atan(double(p)/c) + M_PI*0.5) / M_PI;
+            hist.at<uchar>(int(zeta)) += 1;
+
+            // (11), projected from [-pi/2,pi/2] to [0,size_theta]
+            for ( int i=0; i<size_theta_n; i++ ) {
+                double a = atan2(double(n[i]-n[(i+4)%8]),double(n[(i+2)%8]-n[(i+6)%8]));
+                double theta = M_PI_4 * fmod( (a+M_PI)/M_PI_4+0.5f, 8 ) * size_theta_w; // (11)
+                hist.at<uchar>(int(theta)+size_zeta+size_theta * i) += 1;
+            }
+
+            // additionally, add some bits of the actual center value (MSB).
+            int cen = c>>(8-size_center);
+            hist.at<uchar>(cen+size_zeta+size_theta * size_theta_n) += 1;
+        }
+    }
+}
 
 //------------------------------------------------------------------------------
 // FaceRecognizer
@@ -675,10 +762,14 @@ CV_INIT_ALGORITHM(LBPH, "FaceRecognizer.LBPH",
                   obj.info()->addParam(obj, "histograms", obj._histograms, true);
                   obj.info()->addParam(obj, "labels", obj._labels, true));
 
-bool initModule_contrib()
-{
-    Ptr<Algorithm> efaces = createEigenfaces(), ffaces = createFisherfaces(), lbph = createLBPH();
-    return efaces->info() != 0 && ffaces->info() != 0 && lbph->info() != 0;
-}
+CV_INIT_ALGORITHM(WLD,"FaceRecognizer.WLD",
+    obj.info()->addParam(obj, "gridx", obj._grid_x);
+    obj.info()->addParam(obj, "gridy", obj._grid_y);
+    obj.info()->addParam(obj, "threshold", obj._threshold);
+    obj.info()->addParam(obj, "hist_len", obj.hist_len, true);
+    obj.info()->addParam(obj, "hist_type", obj.hist_type, true);
+    obj.info()->addParam(obj, "step_size", obj.step_size, true);    
+    obj.info()->addParam(obj, "histograms", obj._histograms, true);
+    obj.info()->addParam(obj, "labels", obj._labels, true));
 
 }

@@ -21,9 +21,9 @@
 using namespace cv;
 
 //------------------------------------------------------------------------------
-// cv::isSymmetric
+// libfacerec::isSymmetric
 //------------------------------------------------------------------------------
-namespace cv {
+namespace libfacerec {
 
 template<typename _Tp> static bool
 isSymmetric_(InputArray src) {
@@ -61,7 +61,7 @@ isSymmetric_(InputArray src, double eps) {
 
 }
 
-bool cv::isSymmetric(InputArray src, double eps) {
+bool libfacerec::isSymmetric(InputArray src, double eps) {
     Mat m = src.getMat();
     switch (m.type()) {
     case CV_8SC1: return isSymmetric_<char>(m); break;
@@ -84,9 +84,9 @@ bool cv::isSymmetric(InputArray src, double eps) {
 }
 
 //------------------------------------------------------------------------------
-// cv::argsort
+// libfacerec::argsort
 //------------------------------------------------------------------------------
-Mat cv::argsort(InputArray _src, bool ascending) {
+Mat libfacerec::argsort(InputArray _src, bool ascending) {
     Mat src = _src.getMat();
     if (src.rows != 1 && src.cols != 1) {
         CV_Error(CV_StsBadArg, "cv::argsort only sorts 1D matrices.");
@@ -97,9 +97,9 @@ Mat cv::argsort(InputArray _src, bool ascending) {
     return sorted_indices;
 }
 //------------------------------------------------------------------------------
-// cv::histc
+// libfacerec::histc
 //------------------------------------------------------------------------------
-namespace cv {
+namespace libfacerec {
 
 static Mat
 histc_(const Mat& src, int minVal=0, int maxVal=255, bool normed=false) {
@@ -120,7 +120,7 @@ histc_(const Mat& src, int minVal=0, int maxVal=255, bool normed=false) {
 
 }
 
-Mat cv::histc(InputArray _src, int minVal, int maxVal, bool normed) {
+Mat libfacerec::histc(InputArray _src, int minVal, int maxVal, bool normed) {
     Mat src = _src.getMat();
     switch (src.type()) {
     case CV_8SC1:
@@ -148,10 +148,10 @@ Mat cv::histc(InputArray _src, int minVal, int maxVal, bool normed) {
 }
 
 //------------------------------------------------------------------------------
-// cv::sortMatrixColumnsByIndices
+// libfacerec::sortMatrixColumnsByIndices
 //------------------------------------------------------------------------------
 
-void cv::sortMatrixColumnsByIndices(InputArray _src, InputArray _indices, OutputArray _dst) {
+void libfacerec::sortMatrixColumnsByIndices(InputArray _src, InputArray _indices, OutputArray _dst) {
     if(_indices.getMat().type() != CV_32SC1) {
     	string error_message = format("cv::sortRowsByIndices only works on integer indices! Expected: %d. Given: %d.", CV_32SC1, _indices.getMat().type());
     	CV_Error(CV_StsBadArg, error_message);
@@ -167,16 +167,16 @@ void cv::sortMatrixColumnsByIndices(InputArray _src, InputArray _indices, Output
     }
 }
 
-Mat cv::sortMatrixColumnsByIndices(InputArray src, InputArray indices) {
+Mat libfacerec::sortMatrixColumnsByIndices(InputArray src, InputArray indices) {
     Mat dst;
     sortMatrixColumnsByIndices(src, indices, dst);
     return dst;
 }
 
 //------------------------------------------------------------------------------
-// cv::sortMatrixRowsByIndices
+// libfacerec::sortMatrixRowsByIndices
 //------------------------------------------------------------------------------
-void cv::sortMatrixRowsByIndices(InputArray _src, InputArray _indices, OutputArray _dst) {
+void libfacerec::sortMatrixRowsByIndices(InputArray _src, InputArray _indices, OutputArray _dst) {
     if(_indices.getMat().type() != CV_32SC1) {
     	string error_message = format("cv::sortRowsByIndices only works on integer indices! Expected: %d. Given: %d.", CV_32SC1, _indices.getMat().type());
     	CV_Error(CV_StsBadArg, error_message);
@@ -192,16 +192,16 @@ void cv::sortMatrixRowsByIndices(InputArray _src, InputArray _indices, OutputArr
     }
 }
 
-Mat cv::sortMatrixRowsByIndices(InputArray src, InputArray indices) {
+Mat libfacerec::sortMatrixRowsByIndices(InputArray src, InputArray indices) {
    Mat dst;
    sortMatrixRowsByIndices(src, indices, dst);
    return dst;
 }
 
 //------------------------------------------------------------------------------
-// cv::asRowMatrix
+// libfacerec::asRowMatrix
 //------------------------------------------------------------------------------
-Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
+Mat libfacerec::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
     // make sure the input data is a vector of matrices or vector of vector
     if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR) {
         CV_Error(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).");
@@ -235,9 +235,9 @@ Mat cv::asRowMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta
 }
 
 //------------------------------------------------------------------------------
-// cv::asColumnMatrix
+// libfacerec::asColumnMatrix
 //------------------------------------------------------------------------------
-Mat cv::asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
+Mat libfacerec::asColumnMatrix(InputArrayOfArrays src, int rtype, double alpha, double beta) {
     // make sure the input data is a vector of matrices or vector of vector
     if(src.kind() != _InputArray::STD_VECTOR_MAT && src.kind() != _InputArray::STD_VECTOR_VECTOR) {
         CV_Error(CV_StsBadArg, "The data is expected as InputArray::STD_VECTOR_MAT (a std::vector<Mat>) or _InputArray::STD_VECTOR_VECTOR (a std::vector< vector<...> >).");

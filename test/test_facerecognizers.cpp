@@ -7,6 +7,7 @@
 #include <vector>
 
 using namespace cv;
+using namespace libfacerec;
 using namespace std;
 
 // TODO Port the various fine granular numerical tests from libfacerec at

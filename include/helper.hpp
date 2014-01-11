@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2011. Philipp Wagner <bytefish[at]gmx[dot]de>.
- * Released to public domain under terms of the BSD Simplified license.
+ * Released under terms of the BSD Simplified license.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
@@ -25,6 +25,7 @@
 #include <vector>
 #include <set>
 
+using namespace cv;
 using namespace std;
 
 // Removes duplicate elements in a given vector.
@@ -42,7 +43,7 @@ inline vector<_Tp> remove_dups(const vector<_Tp>& src) {
 }
 
 // The namespace cv provides opencv related helper functions.
-namespace cv {
+namespace libfacerec {
 
 // Checks if a given matrix is symmetric, with an epsilon for floating point
 // matrices (1E-16 by default).

@@ -9,6 +9,7 @@
 #include "subspace.hpp"
 
 using namespace cv;
+using namespace libfacerec;
 using namespace std;
 
 // The fixture for testing class cv::LDA.

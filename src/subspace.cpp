@@ -10,9 +10,9 @@ using std::cout;
 using std::endl;
 
 //------------------------------------------------------------------------------
-// cv::subspace::project
+// libfacerec::subspace::project
 //------------------------------------------------------------------------------
-Mat cv::subspaceProject(InputArray _W, InputArray _mean, InputArray _src) {
+Mat libfacerec::subspaceProject(InputArray _W, InputArray _mean, InputArray _src) {
     // get data matrices
     Mat W = _W.getMat();
     Mat mean = _mean.getMat();
@@ -48,9 +48,9 @@ Mat cv::subspaceProject(InputArray _W, InputArray _mean, InputArray _src) {
 }
 
 //------------------------------------------------------------------------------
-// cv::subspace::reconstruct
+// libfacerec::subspace::reconstruct
 //------------------------------------------------------------------------------
-Mat cv::subspaceReconstruct(InputArray _W, InputArray _mean, InputArray _src) {
+Mat libfacerec::subspaceReconstruct(InputArray _W, InputArray _mean, InputArray _src) {
     // get data matrices
     Mat W = _W.getMat();
     Mat mean = _mean.getMat();
@@ -87,7 +87,7 @@ Mat cv::subspaceReconstruct(InputArray _W, InputArray _mean, InputArray _src) {
 //------------------------------------------------------------------------------
 // Linear Discriminant Analysis implementation
 //------------------------------------------------------------------------------
-void cv::LDA::save(const string& filename) const {
+void libfacerec::LDA::save(const string& filename) const {
     FileStorage fs(filename, FileStorage::WRITE);
     if (!fs.isOpened()) {
         CV_Error(CV_StsError, "File can't be opened for writing!");
@@ -97,7 +97,7 @@ void cv::LDA::save(const string& filename) const {
 }
 
 // Deserializes this object from a given filename.
-void cv::LDA::load(const string& filename) {
+void libfacerec::LDA::load(const string& filename) {
     FileStorage fs(filename, FileStorage::READ);
     if (!fs.isOpened()) {
        CV_Error(CV_StsError, "File can't be opened for writing!");
@@ -107,7 +107,7 @@ void cv::LDA::load(const string& filename) {
 }
 
 // Serializes this object to a given cv::FileStorage.
-void cv::LDA::save(FileStorage& fs) const {
+void libfacerec::LDA::save(FileStorage& fs) const {
     // write matrices
     fs << "num_components" << _num_components;
     fs << "eigenvalues" << _eigenvalues;
@@ -115,14 +115,14 @@ void cv::LDA::save(FileStorage& fs) const {
 }
 
 // Deserializes this object from a given cv::FileStorage.
-void cv::LDA::load(const FileStorage& fs) {
+void libfacerec::LDA::load(const FileStorage& fs) {
     //read matrices
     fs["num_components"] >> _num_components;
     fs["eigenvalues"] >> _eigenvalues;
     fs["eigenvectors"] >> _eigenvectors;
 }
 
-void cv::LDA::lda(InputArray _src, InputArray _lbls) {
+void libfacerec::LDA::lda(InputArray _src, InputArray _lbls) {
     // get data
     Mat src = _src.getMat();
     vector<int> labels = _lbls.getMat();
@@ -224,7 +224,7 @@ void cv::LDA::lda(InputArray _src, InputArray _lbls) {
     _eigenvectors = Mat(_eigenvectors, Range::all(), Range(0, _num_components));
 }
 
-void cv::LDA::compute(InputArray _src, InputArray _lbls) {
+void libfacerec::LDA::compute(InputArray _src, InputArray _lbls) {
     switch(_src.kind()) {
     case _InputArray::STD_VECTOR_MAT:
         lda(asRowMatrix(_src, CV_64FC1), _lbls);
@@ -240,11 +240,11 @@ void cv::LDA::compute(InputArray _src, InputArray _lbls) {
 }
 
 // Projects samples into the LDA subspace.
-Mat cv::LDA::project(InputArray src) {
-   return cv::subspaceProject(_eigenvectors, Mat(), src);
+Mat libfacerec::LDA::project(InputArray src) {
+   return libfacerec::subspaceProject(_eigenvectors, Mat(), src);
 }
 
 // Reconstructs projections from the LDA subspace.
-Mat cv::LDA::reconstruct(InputArray src) {
-   return cv::subspaceReconstruct(_eigenvectors, Mat(), src);
+Mat libfacerec::LDA::reconstruct(InputArray src) {
+   return subspaceReconstruct(_eigenvectors, Mat(), src);
 }

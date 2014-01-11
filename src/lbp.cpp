@@ -1,10 +1,12 @@
 #include "lbp.hpp"
 #include "helper.hpp"
 
+using namespace cv;
+
 //------------------------------------------------------------------------------
 // cv::olbp
 //------------------------------------------------------------------------------
-namespace cv {
+namespace libfacerec {
 
 template <typename _Tp> static
 void olbp_(InputArray _src, OutputArray _dst) {
@@ -35,7 +37,7 @@ void olbp_(InputArray _src, OutputArray _dst) {
 
 }
 
-void cv::olbp(InputArray src, OutputArray dst) {
+void libfacerec::olbp(InputArray src, OutputArray dst) {
     switch (src.getMat().type()) {
     case CV_8SC1:   olbp_<char>(src,dst); break;
     case CV_8UC1:   olbp_<unsigned char>(src,dst); break;
@@ -51,7 +53,7 @@ void cv::olbp(InputArray src, OutputArray dst) {
 //------------------------------------------------------------------------------
 // cv::varlbp
 //------------------------------------------------------------------------------
-namespace cv {
+namespace libfacerec {
 
 template <typename _Tp> static
 inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors) {
@@ -103,7 +105,7 @@ inline void varlbp_(InputArray _src, OutputArray _dst, int radius, int neighbors
 
 }
 
-void cv::varlbp(InputArray src, OutputArray dst, int radius, int neighbors) {
+void libfacerec::varlbp(InputArray src, OutputArray dst, int radius, int neighbors) {
     switch (src.getMat().type()) {
     case CV_8SC1:   varlbp_<char>(src,dst, radius, neighbors); break;
     case CV_8UC1:   varlbp_<unsigned char>(src,dst, radius, neighbors); break;
@@ -119,7 +121,7 @@ void cv::varlbp(InputArray src, OutputArray dst, int radius, int neighbors) {
 //------------------------------------------------------------------------------
 // cv::elbp
 //------------------------------------------------------------------------------
-namespace cv {
+namespace libfacerec {
 template <typename _Tp> static
 inline void elbp_(InputArray _src, OutputArray _dst, int radius, int neighbors) {
     //get matrices
@@ -160,7 +162,7 @@ inline void elbp_(InputArray _src, OutputArray _dst, int radius, int neighbors) 
 
 }
 
-void cv::elbp(InputArray src, OutputArray dst, int radius, int neighbors) {
+void libfacerec::elbp(InputArray src, OutputArray dst, int radius, int neighbors) {
     switch (src.type()) {
     case CV_8SC1:   elbp_<char>(src,dst, radius, neighbors); break;
     case CV_8UC1:   elbp_<unsigned char>(src, dst, radius, neighbors); break;
@@ -173,7 +175,7 @@ void cv::elbp(InputArray src, OutputArray dst, int radius, int neighbors) {
     }
 }
 
-Mat cv::spatial_histogram(InputArray _src, int numPatterns, int grid_x, int grid_y, bool normed) {
+Mat libfacerec::spatial_histogram(InputArray _src, int numPatterns, int grid_x, int grid_y, bool normed) {
     Mat src = _src.getMat();
     // calculate LBP patch size
     int width = src.cols/grid_x;
@@ -204,19 +206,19 @@ Mat cv::spatial_histogram(InputArray _src, int numPatterns, int grid_x, int grid
 //------------------------------------------------------------------------------
 // cv::elbp, cv::olbp, cv::varlbp wrapper
 //------------------------------------------------------------------------------
-Mat cv::olbp(InputArray src) {
+Mat libfacerec::olbp(InputArray src) {
     Mat dst;
     olbp(src, dst);
     return dst;
 }
 
-Mat cv::elbp(InputArray src, int radius, int neighbors) {
+Mat libfacerec::elbp(InputArray src, int radius, int neighbors) {
     Mat dst;
     elbp(src, dst, radius, neighbors);
     return dst;
 }
 
-Mat cv::varlbp(InputArray src, int radius, int neighbors) {
+Mat libfacerec::varlbp(InputArray src, int radius, int neighbors) {
     Mat dst;
     varlbp(src, dst, radius, neighbors);
     return dst;

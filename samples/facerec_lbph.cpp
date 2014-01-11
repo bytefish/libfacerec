@@ -26,6 +26,7 @@
 #include <sstream>
 
 using namespace cv;
+using namespace libfacerec;
 using namespace std;
 
 static void read_csv(const string& filename, vector<Mat>& images, vector<int>& labels, char separator = ';') {

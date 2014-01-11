@@ -27,6 +27,7 @@
 #include <sstream>
 
 using namespace cv;
+using namespace libfacerec;
 using namespace std;
 
 static Mat norm_0_255(InputArray _src) {

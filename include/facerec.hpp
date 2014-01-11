@@ -26,7 +26,7 @@
 
 using namespace std;
 
-namespace cv {
+namespace libfacerec {
 enum
 {
     COLORMAP_AUTUMN = 0,

@@ -24,7 +24,7 @@
 using namespace cv;
 using namespace std;
 
-namespace cv {
+namespace libfacerec {
 
 // Calculates the projection Y = (X - mean) * W.
 Mat subspaceProject(InputArray W, InputArray mean, InputArray X);
