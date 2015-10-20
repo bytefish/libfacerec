@@ -48,7 +48,7 @@ endif()
 #---------------------------------
 # add samples
 #---------------------------------
-if(NOT DEFINED ENABLE_SAMPELS)
+if(NOT DEFINED ENABLE_SAMPLES)
     set(ENABLE_SAMPLES FALSE CACHE BOOL "Enable to make the samples")
 endif()
 
